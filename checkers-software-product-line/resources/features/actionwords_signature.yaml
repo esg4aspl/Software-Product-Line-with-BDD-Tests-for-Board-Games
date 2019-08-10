@@ -1,0 +1,13 @@
+---
+- name: user has the necessary files
+  uid: 90d8930d-6951-4168-bdcd-c48c5f10b70e
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the user clicks the install button
+  uid: 8543a7ae-8925-44ff-9830-b10a422f0045
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the program is installed in user's device
+  uid: cdf37111-bf13-42e5-af89-99ca9e3a3a24
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
