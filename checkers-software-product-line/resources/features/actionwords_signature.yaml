@@ -1,13 +1,366 @@
 ---
-- name: user has the necessary files
-  uid: 90d8930d-6951-4168-bdcd-c48c5f10b70e
+- name: the "p1" game is set up
+  uid: 2631ea1d-69dc-4f0d-a683-7cb73fc8819c
+  parameters:
+  - name: p1
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the players start the game
+  uid: 761ba155-e429-4fdd-ad41-8626e47b3ed3
   parameters: []
   body_hash: d41d8cd98f00b204e9800998ecf8427e
-- name: the user clicks the install button
-  uid: 8543a7ae-8925-44ff-9830-b10a422f0045
+- name: the player with the dark-colored pieces is given the turn
+  uid: 15153446-7862-4ff6-8b32-10e459327634
   parameters: []
   body_hash: d41d8cd98f00b204e9800998ecf8427e
-- name: the program is installed in user's device
-  uid: cdf37111-bf13-42e5-af89-99ca9e3a3a24
+- name: the player has the current turn
+  uid: 707fccff-8f00-4477-b79a-27fe22f3bc44
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player selects a "p1" piece that is his own to move
+  uid: e33ab89c-c284-489b-b0c8-15ecb61462eb
+  parameters:
+  - name: p1
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the empty adjacent squares in "p1" are playable
+  uid: eec749f2-6048-486e-9944-9c443d5d35e7
+  parameters:
+  - name: p1
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the empty squares immediately after the "p1" adjacent square in "p2" are playable
+  uid: c32db1ea-9340-4e22-842f-5a48ec880c53
+  parameters:
+  - name: p1
+  - name: p2
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the playable squares are visually highlighted
+  uid: 7e937d57-b7b7-4eed-bc38-2327698628e5
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player selected a piece to move
+  uid: 5dcd9ab6-86ba-47cc-be85-350b99777eaf
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: there are playable squares on the game board
+  uid: d55799d5-0599-4ea6-a609-1a3bc057db56
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player selects a playable square that is "p1" steps away from the original
+    square
+  uid: 428f1de0-0472-46e2-9f9b-c9eda5168e67
+  parameters:
+  - name: p1
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the piece is moved to that square
+  uid: 415c6229-8b30-4a07-9e7c-2f1cc38e3a16
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the next turn is given to the "p1" player
+  uid: 48b516e6-bf51-4a3b-8425-565532878f8b
+  parameters:
+  - name: p1
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the opponent piece in between target square and original square is removed
+    from the game board
+  uid: 7ebc8dde-d247-4840-9fd5-21dc8d786d00
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the number of removed opponent pieces in this move is one
+  uid: d41c976f-cfe0-409d-961b-49119f0fda55
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the number of removed player pieces in this move is zero
+  uid: 815be4e3-871b-4942-a3e5-817bb7999e5a
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: there are playable squares that are two steps away on the game board
+  uid: 9ddd9d37-62e8-4c82-99f6-ebc72bca3ff6
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player selects a playable square that is not two steps away
+  uid: e3f2acf5-1ecf-44d5-b7dc-28dbb8652a8f
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the piece is unselected
+  uid: 74bf8bf9-39b2-4a67-ba3b-03e4206d6fbf
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player is shown an error message
+  uid: 2ce943e4-d32f-4b58-8d6e-bbef72e20102
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player has previously made a move in the current turn
+  uid: 6fac9f6b-8cd0-4d3a-b3a8-456d45852068
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player selects a piece that is different than the last piece he moved
+  uid: 862aadad-0eac-4e62-86a5-3036df4463ee
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player moves the piece to a square in the opponent's crownhead
+  uid: 6d33b336-b8cc-4af4-b77d-243791f6abeb
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the selected piece becomes a king piece
+  uid: 7343e1d8-c6af-4b0f-ab98-5c1bcd57de24
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: only one piece of the opponent is present at the game board
+  uid: cbc6e6a5-f45d-4cc4-8e31-e3abdf43e296
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player undertakes the last piece of the opponent
+  uid: da105dea-aa89-49d0-8d83-2789af37e674
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the opponent loses the game
+  uid: c7866ff5-75f7-41cd-8fd0-b40e4b15a9fc
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player wins the game
+  uid: 8930ca87-62bb-4bb0-b245-617c8975c120
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: that none of the players can force a win on the other player
+  uid: 010b03c1-0a4f-4135-9050-156bcc3a45b6
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: one player offers the other to end the game in a draw
+  uid: cbe78fca-3c0e-4d78-a1a2-add8ea1a5c62
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the other player accepts the offer
+  uid: 7a0f6a76-b251-4a8b-a350-ee568ee9f08d
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the game ends in a draw
+  uid: 9136c116-d1a5-44c0-a60e-95dae64d9fac
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player moves a regular piece to a non-crownhead square
+  uid: 7caaab85-a0b4-4b29-b0b6-1bd59e14a142
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the number of moves without upgrade is incremented by 1
+  uid: 6fa9bedb-5d27-479f-a4b8-7548bd94607e
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the game is ended as in draw if the number of moves without upgrade is 40
+  uid: 66f0e548-5a65-4860-961e-95188e4583bc
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player has only one piece on the game board
+  uid: 22e37063-dcb7-4ba9-8243-0e57abbd1347
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player undertakes one or multiple pieces of the opponent
+  uid: 81f24078-7f22-42c0-b18f-deb76314feae
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the game is ended in draw if the opponent still has one piece on the game
+    board
+  uid: 4cafed1f-fa49-494e-b0a5-947eaa3c2356
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player moves a piece without undertaking an opponent piece
+  uid: aedab91d-bd6f-4924-9c6f-40975e25e962
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the number of moves without undertake is incremented by 1
+  uid: c9e9ba6f-b3d5-4587-95d4-3867d55f35dc
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the game is ended as in draw if the number of moves without undertake is 40
+  uid: 01643d59-fdf5-411e-99b1-f28460001fa3
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player makes a moves or multiple moves leaving no playable squares for
+    any of the opponent's pieces
+  uid: 756c37b9-a8da-42f7-960c-77b13a1be525
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player with the light-colored pieces is given the turn
+  uid: af942447-70d1-4ae0-b6a5-60eba2fcc3ea
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player selects a piece to move
+  uid: dc9ab1b1-301b-4e40-88ea-cff98f8e47f6
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: all other squares that are not occupied by one of player's pieces or opponent's
+    king are "p1"
+  uid: 7a46ead4-f136-4134-b4bd-75961160ffa0
+  parameters:
+  - name: p1
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player selects a previously "p1" pawn to move
+  uid: 697a3de8-c0f0-4248-a93f-89f0238d71ff
+  parameters:
+  - name: p1
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: all the squares in forward direction up to and including the last empty square
+    and that are at max "p1" steps away are playable
+  uid: 9baf5ca9-7c84-4b4b-8103-8fde660eea41
+  parameters:
+  - name: p1
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: all the adjacent forward diagonal squares occupied by an opponent piece are
+    playable
+  uid: bc8c2099-cda4-4310-897a-bfb01aa577b0
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player selects a "p1" to move
+  uid: 10eaa3a7-2f6a-44bf-8c38-857a972c7e3d
+  parameters:
+  - name: p1
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: all the squares up to and including the last "p1" square in "p2" directions
+    are playable
+  uid: 2f39a00b-df6f-4877-a3c8-7629158584f3
+  parameters:
+  - name: p1
+  - name: p2
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player selects the king to move
+  uid: 4dc9b6e2-29ec-4e65-a1e5-99389497b191
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: all the "p1" adjacent squares are playable
+  uid: e05684a3-eccc-4931-8f91-b8e6271203fc
+  parameters:
+  - name: p1
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player selects a knight to move
+  uid: 34da9466-582e-412d-a0cf-fe6eed13980a
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: all the "p1" squares that are three steps away in X-axis and one square away
+    in Y-axis are playable
+  uid: 136a9535-d25c-4fcb-9f49-abec6cd950cf
+  parameters:
+  - name: p1
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: all the "p1" squares that are three steps away in Y-axis and one square away
+    in X-axis are playable
+  uid: cd1ffa39-cfa3-475c-88ac-aa8c29e2c3b8
+  parameters:
+  - name: p1
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player selected a piece that is his own to move
+  uid: 36c6a728-a057-4202-8b53-657dcc04b5aa
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player selects an empty playable square
+  uid: 298ce281-353c-4d5e-8646-064b1e258b95
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the selected piece is moved to that square
+  uid: 11ebf559-4f9a-4ddd-bb01-74b2617b76d0
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player selects an occupied playable square
+  uid: 930fee7a-33d4-4fac-82b0-86c3f987eab4
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the piece in the target square is removed from the game board
+  uid: 57261c2e-52b8-4970-813a-2197cab4cfdc
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: one of the player's pieces can theoretically move to the square that the opponent's
+    king currently stands
+  uid: 378d3bbe-fed9-464e-b09c-1be871fb902f
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: player can move one of his pieces to any square that is adjacent to the square
+    that opponent's king currently stands
+  uid: e4874df1-20be-4997-a526-3f1e8f79b5e6
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: there are no moves that the opponent can make to change the given situation
+  uid: d0443ad3-ddf2-40fd-b327-e7238915fd0d
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: a random player is given the turn
+  uid: bdac9313-4401-4057-a37d-005780d19869
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player selects a piece the move
+  uid: 281baa18-0280-475a-bcb8-cbacdd1c3791
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: all the adjacent empty places in any direction are playable
+  uid: 42717cd6-5e68-42ce-a210-2cd5c7679d9f
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the empty places immediately after the adjacent "p1" place in any direction
+    are playable
+  uid: c2a3f885-90dd-4246-9201-08661ec9d494
+  parameters:
+  - name: p1
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: there are playable places on the game board
+  uid: 9ec2a7d6-7718-45e4-9c78-866b4a66e35d
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player selects a playable place that is "p1" steps away from the original
+    place
+  uid: c66a3e7d-64ef-4b21-a481-c946bdeeac55
+  parameters:
+  - name: p1
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the piece is moved to that place
+  uid: aa7d5984-a283-492c-a8c6-0c24ff7dc63c
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player has moved a piece in the current turn
+  uid: c002e00c-0809-4893-9493-d948f78cd92a
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: there is only one empty place in the opposite triangle
+  uid: 2ef05770-f0b9-4479-9b5e-86456488552a
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player moves a piece to that place
+  uid: 63bd99ba-c800-4e11-b6a7-de76b0260575
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player selects an uncrowned piece to move
+  uid: 2a078900-7a4a-4001-9133-3159bdaabf17
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: all the adjacent empty squares in forward and horizontal directions are playable
+  uid: bf0b65b9-a412-478b-b3bb-168beebf872f
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the empty squares that are in the same direction and immediately after the
+    adjacent square in horizontal and forward directions that is occupied by opponent's
+    piece is registered as playable
+  uid: 4b101512-5f74-4f8a-b02b-585d20d78b98
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: all empty squares up to the first occupied square in vertical and horizontal
+    directions are playable
+  uid: 4eae8201-8cc7-401f-bd0e-dffdefafe523
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: all empty squares after the first occupied square and up to the next occupied
+    square in vertical and horizontal directions are playable
+  uid: d6d5d004-9878-4da0-ab9c-613b2da1f339
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player tries to move the piece in the direction that is opposite to the
+    last direction he moved
+  uid: 25bf44d8-6921-4e99-857d-667b3beb62f5
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the piece does not move to the target square
+  uid: 249bc96c-bd8e-4f9b-88af-ae209d650bff
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: at least one king piece of the player is present on the game board
+  uid: 5d8d1643-b0e2-4567-b5db-687cda67849f
+  parameters: []
+  body_hash: d41d8cd98f00b204e9800998ecf8427e
+- name: the player leaves only one piece of the opponent and it is uncrowned
+  uid: d995bad6-b9e1-4890-9ce3-1327a808e7c4
   parameters: []
   body_hash: d41d8cd98f00b204e9800998ecf8427e
