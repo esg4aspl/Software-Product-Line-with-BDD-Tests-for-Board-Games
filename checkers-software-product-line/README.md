@@ -98,5 +98,5 @@ After you run your tests, the results json file will be generated, in this proje
 
 And with this final line, the latest test results will be uploaded to Hiptest:
 ```
-hiptest-publisher --config-file hiptest-publisher.conf --push target/cuke-results.json --test-run-id <TEST_RUN_ID> --push-format junit
+hiptest-publisher --config-file hiptest-publisher.conf --push target/cuke-results.json --test-run-id <TEST_RUN_ID> --push-format cucumber-json
 ```
