@@ -1,26 +1,33 @@
 package testing.stepdefinitions;
 
+import static org.junit.Assert.assertEquals;
+
+import java.awt.Color;
+
+import base.AmericanGameConfiguration;
+import core.AbstractReferee;
+import core.IGameConfiguration;
 import cucumber.api.PendingException;
 
 public class Actionwords {
 
+	IGameConfiguration gameConfiguration;
+	AbstractReferee referee;
 
     public void theP1GameIsSetUp(String p1) {
-		//TO-DO: Implement this to pass tests.
-		throw new PendingException();
+    	if (p1.equals("American Checkers")) {
+    		gameConfiguration = new AmericanGameConfiguration();
+    		referee = new checkersamerican.Referee(gameConfiguration);
+    	}
     	
     }
 
     public void thePlayersStartTheGame() {
-		//TO-DO: Implement this to pass tests.
-		throw new PendingException();
-
+		referee.setup();
     }
 
     public void thePlayerWithTheDarkcoloredPiecesIsGivenTheTurn() {
-		//TO-DO: Implement this to pass tests.
-		throw new PendingException();
-
+		assertEquals(referee.getCurrentPlayer().getColor(), Color.BLACK);
     }
 
     public void thePlayerHasTheCurrentTurn() {
