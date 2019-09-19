@@ -1,90 +1,159 @@
 Feature: American Checkers
 
 
-  Scenario: Start of the Game (uid:7b1a1513-7283-4b78-972c-3d8259e3a0a0)
+  Background:
     Given the "American Checkers" game is set up
+
+  Scenario: Start of the Game (uid:29e7e813-631c-4e8b-b40c-ea1a47a3df45)
     When the players start the game
     Then the player with the dark-colored pieces is given the turn
 
-  Scenario Outline: Marking Valid Moves (<hiptest-uid>)
-    Given the player has the current turn
-    When the player selects a "<type>" piece that is his own to move
-    Then the empty adjacent squares in "<valid_direction>" are playable
-    And the empty squares immediately after the "occupied" adjacent square in "<valid_direction>" are playable
-    And the playable squares are visually highlighted
+  Scenario Outline: Valid Regular Move (<hiptest-uid>)
+    Given the game is played up to a certain point from file "<file_name>"
+    When the player picks a valid source coordinate
+    And the player picks a valid destination coordinate that is "one" squares away from the source coordinate
+    Then the piece at the source coordinate is moved to the destination coordinate
+    And the next turn is given to the "other" player
 
     Examples:
-      | type | valid_direction | hiptest-uid |
-      | uncrowned | forward_diagonal | uid:808edd2f-a5e5-4478-b99e-33776a052895 |
-      | king | any_diagonal | uid:357d1df3-4c06-4347-ad09-8c84fe4d58c9 |
+      | file_name | hiptest-uid |
+      | moveList | uid:ce4e7320-8f08-46dc-8dae-a3d181ad8372 |
 
-  Scenario Outline: Moving a Piece (<hiptest-uid>)
-    Given the player has the current turn
-    And the player selected a piece to move
-    And there are playable squares on the game board
-    When the player selects a playable square that is "<distance>" steps away from the original square
-    Then the piece is moved to that square
-    And the next turn is given to the "<player_position>" player
-    And the opponent piece in between target square and original square is removed from the game board
-    And the number of removed opponent pieces in this move is one
-    And the number of removed player pieces in this move is zero
+  Scenario Outline: Valid Jump Move (<hiptest-uid>)
+    Given the game is played up to a certain point from file "<file_name>"
+    When the player picks a valid source coordinate
+    And the player picks a valid destination coordinate that is "two" squares away from the source coordinate
+    Then the piece at the source coordinate is moved to the destination coordinate
+    And the opponent piece in between the source and destination coordinates are removed from the board
+    And the next turn is given to the "current" player
 
     Examples:
-      | distance | player_position | hiptest-uid |
-      | 2 | current | uid:a5fcc33d-8bd3-4576-816c-a7fbed9f0c81 |
-      | 1 | next | uid:5532dea8-9256-4033-bb44-fd05859c208d |
+      | file_name | hiptest-uid |
+      | moveList | uid:5e7e4e1b-2319-4e9b-923a-805fad347838 |
 
-  Scenario: Forcing Undertake (uid:363bdeac-1567-48cf-8b8b-0e92c8295117)
-    Given the player has the current turn
-    And the player selected a piece to move
-    And there are playable squares that are two steps away on the game board
-    When the player selects a playable square that is not two steps away
-    Then the piece is unselected
-    And the player is shown an error message
+  Scenario Outline: Invalid Source Coordinate for Move (<hiptest-uid>)
+    Given the game is played up to a certain point from file "<file_name>"
+    When the player picks an invalid "source" coordinate because "<invalidity_reason>"
+    And the player picks any destination coordinate
+    Then an error message is shown saying "<error_message>"
+    And the player is asked for another "source" coordinate
 
-  Scenario: Repeating Undertakes - No Piece Switch (uid:12b4b235-4774-4b35-ad2a-b36bbb4dcaa9)
-    Given the player has previously made a move in the current turn
-    When the player selects a piece that is different than the last piece he moved
-    Then the piece is unselected
-    And the player is shown an error message
+    Examples:
+      | file_name | hiptest-uid |
+      | moveList | uid:bb4b18dd-1ca3-4bb6-86b5-ebc89815a336 |
 
-  Scenario: Crowning the Eligible Piece (uid:102f7ef0-5985-482c-bb3d-2db318741614)
-    Given the player has the current turn
-    And the player selected a piece to move
-    When the player moves the piece to a square in the opponent's crownhead
-    Then the selected piece becomes a king piece
+  Scenario Outline: Invalid Destination Coordinate for Move (<hiptest-uid>)
+    Given the game is played up to a certain point from file "<file_name>"
+    When the player picks a valid source coordinate
+    And the player picks an invalid "destination" coordinate because "<invalidity_reason>"
+    Then an error message is shown saying "<error_message>"
+    And the player is asked for another "destination" coordinate
 
-  Scenario: End of the Game (uid:da758048-6f0a-4c6f-849b-6fea2dc163bc)
-    Given only one piece of the opponent is present at the game board
-    When the player undertakes the last piece of the opponent
+    Examples:
+      | file_name | hiptest-uid |
+      | moveList | uid:2191db0a-deda-4f75-b22a-f379382537f1 |
+
+  Scenario Outline: Forcing Jump Move (<hiptest-uid>)
+    Given the game is played up to a certain point from file "<file_name>"
+    And there is a possibility for the player to make a jump move
+    When the player picks a move that is not one of the available jump moves
+    Then an error message is shown saying "If any opponent's pieces can be captured then it must be captured first!!!!"
+    And the player is asked for another "destination" coordinate
+
+    Examples:
+      | file_name | hiptest-uid |
+      | moveList | uid:edd4d7c4-70c8-4553-b33e-1f627dfe3332 |
+
+  Scenario Outline: Jump Move Series End - No More Possible Jump Moves (<hiptest-uid>)
+    Given the game is played up to a certain point from file "<file_name>"
+    And the player has performed one or more jump moves
+    When the player picks a valid destination coordinate where no more jump moves will be possible
+    Then the move is performed
+    And the next turn is given to the "other" player
+
+    Examples:
+      | file_name | hiptest-uid |
+      | moveList | uid:c9639926-f5ee-4fe0-ac8f-a65d982f8cfe |
+
+  Scenario Outline: Jump Move Series End - Piece Becomes King (<hiptest-uid>)
+    Given the game is played up to a certain point from file "<file_name>"
+    And the player has performed one or more jump moves
+    When the player picks a valid destination coordinate where his normal piece will become a king piece
+    Then the move is performed
+    And the piece transformed to a king piece
+    And the next turn is given to the "other" player
+
+    Examples:
+      | file_name | hiptest-uid |
+      | moveList | uid:6107fd90-3720-4a15-a21a-219945513746 |
+
+  Scenario Outline: Crowning the Eligible Piece (<hiptest-uid>)
+    Given the game is played up to a certain point from file "<file_name>"
+    When the player picks a move with a normal piece and a destination coordinate in opponent's crownhead
+    Then the move is performed
+    And the piece transformed to a king piece
+
+    Examples:
+      | file_name | hiptest-uid |
+      | moveList | uid:99ef4b4a-94fc-41ad-9f44-1b0737821b8f |
+
+  Scenario Outline: End of the Game (<hiptest-uid>)
+    Given the game is played up to a certain point from file "<file_name>"
+    And only one piece of the opponent is present at the game board
+    When the player jumps over the last piece of the opponent
     Then the opponent loses the game
     And the player wins the game
 
-  Scenario: End of the Game In Draw (uid:2d3b3f91-5a94-438a-b7c9-82ee89e0b070)
-    Given that none of the players can force a win on the other player
+    Examples:
+      | file_name | hiptest-uid |
+      | moveList | uid:ca4ac8a5-e21e-4d49-a77a-db6f5a4616c6 |
+
+  Scenario Outline: End of the Game In Draw (<hiptest-uid>)
+    Given the game is played up to a certain point from file "<file_name>"
+    And none of the players can force a win on the other player
     When one player offers the other to end the game in a draw
     And the other player accepts the offer
     Then the game ends in a draw
 
-  Scenario: End of the Game In Draw - Forty Moves Without Becoming King (uid:5ff81db3-f547-4441-a44f-47dabf7a18a7)
-    Given the player has the current turn
-    When the player moves a regular piece to a non-crownhead square
+    Examples:
+      | file_name | hiptest-uid |
+      | moveList | uid:b0ae6528-27cc-414f-b087-1965298253e9 |
+
+  Scenario Outline: End of the Game In Draw - Forty Moves Without Becoming King (<hiptest-uid>)
+    Given the game is played up to a certain point from file "<file_name>"
+    When the player moves a normal piece to a non-crownhead coordinate
     Then the number of moves without upgrade is incremented by 1
-    And the game is ended as in draw if the number of moves without upgrade is 40
+    And the game is ended as a draw if the number of moves without upgrade is 40
 
-  Scenario: End of the Game In Draw - Both Players Have One Piece (uid:fb907e8c-f771-466a-a3b3-5d63098cccde)
+    Examples:
+      | file_name | hiptest-uid |
+      | moveList | uid:6884cb35-4ddc-44e8-8f0e-4d8a126cfe94 |
+
+  Scenario Outline: End of the Game In Draw - Both Players Have One Piece (<hiptest-uid>)
     Given the player has only one piece on the game board
-    When the player undertakes one or multiple pieces of the opponent
-    Then the game is ended in draw if the opponent still has one piece on the game board
+    When the player jumps over one or multiple pieces of the opponent
+    Then the game is ended a draw if the opponent still has one piece on the game board
 
-  Scenario: End of the Game In Draw - Forty Moves Without Undertake (uid:911b3a69-87b4-4206-b5fc-cfc50725c9c4)
-    Given the player has the current turn
+    Examples:
+      | file_name | hiptest-uid |
+      | moveList | uid:cde881dd-eb50-4f3b-8e20-450878e2fa0b |
+
+  Scenario Outline: End of the Game In Draw - Forty Moves Without Jumps (<hiptest-uid>)
+    Given the game is played up to a certain point from file "<file_name>"
     When the player moves a piece without undertaking an opponent piece
     Then the number of moves without undertake is incremented by 1
     And the game is ended as in draw if the number of moves without undertake is 40
 
-  Scenario: End of Game - Opponent Can't Make a Valid Move (uid:55fffa2b-3a06-48dd-8be3-2fc41cc6291b)
-    Given the player has the current turn
-    When the player makes a moves or multiple moves leaving no playable squares for any of the opponent's pieces
-    Then the player wins the game
-    And the opponent loses the game
+    Examples:
+      | file_name | hiptest-uid |
+      | moveList | uid:0c135119-ea1b-4883-aec7-dee687b58a71 |
+
+  Scenario Outline: End of Game - Opponent Can't Make a Valid Move (<hiptest-uid>)
+    Given the game is played up to a certain point from file "<file_name>"
+    When the player makes a move leaving no valid destination coordinates for any of the opponent's pieces
+    Then the opponent loses the game
+    And the player wins the game
+
+    Examples:
+      | file_name | hiptest-uid |
+      | moveList | uid:d6229798-573b-47a6-acc9-db41f369e93a |
