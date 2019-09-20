@@ -26,7 +26,6 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	@Override
 	public void theP1GameIsSetUp(String p1) {
 		referee = new AmericanTesterReferee(new AmericanGameConfiguration());
-		referee.setup();
 	}
 
 	@Override
@@ -35,7 +34,6 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		
 	}
 
-
 	@Override
 	public void thePlayerWithTheDarkcoloredPiecesIsGivenTheTurn() {
 		assertEquals(Color.BLACK, referee.getCurrentPlayer().getColor());
@@ -43,8 +41,8 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void theGameIsPlayedUpToACertainPointFromFileP1(String p1) {
-		referee.setMoveFile(p1);
-		referee.playGameUpToACertainPoint();
+		referee.setGameSetupName(p1);
+		referee.setup();
 		player = referee.getCurrentPlayer();
 	}
 
@@ -102,11 +100,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 			throw new PendingException();
 		}
 		//If there were no errors up to this point, conduct the game.
-		referee.consoleView.printMessage("Right before conducting the player move:");
-		referee.consoleView.drawBoardView();
 		referee.conductGame();
-		referee.consoleView.printMessage("Conducted the player move:");
-		referee.consoleView.drawBoardView();
 	}
 
 	@Override

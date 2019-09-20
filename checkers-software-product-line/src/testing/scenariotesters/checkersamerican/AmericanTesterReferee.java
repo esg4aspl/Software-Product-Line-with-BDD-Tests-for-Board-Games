@@ -45,11 +45,16 @@ import rules.RuleMoveMustMatchPieceMoveConstraints;
 import rules.RulePieceAtSourceCoordinateMustBelongToCurrentPlayer;
 import rules.RuleThereMustBePieceAtSourceCoordinate;
 import rules.RuleThereMustNotBePieceAtDestinationCoordinate;
+import testing.helpers.ICoordinatePieceDuo;
+import testing.helpers.IiniReader;
+import testing.helpers.IniReader;
 
 public class AmericanTesterReferee extends AbstractReferee {
 
-	BufferedReader moveReader;
+	//BufferedReader moveReader;
 	IMoveCoordinate playerMove;
+	IiniReader reader;
+	String setUpName;
 
 	protected AmericanCheckersBoardConsoleView consoleView;
 	
@@ -57,62 +62,27 @@ public class AmericanTesterReferee extends AbstractReferee {
 		super(checkersGameConfiguration);
 	}
 	
-	public void setMoveFile(String fileName) {
-		try {
-			moveReader = new BufferedReader(new FileReader("./src/testing/scenariotesters/checkersamerican/" + fileName + ".txt"));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public IMoveCoordinate getMoveFromFile() {
-		String line;
-		try {
-			line = moveReader.readLine();
-			if (line == null || line.equals("---")) {
-				return null;
-			}
-			String[] coordinates = line.split(">");
-			String[] srcCoordinates = coordinates[0].split(",");
-			String[] destCoordinates = coordinates[1].split(",");
-			ICoordinate src = new Coordinate(Integer.parseInt(srcCoordinates[0]), Integer.parseInt(srcCoordinates[1]));
-			ICoordinate dest = new Coordinate(Integer.parseInt(destCoordinates[0]), Integer.parseInt(destCoordinates[1]));
-			return new MoveCoordinate(src, dest);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
+	public void setIni(String setUpName) {
+		reader = new IniReader("src/testing/scenariotesters/checkersamerican/AmericanCheckers.ini", setUpName);
 	}
 	
-	public IMoveCoordinate readPlayerMove() {
-		String line;
-		try {
-			line = moveReader.readLine();
-			if (line == null) {
-				playerMove = view.getNextMove(currentPlayer);
-			} else {
-				String[] coordinates = line.split(">");
-				String[] srcCoordinates = coordinates[0].split(",");
-				String[] destCoordinates = coordinates[1].split(",");
-				ICoordinate src = new Coordinate(Integer.parseInt(srcCoordinates[0]), Integer.parseInt(srcCoordinates[1]));
-				ICoordinate dest = new Coordinate(Integer.parseInt(destCoordinates[0]), Integer.parseInt(destCoordinates[1]));
-				playerMove = new MoveCoordinate(src, dest);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			playerMove = null;
-		}
-		return playerMove;
+	public void setGameSetupName(String setUpName) {
+		this.setUpName = setUpName;
 	}
-
 	
 	public void setup() {
 		setupPlayers();
 		setupBoardMVC();
-		setupPiecesOnBoard();
+		view = consoleView;
+		setIni(setUpName);
+		setupPiecesOnBoard(reader.getCoordinatePieceDuos());
+		if (reader.getCurrentTurnPlayerIconColor().equals("black")) {
+			currentPlayerID = 0;
+			currentPlayer = playerList.getPlayer(0);
+		} else {
+			currentPlayerID = 1;
+			currentPlayer = playerList.getPlayer(1);
+		}
 	}
 
 	private void setupPlayers() {
@@ -131,53 +101,58 @@ public class AmericanTesterReferee extends AbstractReferee {
 		board = new AmericanCheckersBoard();
 		coordinatePieceMap = board.getCoordinatePieceMap();
 		consoleView = new AmericanCheckersBoardConsoleView(this);
-		view = consoleView;
 	}
 
-	private void setupPiecesOnBoard() {
-		// create pieces for players and put them on board
-		IPlayer player;
+	private void setupPiecesOnBoard(List<ICoordinatePieceDuo> coordinatePieceDuos) {
 		AbstractPiece men;
-		StartCoordinates startCoordinates = new AmericanStartCoordinates();
-		IPieceMovePossibilities menMovePossibilities = new PawnMovePossibilities();
-		IPieceMoveConstraints menMoveConstraints =  new PawnMoveConstraints();
-
-		for (int i = 0; i < numberOfPlayers; i++) {
-			player = playerList.getPlayer(i);
-			String icon;
-			Direction direction;
-			if (i == 0) {
+		IPlayer player;
+		String icon;
+		Direction direction;
+		int playerId;
+		int counter = 0;
+		for (ICoordinatePieceDuo coordinatePieceDuo : coordinatePieceDuos) {
+			if (!board.isPlayableCoordinate(coordinatePieceDuo.getCoordinate())) {
+				System.out.println("A piece can not stand there: " + coordinatePieceDuo.getCoordinate().toString());
+				System.exit(0);
+			}
+			String iconName = coordinatePieceDuo.getIconColor();
+			if (iconName.equals("black")) {
+				playerId = 0;
+				player = playerList.getPlayer(playerId);
 				icon = "B";
 				direction = Direction.N;
-			}
-			else {
+			} else {
+				playerId = 1;
+				player = playerList.getPlayer(playerId);
 				icon = "W";
 				direction = Direction.S;
 			}
-			for (int j = 0; j < numberOfPiecesPerPlayer; j++) {
-				men = new Pawn(1000+i, icon, player, direction, menMovePossibilities, menMoveConstraints);
-				player.addPiece(men);
-				coordinatePieceMap.putPieceToCoordinate(men, startCoordinates.getNextCoordinate());
+			IPieceMovePossibilities menMovePossibilities;
+			IPieceMoveConstraints menMoveConstraints;
+			//First create the piece as a pawn regardless of its real identity:
+			menMovePossibilities = new PawnMovePossibilities();
+			menMoveConstraints =  new PawnMoveConstraints();
+			men = new Pawn(1000+counter, icon, player, direction, menMovePossibilities, menMoveConstraints);
+			player.addPiece(men);
+			
+			//If the piece was a king piece, then transform it:
+			if (coordinatePieceDuo.getPieceType().equals("king")) {
+				men = becomeNewPiece(player, men);
 			}
+
+			coordinatePieceMap.putPieceToCoordinate(men, coordinatePieceDuo.getCoordinate());
+			counter++;
 		}
 		
-		//coordinatePieceMap.printPieceMap();
-		view.printMessage(playerList.getPlayerStatus());
+		
 	}
 	
-	public void playGameUpToACertainPoint() {
-		while ((currentMoveCoordinate = getMoveFromFile()) != null) {
-			if (!conductMove()) {
-				System.out.println("\nPrepared game is not valid.");
-				System.exit(0);
-			}
-			currentPlayerID++;
-			if (currentPlayerID >= numberOfPlayers) currentPlayerID = 0;
-			currentPlayer = getPlayerbyID(currentPlayerID);
-		}
+	public IMoveCoordinate readPlayerMove() {
+		playerMove = reader.getPlayerMove();
+		return playerMove;
 	}
 	
-	public void conductGame() {		
+	public void conductGame() {	
 		boolean endOfGame = false;
 		boolean endOfGameDraw = false;
 
@@ -214,6 +189,7 @@ public class AmericanTesterReferee extends AbstractReferee {
 			
 			//ONLY IN TESTER CLASS. END THE GAME AFTER PLAYER'S MOVE THAT THE TEST IS FOCUSING ON.
 			System.out.println("Test ended.");
+			view.drawBoardView();
 			return;
 		} 
 		//consoleView.drawBoardView();
@@ -286,7 +262,8 @@ public class AmericanTesterReferee extends AbstractReferee {
 				moveOpResult = new MoveOpResult(false, false);
 				break;
 			}
-			currentMoveCoordinate = getMoveFromFile();
+			playerMove = view.getNextMove(currentPlayer);
+			currentMoveCoordinate = playerMove;
 			ICoordinate sourceCoordinate = currentMoveCoordinate.getSourceCoordinate();
 			ICoordinate destinationCoordinate = currentMoveCoordinate.getDestinationCoordinate();
 			
