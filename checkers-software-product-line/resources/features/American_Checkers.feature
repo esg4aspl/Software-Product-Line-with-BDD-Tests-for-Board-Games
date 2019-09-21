@@ -24,20 +24,21 @@ Feature: American Checkers
       | validRegularMove5 | uid:716ab29f-e9b7-40fc-a460-d28392f4273f |
 
   Scenario Outline: Valid Jump Move (<hiptest-uid>)
+    If the next_turn_player is 'current' then it means the set up in the file_name allows the player for other possible jump moves after the move is conducted.
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks a valid source coordinate
     And the player picks a valid destination coordinate that is "two" squares away from the source coordinate
     Then the piece at the source coordinate is moved to the destination coordinate
     And the opponent piece in between the source and destination coordinates are removed from the board
-    And the next turn is given to the "current" player
+    And the next turn is given to the "<next_turn_player>" player
 
     Examples:
-      | file_name | hiptest-uid |
-      | validJumpMove1 | uid:9ddd874a-9acd-417b-abe3-65f75dc78081 |
-      | validJumpMove2 | uid:e635d03a-2ff9-43d5-8a82-db696f0d3e37 |
-      | validJumpMove3 | uid:4316cef3-a33b-443c-9cce-10109f4217f0 |
-      | validJumpMove4 | uid:aea16597-291b-4fdb-aea2-0a9f32b409cc |
-      | validJumpMove5 | uid:1cff9ebd-d41d-4752-8598-6bbcbc448590 |
+      | file_name | next_turn_player | hiptest-uid |
+      | validJumpMove1 | current | uid:9ddd874a-9acd-417b-abe3-65f75dc78081 |
+      | validJumpMove2 | current | uid:e635d03a-2ff9-43d5-8a82-db696f0d3e37 |
+      | validJumpMove3 | other | uid:4316cef3-a33b-443c-9cce-10109f4217f0 |
+      | validJumpMove4 | current | uid:aea16597-291b-4fdb-aea2-0a9f32b409cc |
+      | validJumpMove5 | other | uid:1cff9ebd-d41d-4752-8598-6bbcbc448590 |
 
   Scenario Outline: Invalid Source Coordinate for Move (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
@@ -47,12 +48,13 @@ Feature: American Checkers
     And the player is asked for another "source" coordinate
 
     Examples:
-      | file_name | hiptest-uid |
-      | invalidSourceCoordinateForMove1 | uid:b1caa378-eae4-4cf4-9108-0005c7f45cc1 |
-      | invalidSourceCoordinateForMove2 | uid:59f80d22-4c32-4fa8-a301-ba5b1565cb47 |
-      | invalidSourceCoordinateForMove3 | uid:c8dc7307-886c-4007-a8df-34ae293c8891 |
-      | invalidSourceCoordinateForMove4 | uid:c48db39d-7a52-423f-827f-aa4b7919acf7 |
-      | invalidSourceCoordinateForMove5 | uid:05a71dc1-d70e-4c31-9dbc-92ea88361c65 |
+      | file_name | invalidity_reason | error_message | hiptest-uid |
+      | invalidSourceCoordinateForMoveEmpty1 | source coordinate is empty | No piece at source coordinate | uid:5fda3a9a-042c-4d0f-b80e-e84bc5bf7792 |
+      | invalidSourceCoordinateForMoveEmpty2 | source coordinate is empty | No piece at source coordinate | uid:6e859ee7-2868-49b3-ada2-d3ba5018eb78 |
+      | invalidSourceCoordinateForMoveOpponentsPiece1 | source coordinate has opponent's piece | Piece does not belong to current player | uid:ee334b2b-ec6e-4c77-a55b-35260eeb8045 |
+      | invalidSourceCoordinateForMoveOpponentsPiece2 | source coordinate has opponent's piece | Piece does not belong to current player | uid:f7a73b79-f95e-4715-9abf-093d525f98cb |
+      | invalidSourceCoordinateForMoveUnplayableColor1 | source coordinate is not of valid square color | No piece at source coordinate | uid:4b018f06-fb90-4d2d-8915-8e93c183f77d |
+      | invalidSourceCoordinateForMoveOutsideBoard1 | source coordinate is outside of the board | No piece at source coordinate | uid:2c948885-fb40-4662-b79b-1e5ab82e99b7 |
 
   Scenario Outline: Invalid Destination Coordinate for Move (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"

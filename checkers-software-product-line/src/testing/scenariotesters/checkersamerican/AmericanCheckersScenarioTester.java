@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Color;
+import java.util.List;
 
 import base.AmericanGameConfiguration;
 import base.Pawn;
@@ -28,6 +29,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	AbstractPiece inbetweenOpponentPiece;
 	IPlayer player;
 	AbstractPiece piece;
+	List<String> informers;
 	
 	@Override
 	public void theP1GameIsSetUp(String p1) {
@@ -36,8 +38,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void thePlayersStartTheGame() {
-		// TODO Auto-generated method stub
-		
+		// TODO Can there be any implementation for this method?
 	}
 
 	@Override
@@ -132,6 +133,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		}
 		//If there were no errors up to this point, conduct the game.
 		referee.conductGame();
+		informers = referee.informers;
 	}
 
 	@Override
@@ -143,25 +145,44 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void thePlayerPicksAnInvalidP1CoordinateBecauseP2(String p1, String p2) {
-		throw new PendingException();
-
+		playerMove = referee.readPlayerMove();
+		if (p1.equals("source")) {
+			invalidSourceCoordinate(p2);
+		} else if (p1.equals("destination")){
+			throw new PendingException();
+		}
+	}
+	
+	private void invalidSourceCoordinate(String reason) {
+		sourceCoordinateOfPlayerMove = playerMove.getSourceCoordinate();
+		if (reason.equals("source coordinate is empty")) {
+			piece = referee.getCoordinatePieceMap().getPieceAtCoordinate(sourceCoordinateOfPlayerMove);
+			assertTrue(piece == null);
+		} else {
+			throw new PendingException();
+		}
 	}
 
 	@Override
 	public void thePlayerPicksAnyDestinationCoordinate() {
-		throw new PendingException();
-
+		referee.conductGame();
+		informers = referee.informers;
+		
 	}
 
 	@Override
 	public void anErrorMessageIsShownSayingP1(String p1) {
-		throw new PendingException();
-
+		assertTrue(informers.size() > 0); //Because there is at least 1 error message and 1 message about the next move.
+		assertEquals(p1, informers.get(0)); //Error message stays in the 0th index.
 	}
 
 	@Override
 	public void thePlayerIsAskedForAnotherP1Coordinate(String p1) {
-		throw new PendingException();
+		if (p1.equals("source")) {
+			assertEquals("Player will be asked for another source coordinate (previous move was invalid)...", informers.get(1));
+		} else {
+			throw new PendingException();
+		}
 
 	}
 

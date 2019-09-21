@@ -6,9 +6,12 @@ import core.AbstractReferee;
 public class App {
 
 	public static void main(String[] args) {
-		String[] moveArr = {"validJumpMove1", "validJumpMove2", "validJumpMove3"};
-		for (String moveID : moveArr) {
-			System.out.println("TESTING: " + moveID);
+		//String[] moveArr = {"validRegularMove1"};
+		String[] moveArr = {"validJumpMove2"};
+		//String[] moveArr = {"invalidSourceCoordinateForMoveEmpty1", "invalidSourceCoordinateForMoveEmpty2"};
+		//String[] moveArr = {"invalidSourceCoordinateForMoveOpponentsPiece1", "invalidSourceCoordinateForMoveOpponentsPiece2"};
+ 		for (String moveID : moveArr) {
+			System.out.println("\n\n\nTESTING: " + moveID);
 			AmericanTesterReferee referee = new AmericanTesterReferee(new AmericanGameConfiguration());
 			referee.setGameSetupName(moveID);
 			referee.setup();

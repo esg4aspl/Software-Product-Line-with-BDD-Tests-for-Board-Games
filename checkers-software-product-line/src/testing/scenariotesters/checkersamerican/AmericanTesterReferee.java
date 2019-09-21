@@ -1,6 +1,7 @@
 package testing.scenariotesters.checkersamerican;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 
 import base.AmericanCheckersBoard;
@@ -45,7 +46,8 @@ public class AmericanTesterReferee extends AbstractReferee {
 	IMoveCoordinate playerMove;
 	IiniReader reader;
 	String setUpName;
-	String lastMessagePrinted;
+	List<String> informers;
+	String endTestStatus;
 	boolean playerWasGoingToMakeAnotherMove;
 
 	protected AmericanCheckersBoardConsoleView consoleView;
@@ -53,6 +55,8 @@ public class AmericanTesterReferee extends AbstractReferee {
 	public AmericanTesterReferee(IGameConfiguration checkersGameConfiguration) {
 		super(checkersGameConfiguration);
 		this.playerWasGoingToMakeAnotherMove = false;
+		informers = new ArrayList<String>();
+		endTestStatus = "Test running...";
 	}
 	
 	public void setIni(String setUpName) {
@@ -160,15 +164,18 @@ public class AmericanTesterReferee extends AbstractReferee {
 //		}
 		if(!endOfGame) {
 			
-			printMessage("Game begins ...");
+			view.printMessage("Game begins ...");
+			view.printMessage("Player move: " + playerMove.toString());
 			consoleView.drawBoardView();
 		}
 		while (!endOfGame) {
 			currentMoveCoordinate = playerMove;
 			while (!conductMove()) {
-				//lastMessagePrinted = "Player picks another move because of invalidity.";
-				System.out.println("Test ended with an invalid player move.");
-				view.drawBoardView();
+				this.playerWasGoingToMakeAnotherMove = true;
+				printMessage("Player will be asked for another source coordinate (previous move was invalid)...");
+				
+				
+				endTest("Test ended with an invalid player move.");
 				return;
 //				playerMove = view.getNextMove(currentPlayer);
 //				currentMoveCoordinate = playerMove;			
@@ -188,8 +195,7 @@ public class AmericanTesterReferee extends AbstractReferee {
 			}
 			
 			//ONLY IN TESTER CLASS. END THE GAME AFTER PLAYER'S MOVE THAT THE TEST IS FOCUSING ON.
-			System.out.println("Test ended.");
-			view.drawBoardView();
+			endTest("Test ended with a valid player move.");
 			return;
 		} 
 		//consoleView.drawBoardView();
@@ -208,31 +214,7 @@ public class AmericanTesterReferee extends AbstractReferee {
 		consoleView.closeFile();
 		System.exit(0);
 	}
-	
-	private void conductAutomaticGame() {				
-		printMessage("Automatic Game begins ...");
-		automaticGameOn = true;
-		int step = 0;
-		consoleView.drawBoardView();
-		while (step < consoleView.getSizeOfAutomaticMoveList()) {
-			try {
-				Thread.sleep(400);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			currentMove = consoleView.getNextAutomaticMove(step);
-			currentMoveCoordinate = currentMove.getMoveCoordinate();
-			currentPlayer = currentMove.getPlayer();
-			currentPlayerID = currentPlayer.getId();
-			conductMove();
-			consoleView.drawBoardView();
-			step++;
-		}
-		automaticGameOn = false;
-		printMessage("Automatic Game ends ...");
-	}
-	
+
 	protected boolean conductMove() {
 		ICoordinate sourceCoordinate = currentMoveCoordinate.getSourceCoordinate();
 		ICoordinate destinationCoordinate = currentMoveCoordinate.getDestinationCoordinate();
@@ -246,11 +228,9 @@ public class AmericanTesterReferee extends AbstractReferee {
 		piece = becomeAndOrPutOperation(piece, destinationCoordinate);
 		if(!temp.equals(piece))
 			moveOpResult = new MoveOpResult(true, false);
-		printMessage("CurrentPlayerTurnAgain? " + moveOpResult.isCurrentPlayerTurnAgain());
+		view.printMessage("CurrentPlayerTurnAgain? " + moveOpResult.isCurrentPlayerTurnAgain());
 		if (moveOpResult.isCurrentPlayerTurnAgain() && !automaticGameOn) {
-			this.playerWasGoingToMakeAnotherMove = true;
-			lastMessagePrinted = "Player picks another move, because of a previous jump move.";
-			//conductCurrentPlayerTurnAgain(moveOpResult, piece);
+			conductCurrentPlayerTurnAgain(moveOpResult, piece);
 			return true;
 		}
 		return true;
@@ -264,31 +244,37 @@ public class AmericanTesterReferee extends AbstractReferee {
 			rollbackTemp = currentMoveCoordinate;
 			if (secondJumpList.size() == 0) {
 				moveOpResult = new MoveOpResult(false, false);
+				//ONLY IN TESTER CLASS
+				printMessage("Player will NOT be asked for another destination coordinate (pervious move was a jump move) because there are no more possibilities for a jump move.");
 				break;
 			}
-			playerMove = view.getNextMove(currentPlayer);
-			currentMoveCoordinate = playerMove;
-			ICoordinate sourceCoordinate = currentMoveCoordinate.getSourceCoordinate();
-			ICoordinate destinationCoordinate = currentMoveCoordinate.getDestinationCoordinate();
-			
-			if (!checkMove()) { 
-				currentMoveCoordinate = rollbackTemp;
-				continue;
-			}
-			
-			moveOpResult = new MoveOpResult(false, false);
-			for(ICoordinate coordinate : secondJumpList) {
-				if (coordinate.equals(destinationCoordinate)) {
-					List<ICoordinate> path = board.getCBO().findPath(piece, currentMoveCoordinate);
-					coordinatePieceMap.removePieceFromCoordinate(piece, sourceCoordinate);
-					moveOpResult = moveInterimOperation(piece, currentMoveCoordinate, path);
-					piece = becomeAndOrPutOperation(piece, destinationCoordinate);
-					if(!temp.equals(piece)) 
-						moveOpResult = new MoveOpResult(true, false);
-				}
-			}
-			
-			
+			//ONLY IN TESTER CLASS, RETURNS FROM THIS METHOD AFTER INFORMING
+			this.playerWasGoingToMakeAnotherMove = true;
+			printMessage("Player will be asked for another destination coordinate (previous move was a jump move) (there are still possibilities for a jump move).");
+			break;
+//			playerMove = view.getNextMove(currentPlayer);
+//			currentMoveCoordinate = playerMove;
+//			ICoordinate sourceCoordinate = currentMoveCoordinate.getSourceCoordinate();
+//			ICoordinate destinationCoordinate = currentMoveCoordinate.getDestinationCoordinate();
+//			
+//			if (!checkMove()) { 
+//				currentMoveCoordinate = rollbackTemp;
+//				continue;
+//			}
+//			
+//			moveOpResult = new MoveOpResult(false, false);
+//			for(ICoordinate coordinate : secondJumpList) {
+//				if (coordinate.equals(destinationCoordinate)) {
+//					List<ICoordinate> path = board.getCBO().findPath(piece, currentMoveCoordinate);
+//					coordinatePieceMap.removePieceFromCoordinate(piece, sourceCoordinate);
+//					moveOpResult = moveInterimOperation(piece, currentMoveCoordinate, path);
+//					piece = becomeAndOrPutOperation(piece, destinationCoordinate);
+//					if(!temp.equals(piece)) 
+//						moveOpResult = new MoveOpResult(true, false);
+//				}
+//			}
+//			
+//			
 		}
 		return true;
 	}
@@ -367,9 +353,45 @@ public class AmericanTesterReferee extends AbstractReferee {
 	@Override
 	public void printMessage(String message) {
 		super.printMessage(message);
-		lastMessagePrinted = message;
+		informers.add(message);
 	}
 
+	public void endTest(String status) {
+		endTestStatus = status;
+		System.out.println("\n\n-------------------------------------------------------------------------------------------------------------------------------");
+		System.out.println("Test: " + setUpName);
+		System.out.println("Status: " + endTestStatus);
+		System.out.println("Informers: " + informers.toString());
+		System.out.println("Board: ");
+		view.drawBoardView();
+		System.out.println("-------------------------------------------------------------------------------------------------------------------------------\n");
+	}
+	
+	
+	
+//	private void conductAutomaticGame() {				
+//		printMessage("Automatic Game begins ...");
+//		automaticGameOn = true;
+//		int step = 0;
+//		consoleView.drawBoardView();
+//		while (step < consoleView.getSizeOfAutomaticMoveList()) {
+//			try {
+//				Thread.sleep(400);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			currentMove = consoleView.getNextAutomaticMove(step);
+//			currentMoveCoordinate = currentMove.getMoveCoordinate();
+//			currentPlayer = currentMove.getPlayer();
+//			currentPlayerID = currentPlayer.getId();
+//			conductMove();
+//			consoleView.drawBoardView();
+//			step++;
+//		}
+//		automaticGameOn = false;
+//		printMessage("Automatic Game ends ...");
+//	}
 	
 	
 }
