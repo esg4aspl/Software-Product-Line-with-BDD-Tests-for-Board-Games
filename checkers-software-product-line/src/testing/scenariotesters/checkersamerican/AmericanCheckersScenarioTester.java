@@ -30,6 +30,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	IPlayer player;
 	AbstractPiece piece;
 	List<String> informers;
+	boolean playerWasGoingToMakeAnotherMove;
 	
 	@Override
 	public void theP1GameIsSetUp(String p1) {
@@ -83,8 +84,10 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	@Override
 	public void theNextTurnIsGivenToTheP1Player(String p1) {
 		if (p1.equals("other")) {
+			assertFalse(playerWasGoingToMakeAnotherMove);
 			assertFalse(referee.getCurrentPlayer().equals(player));
 		} else if (p1.equals("current")) {
+			assertTrue(playerWasGoingToMakeAnotherMove);
 			assertTrue(referee.getCurrentPlayer().equals(player));
 		}
 	}
@@ -134,6 +137,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		//If there were no errors up to this point, conduct the game.
 		referee.conductGame();
 		informers = referee.informers;
+		playerWasGoingToMakeAnotherMove = referee.playerWasGoingToMakeAnotherMove;
 	}
 
 	@Override
@@ -167,7 +171,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	public void thePlayerPicksAnyDestinationCoordinate() {
 		referee.conductGame();
 		informers = referee.informers;
-		
+		playerWasGoingToMakeAnotherMove = referee.playerWasGoingToMakeAnotherMove;
 	}
 
 	@Override

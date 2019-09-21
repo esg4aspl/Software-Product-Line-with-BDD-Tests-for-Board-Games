@@ -7,7 +7,8 @@ public class App {
 
 	public static void main(String[] args) {
 		//String[] moveArr = {"validRegularMove1"};
-		String[] moveArr = {"validJumpMove2"};
+		String[] moveArr = {"validJumpMove3"};
+		//String[] moveArr = {"invalidJumpMoveJumpingOverOwnPiece1"};
 		//String[] moveArr = {"invalidSourceCoordinateForMoveEmpty1", "invalidSourceCoordinateForMoveEmpty2"};
 		//String[] moveArr = {"invalidSourceCoordinateForMoveOpponentsPiece1", "invalidSourceCoordinateForMoveOpponentsPiece2"};
  		for (String moveID : moveArr) {

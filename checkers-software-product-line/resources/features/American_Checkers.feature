@@ -24,7 +24,6 @@ Feature: American Checkers
       | validRegularMove5 | uid:716ab29f-e9b7-40fc-a460-d28392f4273f |
 
   Scenario Outline: Valid Jump Move (<hiptest-uid>)
-    If the next_turn_player is 'current' then it means the set up in the file_name allows the player for other possible jump moves after the move is conducted.
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks a valid source coordinate
     And the player picks a valid destination coordinate that is "two" squares away from the source coordinate
@@ -34,8 +33,8 @@ Feature: American Checkers
 
     Examples:
       | file_name | next_turn_player | hiptest-uid |
-      | validJumpMove1 | current | uid:9ddd874a-9acd-417b-abe3-65f75dc78081 |
-      | validJumpMove2 | current | uid:e635d03a-2ff9-43d5-8a82-db696f0d3e37 |
+      | validJumpMove1 | other | uid:20888809-bc01-42bf-8820-527bff4ebddd |
+      | validJumpMove2 | other | uid:6fbd1fa8-e5ff-49bd-8cb4-3b3281934785 |
       | validJumpMove3 | other | uid:4316cef3-a33b-443c-9cce-10109f4217f0 |
       | validJumpMove4 | current | uid:aea16597-291b-4fdb-aea2-0a9f32b409cc |
       | validJumpMove5 | other | uid:1cff9ebd-d41d-4752-8598-6bbcbc448590 |
