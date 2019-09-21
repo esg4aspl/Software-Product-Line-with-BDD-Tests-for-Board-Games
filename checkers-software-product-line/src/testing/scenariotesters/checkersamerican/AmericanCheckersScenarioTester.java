@@ -7,10 +7,14 @@ import static org.junit.Assert.assertTrue;
 import java.awt.Color;
 
 import base.AmericanGameConfiguration;
+import base.Pawn;
 import core.AbstractPiece;
+import core.Coordinate;
+import core.Direction;
 import core.ICoordinate;
 import core.IMoveCoordinate;
 import core.IPlayer;
+import core.Zone;
 import cucumber.api.PendingException;
 import testing.scenariotesters.IScenarioTester;
 
@@ -20,6 +24,8 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	IMoveCoordinate playerMove;
 	ICoordinate sourceCoordinateOfPlayerMove;
 	ICoordinate destinationCoordinateOfPlayerMove;
+	ICoordinate inbetweenCoordinateOfPlayerJumpMove;
+	AbstractPiece inbetweenOpponentPiece;
 	IPlayer player;
 	AbstractPiece piece;
 	
@@ -49,13 +55,15 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	@Override
 	public void thePlayerPicksAValidSourceCoordinate() {
 		playerMove = referee.readPlayerMove();
-		//Double checking - coordinate is on board:
+		//Check - coordinate is on board:
 		sourceCoordinateOfPlayerMove = playerMove.getSourceCoordinate();
 		int xCoordinate = sourceCoordinateOfPlayerMove.getXCoordinate();
 		int yCoordinate = sourceCoordinateOfPlayerMove.getYCoordinate();
 		assertTrue((xCoordinate >= 0 && xCoordinate <= 7));
 		assertTrue((yCoordinate >= 0 && yCoordinate <= 7));
-		//Double checking - coordinate has a player's piece on it:
+		//Check - coordinate is in valid square color:
+		assertTrue(referee.getBoard().isPlayableCoordinate(sourceCoordinateOfPlayerMove));
+		//Check - coordinate has a player's piece on it:
 		piece = referee.getCoordinatePieceMap().getPieceAtCoordinate(sourceCoordinateOfPlayerMove);
 		assertTrue(piece != null);
 		assertEquals(player, piece.getPlayer());
@@ -67,7 +75,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		assertEquals(piece, referee.getCoordinatePieceMap().getPieceAtCoordinate(destinationCoordinateOfPlayerMove));
 		//Check if the source coordinate is now empty.
 		assertTrue(referee.getCoordinatePieceMap().getPieceAtCoordinate(sourceCoordinateOfPlayerMove) == null);
-		//Check if the piece's current coordiante is the same as player move's destination coordinate.
+		//Check if the piece's current coordinate is the same as player move's destination coordinate.
 		assertEquals(destinationCoordinateOfPlayerMove, piece.getCurrentCoordinate());
 	}
 
@@ -76,28 +84,51 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		if (p1.equals("other")) {
 			assertFalse(referee.getCurrentPlayer().equals(player));
 		} else if (p1.equals("current")) {
-			throw new PendingException();
+			assertTrue(referee.getCurrentPlayer().equals(player));
 		}
 	}
 
 	@Override
 	public void thePlayerPicksAValidDestinationCoordinateThatIsP1SquaresAwayFromTheSourceCoordinate(String p1) {
 		destinationCoordinateOfPlayerMove = playerMove.getDestinationCoordinate();
-		int xCoordinate = destinationCoordinateOfPlayerMove.getXCoordinate();
-		int yCoordinate = destinationCoordinateOfPlayerMove.getYCoordinate();
+		int xOfDestination = destinationCoordinateOfPlayerMove.getXCoordinate();
+		int yOfDestination = destinationCoordinateOfPlayerMove.getYCoordinate();
 		//Check - coordinate is on board:
-		assertTrue((xCoordinate >= 0 && xCoordinate <= 7));
-		assertTrue((yCoordinate >= 0 && yCoordinate <= 7));
+		assertTrue((xOfDestination >= 0 && xOfDestination <= 7));
+		assertTrue((yOfDestination >= 0 && yOfDestination <= 7));
 		//Check - coordinate is empty:
 		assertEquals(null, referee.getCoordinatePieceMap().getPieceAtCoordinate(destinationCoordinateOfPlayerMove));
+
+		int xOfSource = sourceCoordinateOfPlayerMove.getXCoordinate();
+		int yOfSource = sourceCoordinateOfPlayerMove.getYCoordinate();
 		if (p1.equals("one")) {
 			//Check - destination coordinate is 1 square away from source coordinate
-			int xOfSource = sourceCoordinateOfPlayerMove.getXCoordinate();
-			int yOfSource = sourceCoordinateOfPlayerMove.getYCoordinate();
-			assertEquals(1, Math.abs(xCoordinate - xOfSource));
-			assertEquals(1, Math.abs(yCoordinate - yOfSource));
+			assertEquals(1, Math.abs(xOfDestination - xOfSource));
+			if (piece instanceof Pawn && piece.getGoalDirection() == Direction.N) {
+				assertEquals(1, yOfDestination - yOfSource);
+			} else if (piece instanceof Pawn && piece.getGoalDirection() == Direction.S) {
+				assertEquals(-1, yOfDestination - yOfSource);
+			} else {
+				assertEquals(1, Math.abs(yOfDestination - yOfSource));
+			}
+			assertEquals(1, Math.abs(yOfDestination - yOfSource));
+			
 		} else if (p1.equals("two")) {
-			throw new PendingException();
+			//Check - destination coordinate is 2 squares away from source coordinate
+			assertEquals(2, Math.abs(xOfDestination - xOfSource));
+			if (piece instanceof Pawn && piece.getGoalDirection() == Direction.N) {
+				assertEquals(2, yOfDestination - yOfSource);
+			} else if (piece instanceof Pawn && piece.getGoalDirection() == Direction.S) {
+				assertEquals(-2, yOfDestination - yOfSource);
+			} else {
+				assertEquals(2, Math.abs(yOfDestination - yOfSource));
+			}
+			//Check - the square in between source and destination has an opponent piece
+			int xOfInbetween = ((xOfDestination - xOfSource) < 0) ? xOfSource-1 : xOfSource+1;
+			int yOfInbetween = ((yOfDestination - yOfSource) < 0) ? yOfSource-1 : yOfSource+1;
+			inbetweenCoordinateOfPlayerJumpMove = new Coordinate(xOfInbetween, yOfInbetween);
+			inbetweenOpponentPiece = referee.getCoordinatePieceMap().getPieceAtCoordinate(inbetweenCoordinateOfPlayerJumpMove);
+			assertTrue(inbetweenOpponentPiece != null);
 		}
 		//If there were no errors up to this point, conduct the game.
 		referee.conductGame();
@@ -105,8 +136,9 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void theOpponentPieceInBetweenTheSourceAndDestinationCoordinatesAreRemovedFromTheBoard() {
-		throw new PendingException();
-
+		assertEquals(null, referee.getCoordinatePieceMap().getPieceAtCoordinate(inbetweenCoordinateOfPlayerJumpMove));
+		assertEquals(Zone.ONSIDE, inbetweenOpponentPiece.getCurrentZone());
+		assertEquals(null, inbetweenOpponentPiece.getCurrentCoordinate());
 	}
 
 	@Override

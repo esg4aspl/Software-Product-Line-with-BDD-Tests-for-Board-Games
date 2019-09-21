@@ -1,28 +1,20 @@
 package testing.scenariotesters.checkersamerican;
 
 import java.awt.Color;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.List;
 
 import base.AmericanCheckersBoard;
 import base.AmericanCheckersBoardConsoleView;
-import base.GUI;
 import base.Pawn;
 import base.PawnMoveConstraints;
 import base.PawnMovePossibilities;
 import base.Player;
 import base.PlayerList;
-import base.StartCoordinates;
-import checkersamerican.AmericanStartCoordinates;
 import checkersamerican.King;
 import checkersamerican.KingMoveConstraints;
 import checkersamerican.KingMovePossibilities;
 import core.AbstractPiece;
 import core.AbstractReferee;
-import core.Coordinate;
 import core.Direction;
 import core.ICoordinate;
 import core.IGameConfiguration;
@@ -32,7 +24,6 @@ import core.IPieceMovePossibilities;
 import core.IPlayer;
 import core.IPlayerList;
 import core.IRule;
-import core.MoveCoordinate;
 import core.MoveOpResult;
 import rules.RuleDestinationCoordinateMustBeValidForCurrentPiece;
 import rules.RuleDrawIfNoPromoteForFortyTurn;
@@ -51,15 +42,17 @@ import testing.helpers.IniReader;
 
 public class AmericanTesterReferee extends AbstractReferee {
 
-	//BufferedReader moveReader;
 	IMoveCoordinate playerMove;
 	IiniReader reader;
 	String setUpName;
+	String lastMessagePrinted;
+	boolean playerWasGoingToMakeAnotherMove;
 
 	protected AmericanCheckersBoardConsoleView consoleView;
 	
 	public AmericanTesterReferee(IGameConfiguration checkersGameConfiguration) {
 		super(checkersGameConfiguration);
+		this.playerWasGoingToMakeAnotherMove = false;
 	}
 	
 	public void setIni(String setUpName) {
@@ -111,6 +104,7 @@ public class AmericanTesterReferee extends AbstractReferee {
 		int playerId;
 		int counter = 0;
 		for (ICoordinatePieceDuo coordinatePieceDuo : coordinatePieceDuos) {
+			//TODO: Check if the coordinate is empty
 			if (!board.isPlayableCoordinate(coordinatePieceDuo.getCoordinate())) {
 				System.out.println("A piece can not stand there: " + coordinatePieceDuo.getCoordinate().toString());
 				System.exit(0);
@@ -162,18 +156,22 @@ public class AmericanTesterReferee extends AbstractReferee {
 //			conductAutomaticGame();
 //			endOfGame = (isSatisfied(new RuleEndOfGameGeneral(), this) || isSatisfied(new RuleEndOfGameWhenOpponentBlocked(), this));
 //			endOfGameDraw = (isSatisfied(noPromoteRule, this) || isSatisfied(noPieceCapturedForFortyTurn, this));
-//			view.printMessage("End Of Game? " + endOfGame);
+//			printMessage("End Of Game? " + endOfGame);
 //		}
 		if(!endOfGame) {
 			
-			view.printMessage("Game begins ...");
+			printMessage("Game begins ...");
 			consoleView.drawBoardView();
 		}
 		while (!endOfGame) {
 			currentMoveCoordinate = playerMove;
 			while (!conductMove()) {
-				playerMove = view.getNextMove(currentPlayer);
-				currentMoveCoordinate = playerMove;			
+				//lastMessagePrinted = "Player picks another move because of invalidity.";
+				System.out.println("Test ended with an invalid player move.");
+				view.drawBoardView();
+				return;
+//				playerMove = view.getNextMove(currentPlayer);
+//				currentMoveCoordinate = playerMove;			
 			}
 			consoleView.drawBoardView();
 
@@ -183,9 +181,11 @@ public class AmericanTesterReferee extends AbstractReferee {
 			view.printMessage("End Of Game? " + endOfGame);
 			if (endOfGame || endOfGameDraw) break;
 			
-			currentPlayerID++;
-			if (currentPlayerID >= numberOfPlayers) currentPlayerID = 0;
-			currentPlayer = getPlayerbyID(currentPlayerID);
+			if (!playerWasGoingToMakeAnotherMove) {
+				currentPlayerID++;
+				if (currentPlayerID >= numberOfPlayers) currentPlayerID = 0;
+				currentPlayer = getPlayerbyID(currentPlayerID);
+			}
 			
 			//ONLY IN TESTER CLASS. END THE GAME AFTER PLAYER'S MOVE THAT THE TEST IS FOCUSING ON.
 			System.out.println("Test ended.");
@@ -195,9 +195,9 @@ public class AmericanTesterReferee extends AbstractReferee {
 		//consoleView.drawBoardView();
 		
 		if(endOfGameDraw)
-			view.printMessage("DRAW\n" + announceDraw());
+			printMessage("DRAW\n" + announceDraw());
 		else
-			view.printMessage("WINNER " + announceWinner());
+			printMessage("WINNER " + announceWinner());
 		
 		try {
 			Thread.sleep(5000);
@@ -210,7 +210,7 @@ public class AmericanTesterReferee extends AbstractReferee {
 	}
 	
 	private void conductAutomaticGame() {				
-		view.printMessage("Automatic Game begins ...");
+		printMessage("Automatic Game begins ...");
 		automaticGameOn = true;
 		int step = 0;
 		consoleView.drawBoardView();
@@ -230,7 +230,7 @@ public class AmericanTesterReferee extends AbstractReferee {
 			step++;
 		}
 		automaticGameOn = false;
-		view.printMessage("Automatic Game ends ...");
+		printMessage("Automatic Game ends ...");
 	}
 	
 	protected boolean conductMove() {
@@ -246,9 +246,13 @@ public class AmericanTesterReferee extends AbstractReferee {
 		piece = becomeAndOrPutOperation(piece, destinationCoordinate);
 		if(!temp.equals(piece))
 			moveOpResult = new MoveOpResult(true, false);
-		view.printMessage("CurrentPlayerTurnAgain? " + moveOpResult.isCurrentPlayerTurnAgain());
-		if (moveOpResult.isCurrentPlayerTurnAgain() && !automaticGameOn) 
-			conductCurrentPlayerTurnAgain(moveOpResult, piece);
+		printMessage("CurrentPlayerTurnAgain? " + moveOpResult.isCurrentPlayerTurnAgain());
+		if (moveOpResult.isCurrentPlayerTurnAgain() && !automaticGameOn) {
+			this.playerWasGoingToMakeAnotherMove = true;
+			lastMessagePrinted = "Player picks another move, because of a previous jump move.";
+			//conductCurrentPlayerTurnAgain(moveOpResult, piece);
+			return true;
+		}
 		return true;
 	}
 
@@ -359,4 +363,13 @@ public class AmericanTesterReferee extends AbstractReferee {
 		return playerList.getPlayer(nextPlayerID);
 	}
 
+	
+	@Override
+	public void printMessage(String message) {
+		super.printMessage(message);
+		lastMessagePrinted = message;
+	}
+
+	
+	
 }
