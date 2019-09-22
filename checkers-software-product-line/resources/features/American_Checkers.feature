@@ -53,7 +53,7 @@ Feature: American Checkers
       | invalidSourceCoordinateForMoveOpponentsPiece1 | source coordinate has opponent's piece | Piece does not belong to current player | uid:ee334b2b-ec6e-4c77-a55b-35260eeb8045 |
       | invalidSourceCoordinateForMoveOpponentsPiece2 | source coordinate has opponent's piece | Piece does not belong to current player | uid:f7a73b79-f95e-4715-9abf-093d525f98cb |
       | invalidSourceCoordinateForMoveUnplayableColor1 | source coordinate is not of valid square color | No piece at source coordinate | uid:4b018f06-fb90-4d2d-8915-8e93c183f77d |
-      | invalidSourceCoordinateForMoveOutsideBoard1 | source coordinate is outside of the board | No piece at source coordinate | uid:2c948885-fb40-4662-b79b-1e5ab82e99b7 |
+      | invalidSourceCoordinateForMoveOutsideBorders1 | source coordinate is outside of the board | No piece at source coordinate | uid:a9ec6999-0678-4154-834c-969810b8cba4 |
 
   Scenario Outline: Invalid Destination Coordinate for Move (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"

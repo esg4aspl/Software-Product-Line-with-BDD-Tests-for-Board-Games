@@ -16,12 +16,12 @@ import cucumber.api.PendingException;
 
 public class IniReader implements IiniReader {
 	
-	Ini ini;
-	Section section;
-	Section board;
-	IMoveCoordinate playerMove;
-	String currentTurnPlayerIconColor;
-	List<ICoordinatePieceDuo> coordinatePieceDuos;
+	private Ini ini;
+	private Section section;
+	private Section board;
+	private IMoveCoordinate playerMove;
+	private String currentTurnPlayerIconColor;
+	private List<ICoordinatePieceDuo> coordinatePieceDuos;
 	
 	public IniReader(String fileLocation, String sectionName) {
 		try {

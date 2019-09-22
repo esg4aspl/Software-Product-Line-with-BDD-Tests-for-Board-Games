@@ -165,6 +165,7 @@ public class AmericanTesterReferee extends AbstractReferee {
 		if(!endOfGame) {
 			
 			view.printMessage("Game begins ...");
+			view.printMessage("Player turn: " + reader.getCurrentTurnPlayerIconColor());
 			view.printMessage("Player move: " + playerMove.toString());
 			consoleView.drawBoardView();
 		}
@@ -358,7 +359,7 @@ public class AmericanTesterReferee extends AbstractReferee {
 
 	public void endTest(String status) {
 		endTestStatus = status;
-		System.out.println("\n\n-------------------------------------------------------------------------------------------------------------------------------");
+		System.out.println("\n\n-----------------------------------TEST RESULTS--------------------------------------------------------------------------------------------");
 		System.out.println("Test: " + setUpName);
 		System.out.println("Status: " + endTestStatus);
 		System.out.println("Informers: " + informers.toString());

@@ -159,9 +159,17 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	
 	private void invalidSourceCoordinate(String reason) {
 		sourceCoordinateOfPlayerMove = playerMove.getSourceCoordinate();
+		piece = referee.getCoordinatePieceMap().getPieceAtCoordinate(sourceCoordinateOfPlayerMove);
 		if (reason.equals("source coordinate is empty")) {
-			piece = referee.getCoordinatePieceMap().getPieceAtCoordinate(sourceCoordinateOfPlayerMove);
 			assertTrue(piece == null);
+		} else if (reason.equals("source coordinate has opponent's piece")) {
+			assertFalse(player.equals(piece.getPlayer()));
+		} else if (reason.equals("source coordinate is not of valid square color")) {
+			assertFalse(referee.getBoard().isPlayableCoordinate(sourceCoordinateOfPlayerMove));
+		} else if (reason.equals("source coordinate is outside of the board")) {
+			int xCoordinate = sourceCoordinateOfPlayerMove.getXCoordinate();
+			int yCoordinate = sourceCoordinateOfPlayerMove.getYCoordinate();
+			assertFalse(0 <= xCoordinate && xCoordinate <= 7 && 0 <= yCoordinate && yCoordinate <= 7);
 		} else {
 			throw new PendingException();
 		}
