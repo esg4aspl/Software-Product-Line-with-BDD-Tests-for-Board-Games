@@ -5,16 +5,19 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 
 import base.AmericanGameConfiguration;
 import base.Pawn;
+import checkersamerican.King;
 import core.AbstractPiece;
 import core.Coordinate;
 import core.Direction;
 import core.ICoordinate;
 import core.IMoveCoordinate;
 import core.IPlayer;
+import core.MoveCoordinate;
 import core.Zone;
 import cucumber.api.PendingException;
 import testing.scenariotesters.IScenarioTester;
@@ -22,15 +25,20 @@ import testing.scenariotesters.IScenarioTester;
 public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	AmericanTesterReferee referee;
-	IMoveCoordinate playerMove;
-	ICoordinate sourceCoordinateOfPlayerMove;
-	ICoordinate destinationCoordinateOfPlayerMove;
-	ICoordinate inbetweenCoordinateOfPlayerJumpMove;
-	AbstractPiece inbetweenOpponentPiece;
-	IPlayer player;
-	AbstractPiece piece;
-	List<String> informers;
-	boolean playerWasGoingToMakeAnotherMove;
+	IPlayer player; // The player that has the current turn.
+	AbstractPiece piece; // The piece that is doing the move.
+	
+	IMoveCoordinate playerMove; // The move that is the focus of the currently running test.
+	ICoordinate sourceCoordinate; // Source coordinate of the playerMove.
+	ICoordinate destinationCoordinate; // Destination coordinate of the playerMove.
+	int xOfSource, yOfSource, xOfDestination, yOfDestination; // Explicit coordinates of playerMove.
+	private SourceCoordinateValidity sourceCoordinateValidity; // Info about the validity of sourceCoordinate.
+	private DestinationCoordinateValidity destinationCoordinateValidity; // Info about the validity of destinationCoordinate.
+	
+	ICoordinate jumpedCoordinate; // The coordinate that is being jumped over if the move is a jump move.
+	AbstractPiece jumpedPiece; // The jumped piece if the move is a jump move.
+	List<String> informers; // Informers of the referee after the test run.
+	boolean playerWasGoingToMakeAnotherMove; // True if the player was going to make another move after the playerMove is conducted.
 	
 	@Override
 	public void theP1GameIsSetUp(String p1) {
@@ -52,33 +60,38 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		referee.setGameSetupName(p1);
 		referee.setup();
 		player = referee.getCurrentPlayer();
+		playerMove = referee.readPlayerMove();
+		//The following methods not only decide the coordinates' validity, they also set up other playerMove related variables.
+		sourceCoordinateValidity = checkSourceCoordinate();
+		destinationCoordinateValidity = checkDestinationCoordinate();
 	}
 
 	@Override
 	public void thePlayerPicksAValidSourceCoordinate() {
-		playerMove = referee.readPlayerMove();
-		//Check - coordinate is on board:
-		sourceCoordinateOfPlayerMove = playerMove.getSourceCoordinate();
-		int xCoordinate = sourceCoordinateOfPlayerMove.getXCoordinate();
-		int yCoordinate = sourceCoordinateOfPlayerMove.getYCoordinate();
-		assertTrue((xCoordinate >= 0 && xCoordinate <= 7));
-		assertTrue((yCoordinate >= 0 && yCoordinate <= 7));
-		//Check - coordinate is in valid square color:
-		assertTrue(referee.getBoard().isPlayableCoordinate(sourceCoordinateOfPlayerMove));
-		//Check - coordinate has a player's piece on it:
-		piece = referee.getCoordinatePieceMap().getPieceAtCoordinate(sourceCoordinateOfPlayerMove);
-		assertTrue(piece != null);
-		assertEquals(player, piece.getPlayer());
+		assertEquals(SourceCoordinateValidity.VALID, sourceCoordinateValidity);
 	}
 
 	@Override
+	public void thePlayerPicksAValidDestinationCoordinateThatIsP1SquaresAwayFromTheSourceCoordinate(String p1) {
+		if (p1.equals("one")) {
+			assertEquals(DestinationCoordinateValidity.VALID_REGULAR, destinationCoordinateValidity);
+		} else if (p1.equals("two")) {
+			assertEquals(DestinationCoordinateValidity.VALID_JUMP, destinationCoordinateValidity);
+		}
+		//If there were no errors up to this point, conduct the game.
+		referee.conductGame();
+		informers = referee.informers;
+		playerWasGoingToMakeAnotherMove = referee.playerWasGoingToMakeAnotherMove;
+	}
+	
+	@Override
 	public void thePieceAtTheSourceCoordinateIsMovedToTheDestinationCoordinate() {
 		//Check if destination coordinate now holds the moved piece.
-		assertEquals(piece, referee.getCoordinatePieceMap().getPieceAtCoordinate(destinationCoordinateOfPlayerMove));
+		assertEquals(piece, getPieceAtCoordinate(destinationCoordinate));
 		//Check if the source coordinate is now empty.
-		assertTrue(referee.getCoordinatePieceMap().getPieceAtCoordinate(sourceCoordinateOfPlayerMove) == null);
+		assertTrue(getPieceAtCoordinate(sourceCoordinate) == null);
 		//Check if the piece's current coordinate is the same as player move's destination coordinate.
-		assertEquals(destinationCoordinateOfPlayerMove, piece.getCurrentCoordinate());
+		assertEquals(destinationCoordinate, piece.getCurrentCoordinate());
 	}
 
 	@Override
@@ -93,58 +106,10 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	}
 
 	@Override
-	public void thePlayerPicksAValidDestinationCoordinateThatIsP1SquaresAwayFromTheSourceCoordinate(String p1) {
-		destinationCoordinateOfPlayerMove = playerMove.getDestinationCoordinate();
-		int xOfDestination = destinationCoordinateOfPlayerMove.getXCoordinate();
-		int yOfDestination = destinationCoordinateOfPlayerMove.getYCoordinate();
-		//Check - coordinate is on board:
-		assertTrue((xOfDestination >= 0 && xOfDestination <= 7));
-		assertTrue((yOfDestination >= 0 && yOfDestination <= 7));
-		//Check - coordinate is empty:
-		assertEquals(null, referee.getCoordinatePieceMap().getPieceAtCoordinate(destinationCoordinateOfPlayerMove));
-
-		int xOfSource = sourceCoordinateOfPlayerMove.getXCoordinate();
-		int yOfSource = sourceCoordinateOfPlayerMove.getYCoordinate();
-		if (p1.equals("one")) {
-			//Check - destination coordinate is 1 square away from source coordinate
-			assertEquals(1, Math.abs(xOfDestination - xOfSource));
-			if (piece instanceof Pawn && piece.getGoalDirection() == Direction.N) {
-				assertEquals(1, yOfDestination - yOfSource);
-			} else if (piece instanceof Pawn && piece.getGoalDirection() == Direction.S) {
-				assertEquals(-1, yOfDestination - yOfSource);
-			} else {
-				assertEquals(1, Math.abs(yOfDestination - yOfSource));
-			}
-			assertEquals(1, Math.abs(yOfDestination - yOfSource));
-			
-		} else if (p1.equals("two")) {
-			//Check - destination coordinate is 2 squares away from source coordinate
-			assertEquals(2, Math.abs(xOfDestination - xOfSource));
-			if (piece instanceof Pawn && piece.getGoalDirection() == Direction.N) {
-				assertEquals(2, yOfDestination - yOfSource);
-			} else if (piece instanceof Pawn && piece.getGoalDirection() == Direction.S) {
-				assertEquals(-2, yOfDestination - yOfSource);
-			} else {
-				assertEquals(2, Math.abs(yOfDestination - yOfSource));
-			}
-			//Check - the square in between source and destination has an opponent piece
-			int xOfInbetween = ((xOfDestination - xOfSource) < 0) ? xOfSource-1 : xOfSource+1;
-			int yOfInbetween = ((yOfDestination - yOfSource) < 0) ? yOfSource-1 : yOfSource+1;
-			inbetweenCoordinateOfPlayerJumpMove = new Coordinate(xOfInbetween, yOfInbetween);
-			inbetweenOpponentPiece = referee.getCoordinatePieceMap().getPieceAtCoordinate(inbetweenCoordinateOfPlayerJumpMove);
-			assertTrue(inbetweenOpponentPiece != null);
-		}
-		//If there were no errors up to this point, conduct the game.
-		referee.conductGame();
-		informers = referee.informers;
-		playerWasGoingToMakeAnotherMove = referee.playerWasGoingToMakeAnotherMove;
-	}
-
-	@Override
 	public void theOpponentPieceInBetweenTheSourceAndDestinationCoordinatesAreRemovedFromTheBoard() {
-		assertEquals(null, referee.getCoordinatePieceMap().getPieceAtCoordinate(inbetweenCoordinateOfPlayerJumpMove));
-		assertEquals(Zone.ONSIDE, inbetweenOpponentPiece.getCurrentZone());
-		assertEquals(null, inbetweenOpponentPiece.getCurrentCoordinate());
+		assertEquals(null, getPieceAtCoordinate(jumpedCoordinate));
+		assertEquals(Zone.ONSIDE, jumpedPiece.getCurrentZone());
+		assertEquals(null, jumpedPiece.getCurrentCoordinate());
 	}
 
 	@Override
@@ -153,23 +118,52 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		if (p1.equals("source")) {
 			invalidSourceCoordinate(p2);
 		} else if (p1.equals("destination")){
+			invalidDestinationCoordinate(p2);
+		} else {
 			throw new PendingException();
 		}
 	}
 	
+	private void invalidDestinationCoordinate(String reason) {
+		if (reason.equals("destination coordinate is outside of the board")) {
+			assertEquals(DestinationCoordinateValidity.OUTSIDE_OF_THE_BOARD, destinationCoordinateValidity);
+		} else if (reason.equals("destination coordinate is not of valid square color")) {
+			assertEquals(DestinationCoordinateValidity.NOT_OF_VALID_SQUARE_COLOR, destinationCoordinateValidity);
+		} else if (reason.equals("destination coordinate is occupied")) {
+			//Accept "SAME_AS_SOURCE" error as "OCCUPIED" for now.
+			if (destinationCoordinateValidity != DestinationCoordinateValidity.SAME_AS_SOURCE)
+				assertEquals(DestinationCoordinateValidity.OCCUPIED, destinationCoordinateValidity);
+		} else if (reason.equals("destination coordinate's direction is not allowed")) {
+			//If piece is king, then it can move in any direction. The test fails here. Game set-up (ini file) is not good.
+			if (piece instanceof King)
+				assertFalse(true);
+			assertEquals(DestinationCoordinateValidity.UNALLOWED_DIRECTION, destinationCoordinateValidity);
+		} else if (reason.equals("destination coordinate is more than two squares away")) {
+			assertEquals(DestinationCoordinateValidity.MORE_THAN_TWO_SQUARES_AWAY, destinationCoordinateValidity);
+		} else if (reason.equals("move is not a jump move even though there are possible jump moves")) {
+			assertEquals(DestinationCoordinateValidity.NOT_ONE_OF_POSSIBLE_JUMP_MOVES, destinationCoordinateValidity);
+		} else if (reason.equals("jumped piece is null")) {
+			assertEquals(DestinationCoordinateValidity.JUMPED_PIECE_IS_NULL, destinationCoordinateValidity);
+		} else if (reason.equals("jumped piece is not opponent piece")) {
+			assertEquals(DestinationCoordinateValidity.JUMPED_PIECE_IS_OWN, destinationCoordinateValidity);
+		} else {
+			throw new PendingException();
+		}
+		//If there were no errors up to this point, conduct the game.
+		referee.conductGame();
+		informers = referee.informers;
+		playerWasGoingToMakeAnotherMove = referee.playerWasGoingToMakeAnotherMove;
+	}	
+	
 	private void invalidSourceCoordinate(String reason) {
-		sourceCoordinateOfPlayerMove = playerMove.getSourceCoordinate();
-		piece = referee.getCoordinatePieceMap().getPieceAtCoordinate(sourceCoordinateOfPlayerMove);
 		if (reason.equals("source coordinate is empty")) {
-			assertTrue(piece == null);
+			assertEquals(SourceCoordinateValidity.EMPTY, sourceCoordinateValidity);
 		} else if (reason.equals("source coordinate has opponent's piece")) {
-			assertFalse(player.equals(piece.getPlayer()));
+			assertEquals(SourceCoordinateValidity.OPPONENT_PIECE, sourceCoordinateValidity);
 		} else if (reason.equals("source coordinate is not of valid square color")) {
-			assertFalse(referee.getBoard().isPlayableCoordinate(sourceCoordinateOfPlayerMove));
+			assertEquals(SourceCoordinateValidity.NOT_OF_VALID_SQUARE_COLOR, sourceCoordinateValidity);
 		} else if (reason.equals("source coordinate is outside of the board")) {
-			int xCoordinate = sourceCoordinateOfPlayerMove.getXCoordinate();
-			int yCoordinate = sourceCoordinateOfPlayerMove.getYCoordinate();
-			assertFalse(0 <= xCoordinate && xCoordinate <= 7 && 0 <= yCoordinate && yCoordinate <= 7);
+			assertEquals(SourceCoordinateValidity.OUTSIDE_OF_THE_BOARD, sourceCoordinateValidity);
 		} else {
 			throw new PendingException();
 		}
@@ -354,6 +348,130 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	}
 
+	
+	//PRIVATE/HELPER METHODS AND CLASSES
+	private List<IMoveCoordinate> findPossibleJumpMoves() {
+		List<IMoveCoordinate> possibleJumpMoves = new ArrayList<IMoveCoordinate>();
+		for (AbstractPiece anyPlayerPiece : player.getPieceList()) {
+			List<ICoordinate> relativeCoordsWithOpponentPiece = new ArrayList<ICoordinate>();
+			List<ICoordinate> relativeCoords = new ArrayList<ICoordinate>();
+			if (anyPlayerPiece instanceof King) {
+				relativeCoords.add(new Coordinate(-1,1)); relativeCoords.add(new Coordinate(1,1));
+				relativeCoords.add(new Coordinate(-1,-1)); relativeCoords.add(new Coordinate(1,-1));
+			} else if (anyPlayerPiece.getGoalDirection() == Direction.N) {
+				relativeCoords.add(new Coordinate(-1,1)); relativeCoords.add(new Coordinate(1,1));
+			} else {
+				relativeCoords.add(new Coordinate(-1,-1)); relativeCoords.add(new Coordinate(1,-1));
+			}
+			for (ICoordinate relativeCoord : relativeCoords) {
+				AbstractPiece adjacentPiece = getPieceAtCoordinate(new Coordinate(xOfSource + relativeCoord.getXCoordinate(), yOfSource + relativeCoord.getYCoordinate()));
+				if (adjacentPiece != null && !adjacentPiece.getPlayer().equals(player))
+					relativeCoordsWithOpponentPiece.add(relativeCoord);
+			}
+			for (ICoordinate relativeCoordWithOpponentPiece : relativeCoordsWithOpponentPiece) {
+				ICoordinate possibleJumpMoveDestinationCoordinate = new Coordinate(xOfSource + relativeCoordWithOpponentPiece.getXCoordinate()*2, yOfSource + relativeCoordWithOpponentPiece.getYCoordinate()*2);
+				if (referee.getCoordinatePieceMap().getPieceAtCoordinate(possibleJumpMoveDestinationCoordinate) == null)
+					possibleJumpMoves.add(new MoveCoordinate(sourceCoordinate, possibleJumpMoveDestinationCoordinate));
+			}
+		}
+		return possibleJumpMoves;
+	}
+
+	private boolean isMoveOneOfPossibleJumpMoves() {
+		List<IMoveCoordinate> possibleJumpMoves = findPossibleJumpMoves();
+		if (possibleJumpMoves.size() == 0)
+			return true;
+		for (IMoveCoordinate move : possibleJumpMoves) {
+			if (move.equals(playerMove))
+				return true;
+		}
+		return false;
+	}
+	
+	private AbstractPiece getPieceAtCoordinate(ICoordinate coordinate) {
+		return referee.getCoordinatePieceMap().getPieceAtCoordinate(coordinate);
+	}
+	
+	private enum SourceCoordinateValidity {
+		VALID, OUTSIDE_OF_THE_BOARD, NOT_OF_VALID_SQUARE_COLOR, EMPTY, OPPONENT_PIECE
+	}
+	private SourceCoordinateValidity checkSourceCoordinate() {
+		//Set-up the source coordinate and piece.
+		sourceCoordinate = playerMove.getSourceCoordinate();
+		xOfSource = sourceCoordinate.getXCoordinate(); yOfSource = sourceCoordinate.getYCoordinate();
+		piece = getPieceAtCoordinate(sourceCoordinate);
+		//Check if the coordinate is on board.
+		if (xOfSource < 0 ||  7 < xOfSource || yOfSource < 0 || 7 < yOfSource)
+			return SourceCoordinateValidity.OUTSIDE_OF_THE_BOARD;
+		//Check if the coordinate is of valid square color.
+		if (!referee.getBoard().isPlayableCoordinate(sourceCoordinate))
+			return SourceCoordinateValidity.NOT_OF_VALID_SQUARE_COLOR;
+		//Check if coordinate is empty
+		if (piece == null)
+			return SourceCoordinateValidity.EMPTY;
+		//Check if coordinate has an opponent's piece
+		if (!piece.getPlayer().equals(player))
+			return SourceCoordinateValidity.OPPONENT_PIECE;
+		
+		return SourceCoordinateValidity.VALID;
+	}
+	
+	private enum DestinationCoordinateValidity {
+		//Destination coordinate is either valid, or its invalidity reason are one of the below
+		VALID_REGULAR, VALID_JUMP, OUTSIDE_OF_THE_BOARD, SAME_AS_SOURCE, NOT_OF_VALID_SQUARE_COLOR, OCCUPIED, UNALLOWED_DIRECTION,
+		MORE_THAN_TWO_SQUARES_AWAY, NOT_ONE_OF_POSSIBLE_JUMP_MOVES, JUMPED_PIECE_IS_NULL, JUMPED_PIECE_IS_OWN,
+		SOURCE_COORDINATE_PROBLEM, UNKNOWN_ERROR
+	}
+	private DestinationCoordinateValidity checkDestinationCoordinate() {
+		//If source coordinate is not set up or valid, destination coordinate can't be truly valid.
+		if (sourceCoordinateValidity == null || sourceCoordinateValidity != SourceCoordinateValidity.VALID)
+			return DestinationCoordinateValidity.SOURCE_COORDINATE_PROBLEM;
+		//Set up the destination coordinate.
+		destinationCoordinate = playerMove.getDestinationCoordinate();
+		xOfDestination = destinationCoordinate.getXCoordinate(); yOfDestination = this.destinationCoordinate.getYCoordinate();
+		int xDiff = xOfDestination - xOfSource; int yDiff = yOfDestination - yOfSource;
+		//Check if the coordinate is on board.
+		if (xOfDestination < 0 ||  7 < xOfDestination || yOfDestination < 0 || 7 < yOfDestination)
+			return DestinationCoordinateValidity.OUTSIDE_OF_THE_BOARD;
+		//Check if coordinate is the same as source.
+		if (destinationCoordinate.equals(sourceCoordinate))
+			return DestinationCoordinateValidity.SAME_AS_SOURCE;
+		//Check if the coordinate is of valid square color.
+		if (!referee.getBoard().isPlayableCoordinate(destinationCoordinate) || Math.abs(xDiff) != Math.abs(yDiff))
+			return DestinationCoordinateValidity.NOT_OF_VALID_SQUARE_COLOR;
+		//Check if destination coordinate is more than two squares away.
+		if (Math.abs(xDiff) > 2 || Math.abs(yDiff) > 2)
+			return DestinationCoordinateValidity.MORE_THAN_TWO_SQUARES_AWAY;
+		//Check if destination coordinate is occupied.
+		if (getPieceAtCoordinate(destinationCoordinate) != null)
+			return DestinationCoordinateValidity.OCCUPIED;
+		//Check if destination coordinate is not allowed.
+		Direction moveDirection = yOfDestination > yOfSource ? Direction.N : Direction.S ;
+		if (piece instanceof Pawn && moveDirection != piece.getGoalDirection())
+			return DestinationCoordinateValidity.UNALLOWED_DIRECTION;
+		//Check if move is not one of possible jump moves.
+		if (!isMoveOneOfPossibleJumpMoves())
+			return DestinationCoordinateValidity.NOT_ONE_OF_POSSIBLE_JUMP_MOVES;
+		//If there are no problems up to this point, return valid if move is a regular move.
+		if (Math.abs(xDiff) == 1 && Math.abs(yDiff) == 1)
+			return DestinationCoordinateValidity.VALID_REGULAR;
+		//Set up jumped piece.
+		jumpedCoordinate = new Coordinate(xOfSource + xDiff/2, yOfSource + yDiff/2);
+		jumpedPiece = getPieceAtCoordinate(jumpedCoordinate);
+		//Check if jumped piece is null.
+		if (jumpedPiece == null)
+			return DestinationCoordinateValidity.JUMPED_PIECE_IS_NULL;
+		//Check if jumped piece is player's own piece.
+		if (jumpedPiece.getPlayer().equals(player))
+			return DestinationCoordinateValidity.JUMPED_PIECE_IS_OWN;
+		//If everything is okay up to this point, double-check that the xDiff and yDiff are 2 and return valid jump move.
+		if (Math.abs(xDiff) == 2 && Math.abs(yDiff) == 2) {
+			return DestinationCoordinateValidity.VALID_JUMP;
+		}
+		
+		return DestinationCoordinateValidity.UNKNOWN_ERROR;
+	}
+	
 	
 	
 }

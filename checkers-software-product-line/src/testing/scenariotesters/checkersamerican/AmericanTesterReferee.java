@@ -167,6 +167,10 @@ public class AmericanTesterReferee extends AbstractReferee {
 			view.printMessage("Game begins ...");
 			view.printMessage("Player turn: " + reader.getCurrentTurnPlayerIconColor());
 			view.printMessage("Player move: " + playerMove.toString());
+			view.printMessage("B: Pawn of 'black' player");
+			view.printMessage("A: King of 'black' player");
+			view.printMessage("W: Pawn of 'white' player");
+			view.printMessage("Z: King of 'white' player");
 			consoleView.drawBoardView();
 		}
 		while (!endOfGame) {
@@ -246,7 +250,7 @@ public class AmericanTesterReferee extends AbstractReferee {
 			if (secondJumpList.size() == 0) {
 				moveOpResult = new MoveOpResult(false, false);
 				//ONLY IN TESTER CLASS
-				printMessage("Player will NOT be asked for another destination coordinate (pervious move was a jump move) because there are no more possibilities for a jump move.");
+				printMessage("Player will NOT be asked for another destination coordinate (previous move was a jump move) because there are no more possibilities for a jump move.");
 				break;
 			}
 			//ONLY IN TESTER CLASS, RETURNS FROM THIS METHOD AFTER INFORMING

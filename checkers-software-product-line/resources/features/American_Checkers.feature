@@ -48,42 +48,30 @@ Feature: American Checkers
 
     Examples:
       | file_name | invalidity_reason | error_message | hiptest-uid |
+      | invalidSourceCoordinateForMoveOutsideBorders1 | source coordinate is outside of the board | No piece at source coordinate | uid:a9ec6999-0678-4154-834c-969810b8cba4 |
+      | invalidSourceCoordinateForMoveUnplayableColor1 | source coordinate is not of valid square color | No piece at source coordinate | uid:4b018f06-fb90-4d2d-8915-8e93c183f77d |
       | invalidSourceCoordinateForMoveEmpty1 | source coordinate is empty | No piece at source coordinate | uid:5fda3a9a-042c-4d0f-b80e-e84bc5bf7792 |
       | invalidSourceCoordinateForMoveEmpty2 | source coordinate is empty | No piece at source coordinate | uid:6e859ee7-2868-49b3-ada2-d3ba5018eb78 |
       | invalidSourceCoordinateForMoveOpponentsPiece1 | source coordinate has opponent's piece | Piece does not belong to current player | uid:ee334b2b-ec6e-4c77-a55b-35260eeb8045 |
       | invalidSourceCoordinateForMoveOpponentsPiece2 | source coordinate has opponent's piece | Piece does not belong to current player | uid:f7a73b79-f95e-4715-9abf-093d525f98cb |
-      | invalidSourceCoordinateForMoveUnplayableColor1 | source coordinate is not of valid square color | No piece at source coordinate | uid:4b018f06-fb90-4d2d-8915-8e93c183f77d |
-      | invalidSourceCoordinateForMoveOutsideBorders1 | source coordinate is outside of the board | No piece at source coordinate | uid:a9ec6999-0678-4154-834c-969810b8cba4 |
 
   Scenario Outline: Invalid Destination Coordinate for Move (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks a valid source coordinate
     And the player picks an invalid "destination" coordinate because "<invalidity_reason>"
     Then an error message is shown saying "<error_message>"
-    And the player is asked for another "destination" coordinate
+    And the player is asked for another "source" coordinate
 
     Examples:
-      | file_name | hiptest-uid |
-      | invalidDestinationCoordinateForMove1 | uid:c140c328-ea82-4e72-a34f-2ae23ef6d802 |
-      | invalidDestinationCoordinateForMove2 | uid:9ac2eccb-5ae8-44ad-862c-ba55b0254d3c |
-      | invalidDestinationCoordinateForMove3 | uid:32703f43-539e-410b-8183-5446a380eaf6 |
-      | invalidDestinationCoordinateForMove4 | uid:d3542a28-3cd9-4d2c-9dfc-4cc7eaacf40b |
-      | invalidDestinationCoordinateForMove5 | uid:54b30aac-4708-4dac-b99c-c472fa0a81d1 |
-
-  Scenario Outline: Forcing Jump Move (<hiptest-uid>)
-    Given the game is played up to a certain point from file "<file_name>"
-    And there is a possibility for the player to make a jump move
-    When the player picks a move that is not one of the available jump moves
-    Then an error message is shown saying "If any opponent's pieces can be captured then it must be captured first!!!!"
-    And the player is asked for another "destination" coordinate
-
-    Examples:
-      | file_name | hiptest-uid |
-      | forcingJumpMove1 | uid:452b3e08-e593-4907-b13a-06fa11a2857b |
-      | forcingJumpMove2 | uid:a77e6d7d-3f2e-4d67-b275-0858019d118c |
-      | forcingJumpMove3 | uid:bcdf81ec-9066-4af2-aee7-fc6a8682b982 |
-      | forcingJumpMove4 | uid:3d17511c-4f80-4ff3-ad34-331ffacdea53 |
-      | forcingJumpMove5 | uid:0a30e32c-bef1-446e-aaa6-56f0fcb245b6 |
+      | file_name | invalidity_reason | error_message | hiptest-uid |
+      | invalidDestinationCoordinateForMoveOutsideBorders1 | destination coordinate is outside of the board | Destination Valid? false | uid:18dbcbef-5cee-4238-9049-1398515b14ca |
+      | invalidDestinationCoordinateForMoveUnplayableColor1 | destination coordinate is not of valid square color | Destination Valid? false | uid:1b88c08a-67b5-4158-9bfc-b580c011b5f2 |
+      | invalidDestinationCoordinateForMoveOccupied1 | destination coordinate is occupied | A piece at destination coordinate | uid:033130e7-7d0b-4fb5-9740-59c77552024d |
+      | invalidDestinationCoordinateForMoveUnallowedDirection1 | destination coordinate's direction is not allowed | Destination Valid? false | uid:267ed809-9fa4-4c90-95e7-f9b68e301c94 |
+      | invalidDestinationCoordinateForMoveTooFarAway1 | destination coordinate is more than two squares away | Destination Valid? false | uid:886e29a3-b50f-4698-90b2-693d5495da8b |
+      | invalidDestinationCoordinateForMoveNotOneOfTheJumpMoves1 | move is not a jump move even though there are possible jump moves | If any opponent's pieces can be captured then it must be captured first!!!! | uid:da00ddda-74da-4d40-b933-7670539f9b07 |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsNull1 | jumped piece is null | There must be one piece on jump path 0 | uid:fa89591d-1911-4c4d-abaf-4ab4e8d583ce |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsOwnPiece1 | jumped piece is not opponent piece | Jumped Piece Must Be Opponent Piece | uid:875b4902-ab32-4b9b-bede-d656722a0708 |
 
   Scenario Outline: Jump Move Series End - No More Possible Jump Moves (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"

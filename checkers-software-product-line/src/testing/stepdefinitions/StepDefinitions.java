@@ -72,16 +72,6 @@ public class StepDefinitions {
         actionwords.thePlayerIsAskedForAnotherP1Coordinate(p1);
     }
 
-    @Given("^there is a possibility for the player to make a jump move$")
-    public void thereIsAPossibilityForThePlayerToMakeAJumpMove() {
-        actionwords.thereIsAPossibilityForThePlayerToMakeAJumpMove();
-    }
-
-    @When("^the player picks a move that is not one of the available jump moves$")
-    public void thePlayerPicksAMoveThatIsNotOneOfTheAvailableJumpMoves() {
-        actionwords.thePlayerPicksAMoveThatIsNotOneOfTheAvailableJumpMoves();
-    }
-
     @Given("^the player has performed one or more jump moves$")
     public void thePlayerHasPerformedOneOrMoreJumpMoves() {
         actionwords.thePlayerHasPerformedOneOrMoreJumpMoves();
