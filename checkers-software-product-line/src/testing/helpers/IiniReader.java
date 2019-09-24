@@ -9,5 +9,7 @@ public interface IiniReader {
 	public List<ICoordinatePieceDuo> getCoordinatePieceDuos();
 	public IMoveCoordinate getPlayerMove();
 	public String getCurrentTurnPlayerIconColor();
+	public String getFileLocation();
+	public String getSectionName();
 	
 }

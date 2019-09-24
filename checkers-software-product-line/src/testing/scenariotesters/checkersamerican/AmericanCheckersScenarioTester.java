@@ -11,6 +11,8 @@ import java.util.List;
 import base.AmericanGameConfiguration;
 import base.Pawn;
 import checkersamerican.King;
+import checkersamerican.KingMoveConstraints;
+import checkersamerican.KingMovePossibilities;
 import core.AbstractPiece;
 import core.Coordinate;
 import core.Direction;
@@ -47,7 +49,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void thePlayersStartTheGame() {
-		// TODO Can there be any implementation for this method?
+		referee.defaultSetup();
 	}
 
 	@Override
@@ -135,8 +137,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 				assertEquals(DestinationCoordinateValidity.OCCUPIED, destinationCoordinateValidity);
 		} else if (reason.equals("destination coordinate's direction is not allowed")) {
 			//If piece is king, then it can move in any direction. The test fails here. Game set-up (ini file) is not good.
-			if (piece instanceof King)
-				assertFalse(true);
+			assertFalse(piece instanceof King);
 			assertEquals(DestinationCoordinateValidity.UNALLOWED_DIRECTION, destinationCoordinateValidity);
 		} else if (reason.equals("destination coordinate is more than two squares away")) {
 			assertEquals(DestinationCoordinateValidity.MORE_THAN_TWO_SQUARES_AWAY, destinationCoordinateValidity);
@@ -348,6 +349,42 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	}
 
+	@Override
+	public void thePlayerPicksAValidSourceCoordinateThatHasAPawnPieceInIt() {
+		assertEquals(SourceCoordinateValidity.VALID, sourceCoordinateValidity);
+		assertTrue(piece instanceof Pawn);
+	}
+
+	@Override
+	public void thePlayerPicksAValidDestinationCoordinateInOpponentsCrownhead() {
+		assertTrue(destinationCoordinateValidity == DestinationCoordinateValidity.VALID_REGULAR
+					|| destinationCoordinateValidity == DestinationCoordinateValidity.VALID_JUMP);
+		
+		if (piece.getGoalDirection() == Direction.N) {
+			assertEquals(7, yOfDestination);
+		} else if (piece.getGoalDirection() == Direction.S) {
+			assertEquals(0, yOfDestination);
+		}
+		
+		referee.conductGame();
+		informers = referee.informers;
+		playerWasGoingToMakeAnotherMove = referee.playerWasGoingToMakeAnotherMove;
+	}
+
+	@Override
+	public void thePieceAtTheSourceCoordinateBecomesAKingPiece() {
+		AbstractPiece newPiece = getPieceAtCoordinate(destinationCoordinate);
+		assertTrue(newPiece != null);
+		assertEquals(piece.getId()+2, newPiece.getId());
+		//TODO: Check icon conversion.
+		//assertEquals(piece.getIcon(), newPiece.getIcon());
+		assertEquals(player, newPiece.getPlayer());
+		assertEquals(piece.getGoalDirection(), newPiece.getGoalDirection());
+		assertTrue(newPiece.getPieceMovePossibilities() instanceof KingMovePossibilities);
+		assertTrue(newPiece.getPieceMoveConstraints() instanceof KingMoveConstraints);
+		assertTrue(newPiece instanceof King);
+		piece = newPiece;
+	}
 	
 	//PRIVATE/HELPER METHODS AND CLASSES
 	private List<IMoveCoordinate> findPossibleJumpMoves() {
@@ -364,14 +401,18 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 				relativeCoords.add(new Coordinate(-1,-1)); relativeCoords.add(new Coordinate(1,-1));
 			}
 			for (ICoordinate relativeCoord : relativeCoords) {
-				AbstractPiece adjacentPiece = getPieceAtCoordinate(new Coordinate(xOfSource + relativeCoord.getXCoordinate(), yOfSource + relativeCoord.getYCoordinate()));
+				AbstractPiece adjacentPiece = getPieceAtCoordinate(new Coordinate(anyPlayerPiece.getCurrentCoordinate().getXCoordinate() + relativeCoord.getXCoordinate(), anyPlayerPiece.getCurrentCoordinate().getYCoordinate() + relativeCoord.getYCoordinate()));
 				if (adjacentPiece != null && !adjacentPiece.getPlayer().equals(player))
 					relativeCoordsWithOpponentPiece.add(relativeCoord);
 			}
 			for (ICoordinate relativeCoordWithOpponentPiece : relativeCoordsWithOpponentPiece) {
-				ICoordinate possibleJumpMoveDestinationCoordinate = new Coordinate(xOfSource + relativeCoordWithOpponentPiece.getXCoordinate()*2, yOfSource + relativeCoordWithOpponentPiece.getYCoordinate()*2);
-				if (referee.getCoordinatePieceMap().getPieceAtCoordinate(possibleJumpMoveDestinationCoordinate) == null)
-					possibleJumpMoves.add(new MoveCoordinate(sourceCoordinate, possibleJumpMoveDestinationCoordinate));
+				ICoordinate possibleJumpMoveDestinationCoordinate = new Coordinate(anyPlayerPiece.getCurrentCoordinate().getXCoordinate() + relativeCoordWithOpponentPiece.getXCoordinate()*2, anyPlayerPiece.getCurrentCoordinate().getYCoordinate() + relativeCoordWithOpponentPiece.getYCoordinate()*2);
+				if (possibleJumpMoveDestinationCoordinate.getXCoordinate() >= 0
+						&& possibleJumpMoveDestinationCoordinate.getXCoordinate() <= 7
+						&& possibleJumpMoveDestinationCoordinate.getYCoordinate() >= 0
+						&& possibleJumpMoveDestinationCoordinate.getYCoordinate() <= 7
+						&& getPieceAtCoordinate(possibleJumpMoveDestinationCoordinate) == null)
+					possibleJumpMoves.add(new MoveCoordinate(anyPlayerPiece.getCurrentCoordinate(), possibleJumpMoveDestinationCoordinate));
 			}
 		}
 		return possibleJumpMoves;
@@ -471,6 +512,8 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		
 		return DestinationCoordinateValidity.UNKNOWN_ERROR;
 	}
+
+
 	
 	
 	

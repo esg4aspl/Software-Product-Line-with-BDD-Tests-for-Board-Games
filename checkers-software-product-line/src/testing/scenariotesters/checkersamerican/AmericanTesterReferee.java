@@ -11,6 +11,8 @@ import base.PawnMoveConstraints;
 import base.PawnMovePossibilities;
 import base.Player;
 import base.PlayerList;
+import base.StartCoordinates;
+import checkersamerican.AmericanStartCoordinates;
 import checkersamerican.King;
 import checkersamerican.KingMoveConstraints;
 import checkersamerican.KingMovePossibilities;
@@ -65,6 +67,12 @@ public class AmericanTesterReferee extends AbstractReferee {
 	
 	public void setGameSetupName(String setUpName) {
 		this.setUpName = setUpName;
+	}
+	
+	public void defaultSetup() {
+		setupPlayers();
+		setupBoardMVC();
+		setupPiecesOnBoard();
 	}
 	
 	public void setup() {
@@ -143,6 +151,37 @@ public class AmericanTesterReferee extends AbstractReferee {
 		}
 		
 		
+	}
+	
+	private void setupPiecesOnBoard() {
+		// create pieces for players and put them on board
+		IPlayer player;
+		AbstractPiece men;
+		StartCoordinates startCoordinates = new AmericanStartCoordinates();
+		IPieceMovePossibilities menMovePossibilities = new PawnMovePossibilities();
+		IPieceMoveConstraints menMoveConstraints =  new PawnMoveConstraints();
+
+		for (int i = 0; i < numberOfPlayers; i++) {
+			player = playerList.getPlayer(i);
+			String icon;
+			Direction direction;
+			if (i == 0) {
+				icon = "B";
+				direction = Direction.N;
+			}
+			else {
+				icon = "W";
+				direction = Direction.S;
+			}
+			for (int j = 0; j < numberOfPiecesPerPlayer; j++) {
+				men = new Pawn(1000+i, icon, player, direction, menMovePossibilities, menMoveConstraints);
+				player.addPiece(men);
+				coordinatePieceMap.putPieceToCoordinate(men, startCoordinates.getNextCoordinate());
+			}
+		}
+		
+		//coordinatePieceMap.printPieceMap();
+		//view.printMessage(playerList.getPlayerStatus());
 	}
 	
 	public IMoveCoordinate readPlayerMove() {

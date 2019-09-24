@@ -41,5 +41,8 @@ public interface IScenarioTester {
 	public void theNumberOfMovesWithoutUndertakeIsIncrementedBy1();
 	public void theGameIsEndedAsInDrawIfTheNumberOfMovesWithoutUndertakeIs40();
 	public void thePlayerMakesAMoveLeavingNoValidDestinationCoordinatesForAnyOfTheOpponentsPieces();
+	public void thePlayerPicksAValidSourceCoordinateThatHasAPawnPieceInIt();
+	public void thePlayerPicksAValidDestinationCoordinateInOpponentsCrownhead();
+	public void thePieceAtTheSourceCoordinateBecomesAKingPiece();
 	
 }

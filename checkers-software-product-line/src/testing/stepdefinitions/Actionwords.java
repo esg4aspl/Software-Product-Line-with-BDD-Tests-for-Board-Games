@@ -19,7 +19,7 @@ public class Actionwords {
     }
 
     public void thePlayerWithTheDarkcoloredPiecesIsGivenTheTurn() {
-    	
+    	scenarioTester.thePlayerWithTheDarkcoloredPiecesIsGivenTheTurn();
     }
 
     public void theGameIsPlayedUpToACertainPointFromFileP1(String p1) {
@@ -164,6 +164,18 @@ public class Actionwords {
 
 	public void thePlayerMakesAMoveLeavingNoValidDestinationCoordinatesForAnyOfTheOpponentsPieces() {
 		scenarioTester.thePlayerMakesAMoveLeavingNoValidDestinationCoordinatesForAnyOfTheOpponentsPieces();
+	}
+
+	public void thePlayerPicksAValidSourceCoordinateThatHasAPawnPieceInIt() {
+		scenarioTester.thePlayerPicksAValidSourceCoordinateThatHasAPawnPieceInIt();
+	}
+
+	public void thePlayerPicksAValidDestinationCoordinateInOpponentsCrownhead() {
+		scenarioTester.thePlayerPicksAValidDestinationCoordinateInOpponentsCrownhead();
+	}
+
+	public void thePieceAtTheSourceCoordinateBecomesAKingPiece() {
+		scenarioTester.thePieceAtTheSourceCoordinateBecomesAKingPiece();
 	}
 
 }

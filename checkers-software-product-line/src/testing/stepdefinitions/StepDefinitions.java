@@ -92,11 +92,6 @@ public class StepDefinitions {
         actionwords.thePieceTransformedToAKingPiece();
     }
 
-    @When("^the player picks a move with a normal piece and a destination coordinate in opponent's crownhead$")
-    public void thePlayerPicksAMoveWithANormalPieceAndADestinationCoordinateInOpponentsCrownhead() {
-        actionwords.thePlayerPicksAMoveWithANormalPieceAndADestinationCoordinateInOpponentsCrownhead();
-    }
-
     @Given("^only one piece of the opponent is present at the game board$")
     public void onlyOnePieceOfTheOpponentIsPresentAtTheGameBoard() {
         actionwords.onlyOnePieceOfTheOpponentIsPresentAtTheGameBoard();
@@ -190,5 +185,20 @@ public class StepDefinitions {
     @When("^the player makes a move leaving no valid destination coordinates for any of the opponent's pieces$")
     public void thePlayerMakesAMoveLeavingNoValidDestinationCoordinatesForAnyOfTheOpponentsPieces() {
         actionwords.thePlayerMakesAMoveLeavingNoValidDestinationCoordinatesForAnyOfTheOpponentsPieces();
+    }
+
+    @When("^the player picks a valid source coordinate that has a pawn piece in it$")
+    public void thePlayerPicksAValidSourceCoordinateThatHasAPawnPieceInIt() {
+        actionwords.thePlayerPicksAValidSourceCoordinateThatHasAPawnPieceInIt();
+    }
+
+    @When("^the player picks a valid destination coordinate in opponent's crownhead$")
+    public void thePlayerPicksAValidDestinationCoordinateInOpponentsCrownhead() {
+        actionwords.thePlayerPicksAValidDestinationCoordinateInOpponentsCrownhead();
+    }
+
+    @Then("^the piece at the source coordinate becomes a king piece$")
+    public void thePieceAtTheSourceCoordinateBecomesAKingPiece() {
+        actionwords.thePieceAtTheSourceCoordinateBecomesAKingPiece();
     }
 }

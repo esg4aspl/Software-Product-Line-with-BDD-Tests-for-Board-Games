@@ -106,9 +106,10 @@ Feature: American Checkers
 
   Scenario Outline: Crowning the Eligible Piece (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
-    When the player picks a move with a normal piece and a destination coordinate in opponent's crownhead
-    Then the move is performed
-    And the piece transformed to a king piece
+    When the player picks a valid source coordinate that has a pawn piece in it
+    And the player picks a valid destination coordinate in opponent's crownhead
+    Then the piece at the source coordinate becomes a king piece
+    And the piece at the source coordinate is moved to the destination coordinate
 
     Examples:
       | file_name | hiptest-uid |

@@ -17,6 +17,7 @@ import cucumber.api.PendingException;
 public class IniReader implements IiniReader {
 	
 	private Ini ini;
+	private String fileLocation, sectionName;
 	private Section section;
 	private Section board;
 	private IMoveCoordinate playerMove;
@@ -24,6 +25,8 @@ public class IniReader implements IiniReader {
 	private List<ICoordinatePieceDuo> coordinatePieceDuos;
 	
 	public IniReader(String fileLocation, String sectionName) {
+		this.fileLocation = fileLocation;
+		this.sectionName = sectionName;
 		try {
 			ini = new Ini(new File(fileLocation));
 			section = ini.get(sectionName);
@@ -77,6 +80,16 @@ public class IniReader implements IiniReader {
 		return currentTurnPlayerIconColor;
 	}
 	
+	@Override
+	public String getFileLocation() {
+		return fileLocation;
+	}
+
+	@Override
+	public String getSectionName() {
+		return sectionName;
+	}
+
 	public static void main(String[] args) {
 		IiniReader reader = new IniReader("src/testing/helpers/AmericanCheckers.ini", "moveList");
 		System.out.println(reader.getCoordinatePieceDuos().toString());
