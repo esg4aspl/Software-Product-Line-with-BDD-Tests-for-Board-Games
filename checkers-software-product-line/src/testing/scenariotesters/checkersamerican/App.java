@@ -7,8 +7,8 @@ public class App {
 	public static void main(String[] args) {
 		//String[] moveArr = {"invalidDestinationCoordinateForMoveJumpedPieceIsNull1", "invalidDestinationCoordinateForMoveJumpedPieceIsOwnPiece1"};
 		//String[] moveArr = {"invalidDestinationCoordinateForMoveOutsideBorders1", "invalidDestinationCoordinateForMoveUnplayableColor1"};
-		//String[] moveArr = {"validJumpMove1"};
-		String[] moveArr = {"crowningTheEligiblePiece2"};
+		String[] moveArr = {"validJumpMove4"};
+		//String[] moveArr = {"crowningTheEligiblePiece3"};
 		//String[] moveArr = {"invalidSourceCoordinateForMoveOpponentsPiece1", "invalidSourceCoordinateForMoveOpponentsPiece2"};
  		//String[] moveArr = {"invalidSourceCoordinateForMoveUnplayableColor1"};
 		

@@ -270,8 +270,13 @@ public class AmericanTesterReferee extends AbstractReferee {
 		//if piece become king then terminate the move
 		AbstractPiece  temp  = piece;
 		piece = becomeAndOrPutOperation(piece, destinationCoordinate);
-		if(!temp.equals(piece))
+		if(!temp.equals(piece)) {
+			printMessage("The piece has become king.");
+			if (moveOpResult.isCurrentPlayerTurnAgain()) {
+				printMessage("Player will NOT be asked for another destination coordinate (previous move was a jump move) because the piece has become king.");
+			}
 			moveOpResult = new MoveOpResult(true, false);
+		}
 		view.printMessage("CurrentPlayerTurnAgain? " + moveOpResult.isCurrentPlayerTurnAgain());
 		if (moveOpResult.isCurrentPlayerTurnAgain() && !automaticGameOn) {
 			conductCurrentPlayerTurnAgain(moveOpResult, piece);
@@ -296,7 +301,7 @@ public class AmericanTesterReferee extends AbstractReferee {
 			this.playerWasGoingToMakeAnotherMove = true;
 			printMessage("Player will be asked for another destination coordinate (previous move was a jump move) (there are still possibilities for a jump move).");
 			break;
-//			playerMove = view.getNextMove(currentPlayer);
+//			playerMove = view.getNextMove(currentPlayer,currentMoveCoordinate.getDestinationCoordinate());
 //			currentMoveCoordinate = playerMove;
 //			ICoordinate sourceCoordinate = currentMoveCoordinate.getSourceCoordinate();
 //			ICoordinate destinationCoordinate = currentMoveCoordinate.getDestinationCoordinate();

@@ -72,26 +72,6 @@ public class StepDefinitions {
         actionwords.thePlayerIsAskedForAnotherP1Coordinate(p1);
     }
 
-    @Given("^the player has performed one or more jump moves$")
-    public void thePlayerHasPerformedOneOrMoreJumpMoves() {
-        actionwords.thePlayerHasPerformedOneOrMoreJumpMoves();
-    }
-
-    @When("^the player picks a valid destination coordinate where no more jump moves will be possible$")
-    public void thePlayerPicksAValidDestinationCoordinateWhereNoMoreJumpMovesWillBePossible() {
-        actionwords.thePlayerPicksAValidDestinationCoordinateWhereNoMoreJumpMovesWillBePossible();
-    }
-
-    @Then("^the move is performed$")
-    public void theMoveIsPerformed() {
-        actionwords.theMoveIsPerformed();
-    }
-
-    @Then("^the piece transformed to a king piece$")
-    public void thePieceTransformedToAKingPiece() {
-        actionwords.thePieceTransformedToAKingPiece();
-    }
-
     @Given("^only one piece of the opponent is present at the game board$")
     public void onlyOnePieceOfTheOpponentIsPresentAtTheGameBoard() {
         actionwords.onlyOnePieceOfTheOpponentIsPresentAtTheGameBoard();
@@ -175,11 +155,6 @@ public class StepDefinitions {
     @Then("^the game is ended as in draw if the number of moves without undertake is 40$")
     public void theGameIsEndedAsInDrawIfTheNumberOfMovesWithoutUndertakeIs40() {
         actionwords.theGameIsEndedAsInDrawIfTheNumberOfMovesWithoutUndertakeIs40();
-    }
-
-    @When("^the player picks a valid destination coordinate where his normal piece will become a king piece$")
-    public void thePlayerPicksAValidDestinationCoordinateWhereHisNormalPieceWillBecomeAKingPiece() {
-        actionwords.thePlayerPicksAValidDestinationCoordinateWhereHisNormalPieceWillBecomeAKingPiece();
     }
 
     @When("^the player makes a move leaving no valid destination coordinates for any of the opponent's pieces$")

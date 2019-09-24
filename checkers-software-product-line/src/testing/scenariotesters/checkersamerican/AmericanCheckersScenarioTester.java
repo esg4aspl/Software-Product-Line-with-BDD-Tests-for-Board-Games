@@ -27,18 +27,18 @@ import testing.scenariotesters.IScenarioTester;
 public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	AmericanTesterReferee referee;
-	IPlayer player; // The player that has the current turn.
-	AbstractPiece piece; // The piece that is doing the move.
+	IPlayer playerOfPlayerMove; // The player that has the current turn.
+	AbstractPiece pieceOfPlayerMove; // The piece that is doing the move.
 	
 	IMoveCoordinate playerMove; // The move that is the focus of the currently running test.
-	ICoordinate sourceCoordinate; // Source coordinate of the playerMove.
-	ICoordinate destinationCoordinate; // Destination coordinate of the playerMove.
-	int xOfSource, yOfSource, xOfDestination, yOfDestination; // Explicit coordinates of playerMove.
-	private SourceCoordinateValidity sourceCoordinateValidity; // Info about the validity of sourceCoordinate.
-	private DestinationCoordinateValidity destinationCoordinateValidity; // Info about the validity of destinationCoordinate.
+	ICoordinate sourceCoordinateOfPlayerMove; // Source coordinate of the playerMove.
+	ICoordinate destinationCoordinateOfPlayerMove; // Destination coordinate of the playerMove.
+	int sourceXOfPlayerMove, sourceYOfPlayerMove, destinationXOfPlayerMove, destinationYOfPlayerMove; // Explicit coordinates of playerMove.
+	private SourceCoordinateValidity sourceCoordinateValidityOfPlayerMove; // Info about the validity of sourceCoordinate.
+	private DestinationCoordinateValidity destinationCoordinateValidityOfPlayerMove; // Info about the validity of destinationCoordinate.
 	
-	ICoordinate jumpedCoordinate; // The coordinate that is being jumped over if the move is a jump move.
-	AbstractPiece jumpedPiece; // The jumped piece if the move is a jump move.
+	ICoordinate jumpedCoordinateOfPlayerMove; // The coordinate that is being jumped over if the move is a jump move.
+	AbstractPiece jumpedPieceOfPlayerMove; // The jumped piece if the move is a jump move.
 	List<String> informers; // Informers of the referee after the test run.
 	boolean playerWasGoingToMakeAnotherMove; // True if the player was going to make another move after the playerMove is conducted.
 	
@@ -61,24 +61,36 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	public void theGameIsPlayedUpToACertainPointFromFileP1(String p1) {
 		referee.setGameSetupName(p1);
 		referee.setup();
-		player = referee.getCurrentPlayer();
+		playerOfPlayerMove = referee.getCurrentPlayer();
 		playerMove = referee.readPlayerMove();
-		//The following methods not only decide the coordinates' validity, they also set up other playerMove related variables.
-		sourceCoordinateValidity = checkSourceCoordinate();
-		destinationCoordinateValidity = checkDestinationCoordinate();
+		//Set up source coordinate.
+		sourceCoordinateOfPlayerMove = playerMove.getSourceCoordinate();
+		sourceXOfPlayerMove = sourceCoordinateOfPlayerMove.getXCoordinate(); sourceYOfPlayerMove = sourceCoordinateOfPlayerMove.getYCoordinate();
+		this.pieceOfPlayerMove = getPieceAtCoordinate(sourceCoordinateOfPlayerMove);
+		sourceCoordinateValidityOfPlayerMove = checkSourceCoordinate(playerOfPlayerMove, sourceCoordinateOfPlayerMove);
+		//Set up destination coordinate.
+		destinationCoordinateOfPlayerMove = playerMove.getDestinationCoordinate();
+		destinationXOfPlayerMove = destinationCoordinateOfPlayerMove.getXCoordinate(); destinationYOfPlayerMove = this.destinationCoordinateOfPlayerMove.getYCoordinate();
+		destinationCoordinateValidityOfPlayerMove = checkDestinationCoordinate(playerOfPlayerMove, sourceCoordinateOfPlayerMove, destinationCoordinateOfPlayerMove);
+		if (destinationCoordinateValidityOfPlayerMove == DestinationCoordinateValidity.JUMPED_PIECE_IS_NULL
+				|| destinationCoordinateValidityOfPlayerMove == DestinationCoordinateValidity.JUMPED_PIECE_IS_OWN
+				|| destinationCoordinateValidityOfPlayerMove == DestinationCoordinateValidity.VALID_JUMP) {
+			jumpedCoordinateOfPlayerMove = new Coordinate(sourceXOfPlayerMove + (destinationXOfPlayerMove-sourceXOfPlayerMove)/2, sourceYOfPlayerMove + (destinationYOfPlayerMove - sourceYOfPlayerMove)/2);
+			jumpedPieceOfPlayerMove = getPieceAtCoordinate(jumpedCoordinateOfPlayerMove);
+		}
 	}
 
 	@Override
 	public void thePlayerPicksAValidSourceCoordinate() {
-		assertEquals(SourceCoordinateValidity.VALID, sourceCoordinateValidity);
+		assertEquals(SourceCoordinateValidity.VALID, sourceCoordinateValidityOfPlayerMove);
 	}
 
 	@Override
 	public void thePlayerPicksAValidDestinationCoordinateThatIsP1SquaresAwayFromTheSourceCoordinate(String p1) {
 		if (p1.equals("one")) {
-			assertEquals(DestinationCoordinateValidity.VALID_REGULAR, destinationCoordinateValidity);
+			assertEquals(DestinationCoordinateValidity.VALID_REGULAR, destinationCoordinateValidityOfPlayerMove);
 		} else if (p1.equals("two")) {
-			assertEquals(DestinationCoordinateValidity.VALID_JUMP, destinationCoordinateValidity);
+			assertEquals(DestinationCoordinateValidity.VALID_JUMP, destinationCoordinateValidityOfPlayerMove);
 		}
 		//If there were no errors up to this point, conduct the game.
 		referee.conductGame();
@@ -89,29 +101,29 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	@Override
 	public void thePieceAtTheSourceCoordinateIsMovedToTheDestinationCoordinate() {
 		//Check if destination coordinate now holds the moved piece.
-		assertEquals(piece, getPieceAtCoordinate(destinationCoordinate));
+		assertEquals(pieceOfPlayerMove, getPieceAtCoordinate(destinationCoordinateOfPlayerMove));
 		//Check if the source coordinate is now empty.
-		assertTrue(getPieceAtCoordinate(sourceCoordinate) == null);
+		assertTrue(getPieceAtCoordinate(sourceCoordinateOfPlayerMove) == null);
 		//Check if the piece's current coordinate is the same as player move's destination coordinate.
-		assertEquals(destinationCoordinate, piece.getCurrentCoordinate());
+		assertEquals(destinationCoordinateOfPlayerMove, pieceOfPlayerMove.getCurrentCoordinate());
 	}
 
 	@Override
 	public void theNextTurnIsGivenToTheP1Player(String p1) {
 		if (p1.equals("other")) {
 			assertFalse(playerWasGoingToMakeAnotherMove);
-			assertFalse(referee.getCurrentPlayer().equals(player));
+			assertFalse(referee.getCurrentPlayer().equals(playerOfPlayerMove));
 		} else if (p1.equals("current")) {
 			assertTrue(playerWasGoingToMakeAnotherMove);
-			assertTrue(referee.getCurrentPlayer().equals(player));
+			assertTrue(referee.getCurrentPlayer().equals(playerOfPlayerMove));
 		}
 	}
 
 	@Override
 	public void theOpponentPieceInBetweenTheSourceAndDestinationCoordinatesAreRemovedFromTheBoard() {
-		assertEquals(null, getPieceAtCoordinate(jumpedCoordinate));
-		assertEquals(Zone.ONSIDE, jumpedPiece.getCurrentZone());
-		assertEquals(null, jumpedPiece.getCurrentCoordinate());
+		assertEquals(null, getPieceAtCoordinate(jumpedCoordinateOfPlayerMove));
+		assertEquals(Zone.ONSIDE, jumpedPieceOfPlayerMove.getCurrentZone());
+		assertEquals(null, jumpedPieceOfPlayerMove.getCurrentCoordinate());
 	}
 
 	@Override
@@ -128,25 +140,25 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	
 	private void invalidDestinationCoordinate(String reason) {
 		if (reason.equals("destination coordinate is outside of the board")) {
-			assertEquals(DestinationCoordinateValidity.OUTSIDE_OF_THE_BOARD, destinationCoordinateValidity);
+			assertEquals(DestinationCoordinateValidity.OUTSIDE_OF_THE_BOARD, destinationCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("destination coordinate is not of valid square color")) {
-			assertEquals(DestinationCoordinateValidity.NOT_OF_VALID_SQUARE_COLOR, destinationCoordinateValidity);
+			assertEquals(DestinationCoordinateValidity.NOT_OF_VALID_SQUARE_COLOR, destinationCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("destination coordinate is occupied")) {
 			//Accept "SAME_AS_SOURCE" error as "OCCUPIED" for now.
-			if (destinationCoordinateValidity != DestinationCoordinateValidity.SAME_AS_SOURCE)
-				assertEquals(DestinationCoordinateValidity.OCCUPIED, destinationCoordinateValidity);
+			if (destinationCoordinateValidityOfPlayerMove != DestinationCoordinateValidity.SAME_AS_SOURCE)
+				assertEquals(DestinationCoordinateValidity.OCCUPIED, destinationCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("destination coordinate's direction is not allowed")) {
 			//If piece is king, then it can move in any direction. The test fails here. Game set-up (ini file) is not good.
-			assertFalse(piece instanceof King);
-			assertEquals(DestinationCoordinateValidity.UNALLOWED_DIRECTION, destinationCoordinateValidity);
+			assertFalse(pieceOfPlayerMove instanceof King);
+			assertEquals(DestinationCoordinateValidity.UNALLOWED_DIRECTION, destinationCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("destination coordinate is more than two squares away")) {
-			assertEquals(DestinationCoordinateValidity.MORE_THAN_TWO_SQUARES_AWAY, destinationCoordinateValidity);
+			assertEquals(DestinationCoordinateValidity.MORE_THAN_TWO_SQUARES_AWAY, destinationCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("move is not a jump move even though there are possible jump moves")) {
-			assertEquals(DestinationCoordinateValidity.NOT_ONE_OF_POSSIBLE_JUMP_MOVES, destinationCoordinateValidity);
+			assertEquals(DestinationCoordinateValidity.NOT_ONE_OF_POSSIBLE_JUMP_MOVES, destinationCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("jumped piece is null")) {
-			assertEquals(DestinationCoordinateValidity.JUMPED_PIECE_IS_NULL, destinationCoordinateValidity);
+			assertEquals(DestinationCoordinateValidity.JUMPED_PIECE_IS_NULL, destinationCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("jumped piece is not opponent piece")) {
-			assertEquals(DestinationCoordinateValidity.JUMPED_PIECE_IS_OWN, destinationCoordinateValidity);
+			assertEquals(DestinationCoordinateValidity.JUMPED_PIECE_IS_OWN, destinationCoordinateValidityOfPlayerMove);
 		} else {
 			throw new PendingException();
 		}
@@ -158,13 +170,13 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	
 	private void invalidSourceCoordinate(String reason) {
 		if (reason.equals("source coordinate is empty")) {
-			assertEquals(SourceCoordinateValidity.EMPTY, sourceCoordinateValidity);
+			assertEquals(SourceCoordinateValidity.EMPTY, sourceCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("source coordinate has opponent's piece")) {
-			assertEquals(SourceCoordinateValidity.OPPONENT_PIECE, sourceCoordinateValidity);
+			assertEquals(SourceCoordinateValidity.OPPONENT_PIECE, sourceCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("source coordinate is not of valid square color")) {
-			assertEquals(SourceCoordinateValidity.NOT_OF_VALID_SQUARE_COLOR, sourceCoordinateValidity);
+			assertEquals(SourceCoordinateValidity.NOT_OF_VALID_SQUARE_COLOR, sourceCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("source coordinate is outside of the board")) {
-			assertEquals(SourceCoordinateValidity.OUTSIDE_OF_THE_BOARD, sourceCoordinateValidity);
+			assertEquals(SourceCoordinateValidity.OUTSIDE_OF_THE_BOARD, sourceCoordinateValidityOfPlayerMove);
 		} else {
 			throw new PendingException();
 		}
@@ -351,19 +363,19 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void thePlayerPicksAValidSourceCoordinateThatHasAPawnPieceInIt() {
-		assertEquals(SourceCoordinateValidity.VALID, sourceCoordinateValidity);
-		assertTrue(piece instanceof Pawn);
+		assertEquals(SourceCoordinateValidity.VALID, sourceCoordinateValidityOfPlayerMove);
+		assertTrue(pieceOfPlayerMove instanceof Pawn);
 	}
 
 	@Override
 	public void thePlayerPicksAValidDestinationCoordinateInOpponentsCrownhead() {
-		assertTrue(destinationCoordinateValidity == DestinationCoordinateValidity.VALID_REGULAR
-					|| destinationCoordinateValidity == DestinationCoordinateValidity.VALID_JUMP);
+		assertTrue(destinationCoordinateValidityOfPlayerMove == DestinationCoordinateValidity.VALID_REGULAR
+					|| destinationCoordinateValidityOfPlayerMove == DestinationCoordinateValidity.VALID_JUMP);
 		
-		if (piece.getGoalDirection() == Direction.N) {
-			assertEquals(7, yOfDestination);
-		} else if (piece.getGoalDirection() == Direction.S) {
-			assertEquals(0, yOfDestination);
+		if (pieceOfPlayerMove.getGoalDirection() == Direction.N) {
+			assertEquals(7, destinationYOfPlayerMove);
+		} else if (pieceOfPlayerMove.getGoalDirection() == Direction.S) {
+			assertEquals(0, destinationYOfPlayerMove);
 		}
 		
 		referee.conductGame();
@@ -373,23 +385,23 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void thePieceAtTheSourceCoordinateBecomesAKingPiece() {
-		AbstractPiece newPiece = getPieceAtCoordinate(destinationCoordinate);
+		AbstractPiece newPiece = getPieceAtCoordinate(destinationCoordinateOfPlayerMove);
 		assertTrue(newPiece != null);
-		assertEquals(piece.getId()+2, newPiece.getId());
+		assertEquals(pieceOfPlayerMove.getId()+2, newPiece.getId());
 		//TODO: Check icon conversion.
 		//assertEquals(piece.getIcon(), newPiece.getIcon());
-		assertEquals(player, newPiece.getPlayer());
-		assertEquals(piece.getGoalDirection(), newPiece.getGoalDirection());
+		assertEquals(playerOfPlayerMove, newPiece.getPlayer());
+		assertEquals(pieceOfPlayerMove.getGoalDirection(), newPiece.getGoalDirection());
 		assertTrue(newPiece.getPieceMovePossibilities() instanceof KingMovePossibilities);
 		assertTrue(newPiece.getPieceMoveConstraints() instanceof KingMoveConstraints);
 		assertTrue(newPiece instanceof King);
-		piece = newPiece;
+		pieceOfPlayerMove = newPiece;
 	}
 	
 	//PRIVATE/HELPER METHODS AND CLASSES
 	private List<IMoveCoordinate> findPossibleJumpMoves() {
 		List<IMoveCoordinate> possibleJumpMoves = new ArrayList<IMoveCoordinate>();
-		for (AbstractPiece anyPlayerPiece : player.getPieceList()) {
+		for (AbstractPiece anyPlayerPiece : playerOfPlayerMove.getPieceList()) {
 			List<ICoordinate> relativeCoordsWithOpponentPiece = new ArrayList<ICoordinate>();
 			List<ICoordinate> relativeCoords = new ArrayList<ICoordinate>();
 			if (anyPlayerPiece instanceof King) {
@@ -402,7 +414,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 			}
 			for (ICoordinate relativeCoord : relativeCoords) {
 				AbstractPiece adjacentPiece = getPieceAtCoordinate(new Coordinate(anyPlayerPiece.getCurrentCoordinate().getXCoordinate() + relativeCoord.getXCoordinate(), anyPlayerPiece.getCurrentCoordinate().getYCoordinate() + relativeCoord.getYCoordinate()));
-				if (adjacentPiece != null && !adjacentPiece.getPlayer().equals(player))
+				if (adjacentPiece != null && !adjacentPiece.getPlayer().equals(playerOfPlayerMove))
 					relativeCoordsWithOpponentPiece.add(relativeCoord);
 			}
 			for (ICoordinate relativeCoordWithOpponentPiece : relativeCoordsWithOpponentPiece) {
@@ -433,14 +445,14 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		return referee.getCoordinatePieceMap().getPieceAtCoordinate(coordinate);
 	}
 	
+	
 	private enum SourceCoordinateValidity {
 		VALID, OUTSIDE_OF_THE_BOARD, NOT_OF_VALID_SQUARE_COLOR, EMPTY, OPPONENT_PIECE
 	}
-	private SourceCoordinateValidity checkSourceCoordinate() {
+	private SourceCoordinateValidity checkSourceCoordinate(IPlayer player, ICoordinate sourceCoordinate) {
 		//Set-up the source coordinate and piece.
-		sourceCoordinate = playerMove.getSourceCoordinate();
-		xOfSource = sourceCoordinate.getXCoordinate(); yOfSource = sourceCoordinate.getYCoordinate();
-		piece = getPieceAtCoordinate(sourceCoordinate);
+		int xOfSource = sourceCoordinate.getXCoordinate(); int yOfSource = sourceCoordinate.getYCoordinate();
+		AbstractPiece piece = getPieceAtCoordinate(sourceCoordinate);
 		//Check if the coordinate is on board.
 		if (xOfSource < 0 ||  7 < xOfSource || yOfSource < 0 || 7 < yOfSource)
 			return SourceCoordinateValidity.OUTSIDE_OF_THE_BOARD;
@@ -457,19 +469,22 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		return SourceCoordinateValidity.VALID;
 	}
 	
+	
 	private enum DestinationCoordinateValidity {
 		//Destination coordinate is either valid, or its invalidity reason are one of the below
 		VALID_REGULAR, VALID_JUMP, OUTSIDE_OF_THE_BOARD, SAME_AS_SOURCE, NOT_OF_VALID_SQUARE_COLOR, OCCUPIED, UNALLOWED_DIRECTION,
 		MORE_THAN_TWO_SQUARES_AWAY, NOT_ONE_OF_POSSIBLE_JUMP_MOVES, JUMPED_PIECE_IS_NULL, JUMPED_PIECE_IS_OWN,
 		SOURCE_COORDINATE_PROBLEM, UNKNOWN_ERROR
 	}
-	private DestinationCoordinateValidity checkDestinationCoordinate() {
+	private DestinationCoordinateValidity checkDestinationCoordinate(IPlayer player, ICoordinate sourceCoordinate, ICoordinate destinationCoordinate) {
+		SourceCoordinateValidity sourceCoordinateValidity = checkSourceCoordinate(player, sourceCoordinate);
 		//If source coordinate is not set up or valid, destination coordinate can't be truly valid.
 		if (sourceCoordinateValidity == null || sourceCoordinateValidity != SourceCoordinateValidity.VALID)
 			return DestinationCoordinateValidity.SOURCE_COORDINATE_PROBLEM;
 		//Set up the destination coordinate.
-		destinationCoordinate = playerMove.getDestinationCoordinate();
-		xOfDestination = destinationCoordinate.getXCoordinate(); yOfDestination = this.destinationCoordinate.getYCoordinate();
+		int xOfSource = sourceCoordinate.getXCoordinate(); int yOfSource = sourceCoordinate.getYCoordinate();
+		AbstractPiece piece = getPieceAtCoordinate(sourceCoordinate);
+		int xOfDestination = destinationCoordinate.getXCoordinate(); int yOfDestination = destinationCoordinate.getYCoordinate();
 		int xDiff = xOfDestination - xOfSource; int yDiff = yOfDestination - yOfSource;
 		//Check if the coordinate is on board.
 		if (xOfDestination < 0 ||  7 < xOfDestination || yOfDestination < 0 || 7 < yOfDestination)
@@ -497,8 +512,8 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		if (Math.abs(xDiff) == 1 && Math.abs(yDiff) == 1)
 			return DestinationCoordinateValidity.VALID_REGULAR;
 		//Set up jumped piece.
-		jumpedCoordinate = new Coordinate(xOfSource + xDiff/2, yOfSource + yDiff/2);
-		jumpedPiece = getPieceAtCoordinate(jumpedCoordinate);
+		ICoordinate jumpedCoordinate = new Coordinate(xOfSource + xDiff/2, yOfSource + yDiff/2);
+		AbstractPiece jumpedPiece = getPieceAtCoordinate(jumpedCoordinate);
 		//Check if jumped piece is null.
 		if (jumpedPiece == null)
 			return DestinationCoordinateValidity.JUMPED_PIECE_IS_NULL;

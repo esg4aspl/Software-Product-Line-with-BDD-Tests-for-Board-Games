@@ -37,7 +37,7 @@ Feature: American Checkers
       | validJumpMove2 | other | uid:6fbd1fa8-e5ff-49bd-8cb4-3b3281934785 |
       | validJumpMove3 | other | uid:4316cef3-a33b-443c-9cce-10109f4217f0 |
       | validJumpMove4 | current | uid:aea16597-291b-4fdb-aea2-0a9f32b409cc |
-      | validJumpMove5 | other | uid:1cff9ebd-d41d-4752-8598-6bbcbc448590 |
+      | validJumpMove5 | current | uid:e5e21b57-c813-425a-be74-574d4dfbc7e7 |
 
   Scenario Outline: Invalid Source Coordinate for Move (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
@@ -73,43 +73,13 @@ Feature: American Checkers
       | invalidDestinationCoordinateForMoveJumpedPieceIsNull1 | jumped piece is null | There must be one piece on jump path 0 | uid:fa89591d-1911-4c4d-abaf-4ab4e8d583ce |
       | invalidDestinationCoordinateForMoveJumpedPieceIsOwnPiece1 | jumped piece is not opponent piece | Jumped Piece Must Be Opponent Piece | uid:875b4902-ab32-4b9b-bede-d656722a0708 |
 
-  Scenario Outline: Jump Move Series End - No More Possible Jump Moves (<hiptest-uid>)
-    Given the game is played up to a certain point from file "<file_name>"
-    And the player has performed one or more jump moves
-    When the player picks a valid destination coordinate where no more jump moves will be possible
-    Then the move is performed
-    And the next turn is given to the "other" player
-
-    Examples:
-      | file_name | hiptest-uid |
-      | jumpMoveSeriesEndNoMorePossibleJumpMoves1 | uid:a86eeae0-6fac-417d-8f3b-3dfac5594e3a |
-      | jumpMoveSeriesEndNoMorePossibleJumpMoves2 | uid:e54e7e0b-054e-4a55-9109-adcc8789e9dc |
-      | jumpMoveSeriesEndNoMorePossibleJumpMoves3 | uid:0759cf3c-7188-49df-b64f-b3a2263544b2 |
-      | jumpMoveSeriesEndNoMorePossibleJumpMoves4 | uid:d1dd3aa5-b183-40d4-b867-799b68273441 |
-      | jumpMoveSeriesEndNoMorePossibleJumpMoves5 | uid:8ff0485b-57d6-4478-82f3-ebd9e52e9461 |
-
-  Scenario Outline: Jump Move Series End - Piece Becomes King (<hiptest-uid>)
-    Given the game is played up to a certain point from file "<file_name>"
-    And the player has performed one or more jump moves
-    When the player picks a valid destination coordinate where his normal piece will become a king piece
-    Then the move is performed
-    And the piece transformed to a king piece
-    And the next turn is given to the "other" player
-
-    Examples:
-      | file_name | hiptest-uid |
-      | jumpMoveSeriesEndPieceBecomesKing1 | uid:fa010df3-6ed9-49f4-b53b-0d28be9d30e8 |
-      | jumpMoveSeriesEndPieceBecomesKing2 | uid:decfaf06-c938-44cb-88d5-0098ee2668c3 |
-      | jumpMoveSeriesEndPieceBecomesKing3 | uid:20c2b290-db05-45fb-b023-ad4ecd5b74f0 |
-      | jumpMoveSeriesEndPieceBecomesKing4 | uid:c07ac3d6-12f1-4aca-8016-8141d8574523 |
-      | jumpMoveSeriesEndPieceBecomesKing5 | uid:b10c64dd-a9c5-4060-85e1-1465e4b6a90e |
-
   Scenario Outline: Crowning the Eligible Piece (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks a valid source coordinate that has a pawn piece in it
     And the player picks a valid destination coordinate in opponent's crownhead
     Then the piece at the source coordinate becomes a king piece
     And the piece at the source coordinate is moved to the destination coordinate
+    And the next turn is given to the "other" player
 
     Examples:
       | file_name | hiptest-uid |
