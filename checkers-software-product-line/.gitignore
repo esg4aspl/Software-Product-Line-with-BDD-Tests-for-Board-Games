@@ -1,2 +1,4 @@
 /target/
 movelist*
+console_output.txt
+src/testing/scenariotesters/checkersamerican/ScenarioTesterOutput.txt

@@ -5,6 +5,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Color;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +31,8 @@ import testing.scenariotesters.IScenarioTester;
 
 public class AmericanCheckersScenarioTester implements IScenarioTester {
 
+	PrintWriter outputter;
+	
 	AmericanTesterReferee referee;
 	IPlayer playerOfPlayerMove; // The player that has the current turn.
 	AbstractPiece pieceOfPlayerMove; // The piece that is doing the move.
@@ -39,8 +46,16 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	
 	ICoordinate jumpedCoordinateOfPlayerMove; // The coordinate that is being jumped over if the move is a jump move.
 	AbstractPiece jumpedPieceOfPlayerMove; // The jumped piece if the move is a jump move.
-	List<String> informers; // Informers of the referee after the test run.
-	boolean playerWasGoingToMakeAnotherMove; // True if the player was going to make another move after the playerMove is conducted.
+	
+	public AmericanCheckersScenarioTester() {
+		try {
+			outputter = new PrintWriter(new FileWriter("./src/testing/scenariotesters/checkersamerican/ScenarioTesterOutput.txt", true));
+			outputter.println("\nNew Test Run - " + DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss").format(LocalDateTime.now()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	@Override
 	public void theP1GameIsSetUp(String p1) {
@@ -63,6 +78,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		referee.setup();
 		playerOfPlayerMove = referee.getCurrentPlayer();
 		playerMove = referee.readPlayerMove();
+		output("Testing: " + referee.reader.getSectionName());
 		//Set up source coordinate.
 		sourceCoordinateOfPlayerMove = playerMove.getSourceCoordinate();
 		sourceXOfPlayerMove = sourceCoordinateOfPlayerMove.getXCoordinate(); sourceYOfPlayerMove = sourceCoordinateOfPlayerMove.getYCoordinate();
@@ -78,6 +94,9 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 			jumpedCoordinateOfPlayerMove = new Coordinate(sourceXOfPlayerMove + (destinationXOfPlayerMove-sourceXOfPlayerMove)/2, sourceYOfPlayerMove + (destinationYOfPlayerMove - sourceYOfPlayerMove)/2);
 			jumpedPieceOfPlayerMove = getPieceAtCoordinate(jumpedCoordinateOfPlayerMove);
 		}
+		
+		output("SourceCoordinateValidity: " + this.sourceCoordinateValidityOfPlayerMove);
+		output("DestinationCoordinateValidity: " + this.destinationCoordinateValidityOfPlayerMove);
 	}
 
 	@Override
@@ -94,8 +113,6 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		}
 		//If there were no errors up to this point, conduct the game.
 		referee.conductGame();
-		informers = referee.informers;
-		playerWasGoingToMakeAnotherMove = referee.playerWasGoingToMakeAnotherMove;
 	}
 	
 	@Override
@@ -110,11 +127,15 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void theNextTurnIsGivenToTheP1Player(String p1) {
+		if (referee.gameEnded) {
+			output("Informers: " + referee.informers.toString());
+		}
+		assertFalse(referee.gameEnded);
 		if (p1.equals("other")) {
-			assertFalse(playerWasGoingToMakeAnotherMove);
+			assertFalse(referee.playerWasGoingToMakeAnotherMove);
 			assertFalse(referee.getCurrentPlayer().equals(playerOfPlayerMove));
 		} else if (p1.equals("current")) {
-			assertTrue(playerWasGoingToMakeAnotherMove);
+			assertTrue(referee.playerWasGoingToMakeAnotherMove);
 			assertTrue(referee.getCurrentPlayer().equals(playerOfPlayerMove));
 		}
 	}
@@ -164,8 +185,6 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		}
 		//If there were no errors up to this point, conduct the game.
 		referee.conductGame();
-		informers = referee.informers;
-		playerWasGoingToMakeAnotherMove = referee.playerWasGoingToMakeAnotherMove;
 	}	
 	
 	private void invalidSourceCoordinate(String reason) {
@@ -185,20 +204,19 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	@Override
 	public void thePlayerPicksAnyDestinationCoordinate() {
 		referee.conductGame();
-		informers = referee.informers;
-		playerWasGoingToMakeAnotherMove = referee.playerWasGoingToMakeAnotherMove;
 	}
 
 	@Override
 	public void anErrorMessageIsShownSayingP1(String p1) {
-		assertTrue(informers.size() > 0); //Because there is at least 1 error message and 1 message about the next move.
-		assertEquals(p1, informers.get(0)); //Error message stays in the 0th index.
+		assertTrue(referee.informers.size() > 0); //Because there is at least 1 error message and 1 message about the next move.
+		assertEquals(p1, referee.informers.get(0)); //Error message stays in the 0th index.
 	}
 
 	@Override
 	public void thePlayerIsAskedForAnotherP1Coordinate(String p1) {
+		assertTrue(referee.playerWasGoingToMakeAnotherMove);
 		if (p1.equals("source")) {
-			assertEquals("Player will be asked for another source coordinate (previous move was invalid)...", informers.get(1));
+			assertEquals("Player will be asked for another source coordinate (previous move was invalid)...", referee.informers.get(1));
 		} else {
 			throw new PendingException();
 		}
@@ -255,26 +273,29 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void onlyOnePieceOfTheOpponentIsPresentAtTheGameBoard() {
-		throw new PendingException();
-
+		IPlayer otherPlayer = getOtherPlayer();
+		int otherPlayerPieceCount = 0;
+		for (AbstractPiece otherPlayerPiece : otherPlayer.getPieceList()) {
+			if (otherPlayerPiece.getCurrentZone() == Zone.ONBOARD)
+				otherPlayerPieceCount++;
+		}
+		assertEquals(1, otherPlayerPieceCount);
 	}
 
 	@Override
 	public void thePlayerJumpsOverTheLastPieceOfTheOpponent() {
-		throw new PendingException();
-
+		referee.conductGame();
+		assertEquals(DestinationCoordinateValidity.VALID_JUMP, this.destinationCoordinateValidityOfPlayerMove);
 	}
 
 	@Override
 	public void theOpponentLosesTheGame() {
-		throw new PendingException();
-
+		assertEquals(getOtherPlayer(), referee.loser);
 	}
 
 	@Override
 	public void thePlayerWinsTheGame() {
-		throw new PendingException();
-
+		assertEquals(playerOfPlayerMove, referee.winner);
 	}
 
 	@Override
@@ -357,8 +378,16 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void thePlayerMakesAMoveLeavingNoValidDestinationCoordinatesForAnyOfTheOpponentsPieces() {
-		throw new PendingException();
-
+		referee.conductGame();
+		boolean noValidMove = true;
+		IPlayer otherPlayer = getOtherPlayer();
+		List<IMoveCoordinate> opponentAllPossibleMoves = findAllMoves(otherPlayer);
+		for (IMoveCoordinate move : opponentAllPossibleMoves) {
+			DestinationCoordinateValidity validity = checkDestinationCoordinate(otherPlayer, move.getSourceCoordinate(), move.getDestinationCoordinate());
+			if (validity == DestinationCoordinateValidity.VALID_REGULAR || validity == DestinationCoordinateValidity.VALID_JUMP)
+				noValidMove = false;
+		}
+		assertTrue(noValidMove);
 	}
 
 	@Override
@@ -379,8 +408,6 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		}
 		
 		referee.conductGame();
-		informers = referee.informers;
-		playerWasGoingToMakeAnotherMove = referee.playerWasGoingToMakeAnotherMove;
 	}
 
 	@Override
@@ -399,9 +426,9 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	}
 	
 	//PRIVATE/HELPER METHODS AND CLASSES
-	private List<IMoveCoordinate> findPossibleJumpMoves() {
+	private List<IMoveCoordinate> findPossibleJumpMoves(IPlayer player) {
 		List<IMoveCoordinate> possibleJumpMoves = new ArrayList<IMoveCoordinate>();
-		for (AbstractPiece anyPlayerPiece : playerOfPlayerMove.getPieceList()) {
+		for (AbstractPiece anyPlayerPiece : player.getPieceList()) {
 			List<ICoordinate> relativeCoordsWithOpponentPiece = new ArrayList<ICoordinate>();
 			List<ICoordinate> relativeCoords = new ArrayList<ICoordinate>();
 			if (anyPlayerPiece instanceof King) {
@@ -414,7 +441,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 			}
 			for (ICoordinate relativeCoord : relativeCoords) {
 				AbstractPiece adjacentPiece = getPieceAtCoordinate(new Coordinate(anyPlayerPiece.getCurrentCoordinate().getXCoordinate() + relativeCoord.getXCoordinate(), anyPlayerPiece.getCurrentCoordinate().getYCoordinate() + relativeCoord.getYCoordinate()));
-				if (adjacentPiece != null && !adjacentPiece.getPlayer().equals(playerOfPlayerMove))
+				if (adjacentPiece != null && !adjacentPiece.getPlayer().equals(player))
 					relativeCoordsWithOpponentPiece.add(relativeCoord);
 			}
 			for (ICoordinate relativeCoordWithOpponentPiece : relativeCoordsWithOpponentPiece) {
@@ -430,8 +457,33 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		return possibleJumpMoves;
 	}
 
+	private List<IMoveCoordinate> findAllMoves(IPlayer player) {
+		List<IMoveCoordinate> allPossibleMoves = new ArrayList<IMoveCoordinate>();
+		for (AbstractPiece anyPlayerPiece : player.getPieceList()) {
+			List<ICoordinate> relativeCoords = new ArrayList<ICoordinate>();
+			ICoordinate anyPlayerPieceCoordinate = anyPlayerPiece.getCurrentCoordinate();
+			if (anyPlayerPiece instanceof King) {
+				relativeCoords.add(new Coordinate(-1,1)); relativeCoords.add(new Coordinate(1,1));
+				relativeCoords.add(new Coordinate(-1,-1)); relativeCoords.add(new Coordinate(1,-1));
+			} else if (anyPlayerPiece.getGoalDirection() == Direction.N) {
+				relativeCoords.add(new Coordinate(-1,1)); relativeCoords.add(new Coordinate(1,1));
+			} else {
+				relativeCoords.add(new Coordinate(-1,-1)); relativeCoords.add(new Coordinate(1,-1));
+			}
+			for (ICoordinate relativeCoord : relativeCoords) {
+				ICoordinate adjacentSquareCoordinate = new Coordinate(anyPlayerPieceCoordinate.getXCoordinate() + relativeCoord.getXCoordinate(), anyPlayerPieceCoordinate.getYCoordinate() + relativeCoord.getYCoordinate());
+				AbstractPiece adjacentPiece = getPieceAtCoordinate(adjacentSquareCoordinate);
+				if (adjacentPiece == null)
+					allPossibleMoves.add(new MoveCoordinate(anyPlayerPieceCoordinate, adjacentSquareCoordinate));
+			}
+		}
+		List<IMoveCoordinate> possibleJumpMoves = findPossibleJumpMoves(player);
+		allPossibleMoves.addAll(possibleJumpMoves);
+		return allPossibleMoves;
+	}
+	
 	private boolean isMoveOneOfPossibleJumpMoves() {
-		List<IMoveCoordinate> possibleJumpMoves = findPossibleJumpMoves();
+		List<IMoveCoordinate> possibleJumpMoves = findPossibleJumpMoves(playerOfPlayerMove);
 		if (possibleJumpMoves.size() == 0)
 			return true;
 		for (IMoveCoordinate move : possibleJumpMoves) {
@@ -528,8 +580,36 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		return DestinationCoordinateValidity.UNKNOWN_ERROR;
 	}
 
-
+	private IPlayer getOtherPlayer() {
+		int currentPlayerId = this.playerOfPlayerMove.getId();
+		int otherPlayerId = currentPlayerId+1;
+		if (otherPlayerId >= referee.getNumberOfPlayers()) 
+			otherPlayerId = 0;
+		return referee.getPlayerbyID(otherPlayerId);
+	}
 	
+	private void output(String title, List<?> list) {
+		output(title);
+		for (Object obj : list)
+			output(obj.toString());
+	}
 	
+	private void output(String str) {
+		outputter.println(str);
+		outputter.flush();
+	}
 	
+	private void output() {
+		outputter.println();
+		outputter.flush();
+	}
+	
+	private void breakpoint(String sectionName) {
+		if (referee.reader.getSectionName().equals(sectionName))
+			//Have a breakpoint at the following line.
+			System.out.println("Breakpoint at " + sectionName);
+		
+		if (sectionName.equals("any"))
+			System.out.println("Mandatory breakpoint");
+	}
 }

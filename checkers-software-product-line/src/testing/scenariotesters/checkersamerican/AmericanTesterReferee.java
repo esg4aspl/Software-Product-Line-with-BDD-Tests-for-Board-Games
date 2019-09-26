@@ -51,6 +51,10 @@ public class AmericanTesterReferee extends AbstractReferee {
 	List<String> informers;
 	String endTestStatus;
 	boolean playerWasGoingToMakeAnotherMove;
+	IPlayer winner;
+	IPlayer loser;
+	boolean isDraw;
+	boolean gameEnded;
 
 	protected AmericanCheckersBoardConsoleView consoleView;
 	
@@ -58,6 +62,7 @@ public class AmericanTesterReferee extends AbstractReferee {
 		super(checkersGameConfiguration);
 		this.playerWasGoingToMakeAnotherMove = false;
 		informers = new ArrayList<String>();
+		gameEnded = false;
 		endTestStatus = "Test running...";
 	}
 	
@@ -204,6 +209,7 @@ public class AmericanTesterReferee extends AbstractReferee {
 		if(!endOfGame) {
 			
 			view.printMessage("Game begins ...");
+			view.printMessage("Testing: " + reader.getSectionName());
 			view.printMessage("Player turn: " + reader.getCurrentTurnPlayerIconColor());
 			view.printMessage("Player move: " + playerMove.toString());
 			view.printMessage("B: Pawn of 'black' player");
@@ -230,7 +236,10 @@ public class AmericanTesterReferee extends AbstractReferee {
 			endOfGameDraw = (isSatisfied(noPromoteRule, this) || isSatisfied(noPieceCapturedForFortyTurn, this));
 			
 			view.printMessage("End Of Game? " + endOfGame);
-			if (endOfGame || endOfGameDraw) break;
+			if (endOfGame || endOfGameDraw) {
+				gameEnded=true;
+				break;
+			}
 			
 			if (!playerWasGoingToMakeAnotherMove) {
 				currentPlayerID++;
@@ -244,19 +253,29 @@ public class AmericanTesterReferee extends AbstractReferee {
 		} 
 		//consoleView.drawBoardView();
 		
-		if(endOfGameDraw)
+		if(endOfGameDraw) {
+			isDraw = true;
+			winner = null;
+			loser = null;
 			printMessage("DRAW\n" + announceDraw());
-		else
+		} else {
+			isDraw = false;
+			winner = currentPlayer;
+			loser = getOtherPlayer();
 			printMessage("WINNER " + announceWinner());
-		
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		consoleView.closeFile();
-		System.exit(0);
+		
+		endTest("Test ended with a valid player move. The game ended.");
+		return;
+		
+//		try {
+//			Thread.sleep(5000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		consoleView.closeFile();
+//		System.exit(0);
 	}
 
 	protected boolean conductMove() {
@@ -411,12 +430,22 @@ public class AmericanTesterReferee extends AbstractReferee {
 		System.out.println("Test: " + setUpName);
 		System.out.println("Status: " + endTestStatus);
 		System.out.println("Informers: " + informers.toString());
+		System.out.println("Was player going to make another move?: " + this.playerWasGoingToMakeAnotherMove);
+		System.out.println("End of the game? " + this.gameEnded);
+		if (gameEnded)
+			System.out.println("isDraw?: " + this.isDraw + ", Winner: " + winner + ", Loser: " + loser);
 		System.out.println("Board: ");
 		view.drawBoardView();
 		System.out.println("-------------------------------------------------------------------------------------------------------------------------------\n");
 	}
 	
-	
+	private IPlayer getOtherPlayer() {
+		int currentPlayerId = this.currentPlayer.getId();
+		int otherPlayerId = currentPlayerId+1;
+		if (otherPlayerId >= getNumberOfPlayers()) 
+			otherPlayerId = 0;
+		return getPlayerbyID(otherPlayerId);
+	}
 	
 //	private void conductAutomaticGame() {				
 //		printMessage("Automatic Game begins ...");
