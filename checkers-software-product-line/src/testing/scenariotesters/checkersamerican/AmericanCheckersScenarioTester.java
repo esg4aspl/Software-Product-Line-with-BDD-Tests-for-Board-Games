@@ -224,54 +224,6 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	}
 
 	@Override
-	public void thereIsAPossibilityForThePlayerToMakeAJumpMove() {
-		throw new PendingException();
-
-	}
-
-	@Override
-	public void thePlayerPicksAMoveThatIsNotOneOfTheAvailableJumpMoves() {
-		throw new PendingException();
-
-	}
-
-	@Override
-	public void thePlayerHasPerformedOneOrMoreJumpMoves() {
-		throw new PendingException();
-
-	}
-
-	@Override
-	public void thePlayerPicksAValidDestinationCoordinateWhereNoMoreJumpMovesWillBePossible() {
-		throw new PendingException();
-
-	}
-
-	@Override
-	public void theMoveIsPerformed() {
-		throw new PendingException();
-
-	}
-
-	@Override
-	public void thePlayerPicksAValidDestinationCoordinateWhereHisNormalPieceWillBecomeAKingPiece() {
-		throw new PendingException();
-
-	}
-
-	@Override
-	public void thePieceTransformedToAKingPiece() {
-		throw new PendingException();
-
-	}
-
-	@Override
-	public void thePlayerPicksAMoveWithANormalPieceAndADestinationCoordinateInOpponentsCrownhead() {
-		throw new PendingException();
-
-	}
-
-	@Override
 	public void onlyOnePieceOfTheOpponentIsPresentAtTheGameBoard() {
 		IPlayer otherPlayer = getOtherPlayer();
 		int otherPlayerPieceCount = 0;
@@ -317,30 +269,6 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	}
 
 	@Override
-	public void theGameEndsInADraw() {
-		throw new PendingException();
-
-	}
-
-	@Override
-	public void thePlayerMovesANormalPieceToANoncrownheadCoordinate() {
-		throw new PendingException();
-
-	}
-
-	@Override
-	public void theNumberOfMovesWithoutUpgradeIsIncrementedBy1() {
-		throw new PendingException();
-
-	}
-
-	@Override
-	public void theGameIsEndedAsADrawIfTheNumberOfMovesWithoutUpgradeIs40() {
-		throw new PendingException();
-
-	}
-
-	@Override
 	public void thePlayerHasOnlyOnePieceOnTheGameBoard() {
 		throw new PendingException();
 
@@ -354,24 +282,6 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void theGameIsEndedADrawIfTheOpponentStillHasOnePieceOnTheGameBoard() {
-		throw new PendingException();
-
-	}
-
-	@Override
-	public void thePlayerMovesAPieceWithoutUndertakingAnOpponentPiece() {
-		throw new PendingException();
-
-	}
-
-	@Override
-	public void theNumberOfMovesWithoutUndertakeIsIncrementedBy1() {
-		throw new PendingException();
-
-	}
-
-	@Override
-	public void theGameIsEndedAsInDrawIfTheNumberOfMovesWithoutUndertakeIs40() {
 		throw new PendingException();
 
 	}
@@ -423,6 +333,30 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		assertTrue(newPiece.getPieceMoveConstraints() instanceof KingMoveConstraints);
 		assertTrue(newPiece instanceof King);
 		pieceOfPlayerMove = newPiece;
+	}
+	
+	@Override
+	public void theGameIsEndedAsADraw() {
+		assertTrue(referee.gameEnded);
+		assertTrue(referee.isDraw);
+	}
+
+	@Override
+	public void theNumberOfConsecutiveIndecisiveMovesIs39() {
+		int noPromote = referee.noPromoteMoveCount;
+		int noCapture = referee.noCaptureMoveCount;
+		if (noPromote < noCapture)
+			assertEquals(39, noPromote);
+		else
+			assertEquals(39, noCapture);
+	}
+
+	@Override
+	public void thePlayerMakesARegularMoveWithoutPromoting() {
+		breakpoint("endOfTheGameInDrawFortyIndecisiveMoves2");
+		assertEquals(DestinationCoordinateValidity.VALID_REGULAR, destinationCoordinateValidityOfPlayerMove);
+		referee.conductGame();
+		assertEquals(pieceOfPlayerMove, referee.getCoordinatePieceMap().getPieceAtCoordinate(destinationCoordinateOfPlayerMove));
 	}
 	
 	//PRIVATE/HELPER METHODS AND CLASSES
@@ -612,4 +546,8 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		if (sectionName.equals("any"))
 			System.out.println("Mandatory breakpoint");
 	}
+
+
+
+	
 }

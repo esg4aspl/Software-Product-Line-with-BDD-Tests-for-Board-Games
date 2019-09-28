@@ -107,26 +107,6 @@ public class StepDefinitions {
         actionwords.theOtherPlayerAcceptsTheOffer();
     }
 
-    @Then("^the game ends in a draw$")
-    public void theGameEndsInADraw() {
-        actionwords.theGameEndsInADraw();
-    }
-
-    @When("^the player moves a normal piece to a non-crownhead coordinate$")
-    public void thePlayerMovesANormalPieceToANoncrownheadCoordinate() {
-        actionwords.thePlayerMovesANormalPieceToANoncrownheadCoordinate();
-    }
-
-    @Then("^the number of moves without upgrade is incremented by 1$")
-    public void theNumberOfMovesWithoutUpgradeIsIncrementedBy1() {
-        actionwords.theNumberOfMovesWithoutUpgradeIsIncrementedBy1();
-    }
-
-    @Then("^the game is ended as a draw if the number of moves without upgrade is 40$")
-    public void theGameIsEndedAsADrawIfTheNumberOfMovesWithoutUpgradeIs40() {
-        actionwords.theGameIsEndedAsADrawIfTheNumberOfMovesWithoutUpgradeIs40();
-    }
-
     @Given("^the player has only one piece on the game board$")
     public void thePlayerHasOnlyOnePieceOnTheGameBoard() {
         actionwords.thePlayerHasOnlyOnePieceOnTheGameBoard();
@@ -140,21 +120,6 @@ public class StepDefinitions {
     @Then("^the game is ended a draw if the opponent still has one piece on the game board$")
     public void theGameIsEndedADrawIfTheOpponentStillHasOnePieceOnTheGameBoard() {
         actionwords.theGameIsEndedADrawIfTheOpponentStillHasOnePieceOnTheGameBoard();
-    }
-
-    @When("^the player moves a piece without undertaking an opponent piece$")
-    public void thePlayerMovesAPieceWithoutUndertakingAnOpponentPiece() {
-        actionwords.thePlayerMovesAPieceWithoutUndertakingAnOpponentPiece();
-    }
-
-    @Then("^the number of moves without undertake is incremented by 1$")
-    public void theNumberOfMovesWithoutUndertakeIsIncrementedBy1() {
-        actionwords.theNumberOfMovesWithoutUndertakeIsIncrementedBy1();
-    }
-
-    @Then("^the game is ended as in draw if the number of moves without undertake is 40$")
-    public void theGameIsEndedAsInDrawIfTheNumberOfMovesWithoutUndertakeIs40() {
-        actionwords.theGameIsEndedAsInDrawIfTheNumberOfMovesWithoutUndertakeIs40();
     }
 
     @When("^the player makes a move leaving no valid destination coordinates for any of the opponent's pieces$")
@@ -175,5 +140,20 @@ public class StepDefinitions {
     @Then("^the piece at the source coordinate becomes a king piece$")
     public void thePieceAtTheSourceCoordinateBecomesAKingPiece() {
         actionwords.thePieceAtTheSourceCoordinateBecomesAKingPiece();
+    }
+
+    @Then("^the game is ended as a draw$")
+    public void theGameIsEndedAsADraw() {
+        actionwords.theGameIsEndedAsADraw();
+    }
+
+    @Given("^the number of consecutive indecisive moves is 39$")
+    public void theNumberOfConsecutiveIndecisiveMovesIs39() {
+        actionwords.theNumberOfConsecutiveIndecisiveMovesIs39();
+    }
+
+    @When("^the player makes a regular move without promoting$")
+    public void thePlayerMakesARegularMoveWithoutPromoting() {
+        actionwords.thePlayerMakesARegularMoveWithoutPromoting();
     }
 }

@@ -44,6 +44,10 @@ Feature: American Checkers
       | validJumpMove8 | other | uid:729aa3e6-c3ad-437d-867b-5b6bc250f876 |
       | validJumpMove9 | other | uid:6df2d7d1-407a-4ab0-93e4-ca365123303c |
       | validJumpMove10 | other | uid:cdb9857d-906b-4382-b440-436f63e2e6ae |
+      | validJumpMove11 | other | uid:903b026f-2290-4959-b574-e56187d7a760 |
+      | validJumpMove12 | other | uid:609b3028-54a3-441e-93f0-d883863d6411 |
+      | validJumpMove13 | other | uid:06c5b80f-dccb-47bd-a060-d3e54318aa3d |
+      | validJumpMove14 | other | uid:ede75e02-e9a6-40dd-898b-c5aa977afdb4 |
 
   Scenario Outline: Invalid Source Coordinate for Move (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
@@ -107,6 +111,9 @@ Feature: American Checkers
       | crowningTheEligiblePiece3 | uid:5efcaa48-92f3-4f6c-a99f-d712a4505ea0 |
       | crowningTheEligiblePiece4 | uid:eafd3c78-e036-48a6-8ca7-ac52b4689fa6 |
       | crowningTheEligiblePiece5 | uid:0f9fe1b9-038b-45dc-b4e1-9cce778db199 |
+      | crowningTheEligiblePiece6 | uid:8449ff16-b30d-4bbe-9365-78648e3fe5b5 |
+      | crowningTheEligiblePiece7 | uid:a63dbeb8-bc55-4733-b4f0-aaff44cdf4ac |
+      | crowningTheEligiblePiece8 | uid:a83fc15b-f398-4b3f-9ef8-6d26a8983a0a |
 
   Scenario Outline: End of the Game (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
@@ -128,7 +135,7 @@ Feature: American Checkers
     And none of the players can force a win on the other player
     When one player offers the other to end the game in a draw
     And the other player accepts the offer
-    Then the game ends in a draw
+    Then the game is ended as a draw
 
     Examples:
       | file_name | hiptest-uid |
@@ -137,20 +144,6 @@ Feature: American Checkers
       | endOfTheGameInDraw3 | uid:1a8029ee-6e8c-455d-8179-0d248eb8e244 |
       | endOfTheGameInDraw4 | uid:74c6a712-c2f8-4d28-8289-890b9d1c5f54 |
       | endOfTheGameInDraw5 | uid:cb582ac8-ff70-466d-be46-e0cc04900680 |
-
-  Scenario Outline: End of the Game In Draw - Forty Moves Without Becoming King (<hiptest-uid>)
-    Given the game is played up to a certain point from file "<file_name>"
-    When the player moves a normal piece to a non-crownhead coordinate
-    Then the number of moves without upgrade is incremented by 1
-    And the game is ended as a draw if the number of moves without upgrade is 40
-
-    Examples:
-      | file_name | hiptest-uid |
-      | endOfTheGameInDrawFortyMovesWithoutBecomingKing1 | uid:49fa6e41-6714-4871-a0ae-472eebc4112d |
-      | endOfTheGameInDrawFortyMovesWithoutBecomingKing2 | uid:c34d3f05-82d0-4ae9-ab91-52e42b4f9083 |
-      | endOfTheGameInDrawFortyMovesWithoutBecomingKing3 | uid:5a2ad867-3cc8-41d4-be22-0752d45ee0db |
-      | endOfTheGameInDrawFortyMovesWithoutBecomingKing4 | uid:141baf0b-ab44-4401-8c46-ed2d15835dea |
-      | endOfTheGameInDrawFortyMovesWithoutBecomingKing5 | uid:a8254e63-85b3-4059-8304-2abdcdfa3a9d |
 
   Scenario Outline: End of the Game In Draw - Both Players Have One Piece (<hiptest-uid>)
     Given the player has only one piece on the game board
@@ -165,21 +158,21 @@ Feature: American Checkers
       | endOfTheGameInDrawBothPlayersHaveOnePiece4 | uid:c8bd5b89-1cfa-4fa5-b5ef-6c45011d2c6e |
       | endOfTheGameInDrawBothPlayersHaveOnePiece5 | uid:d3f63b14-0914-4c5c-b445-5fb72467a0b7 |
 
-  Scenario Outline: End of the Game In Draw - Forty Moves Without Jumps (<hiptest-uid>)
+  Scenario Outline: End of the Game In Draw - Forty Moves Without Becoming King and Without Jumping (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
-    When the player moves a piece without undertaking an opponent piece
-    Then the number of moves without undertake is incremented by 1
-    And the game is ended as in draw if the number of moves without undertake is 40
+    And the number of consecutive indecisive moves is 39
+    When the player makes a regular move without promoting
+    Then the game is ended as a draw
 
     Examples:
       | file_name | hiptest-uid |
-      | endOfTheGameInDrawFortyMovesWithoutJumps1 | uid:81320562-5487-44aa-bc4e-faba2b5a4274 |
-      | endOfTheGameInDrawFortyMovesWithoutJumps2 | uid:0da5b531-3274-44b1-adf1-5c9717a6e31b |
-      | endOfTheGameInDrawFortyMovesWithoutJumps3 | uid:b3737bad-c6df-429e-913e-291f5b272fd5 |
-      | endOfTheGameInDrawFortyMovesWithoutJumps4 | uid:6c2a98ee-ae66-4197-8730-a36bcaf6c0e6 |
-      | endOfTheGameInDrawFortyMovesWithoutJumps5 | uid:077ae0f5-eebc-43f7-8faa-6ffa0d73be7d |
+      | endOfTheGameInDrawFortyIndecisiveMoves1 | uid:bba0bb7f-7cf2-4189-ba45-e44ade035d66 |
+      | endOfTheGameInDrawFortyIndecisiveMoves2 | uid:4396c38f-a409-48c7-9ae4-b4ff0de4f1d2 |
+      | endOfTheGameInDrawFortyIndecisiveMoves3 | uid:1b998bd5-7fe1-4fef-b1b4-2b2cde0421be |
+      | endOfTheGameInDrawFortyIndecisiveMoves4 | uid:617db18f-913b-4144-a95b-d2d470aeb2d9 |
+      | endOfTheGameInDrawFortyIndecisiveMoves5 | uid:43e9bfc8-5fb6-4f8f-81fc-00f8ca5e3941 |
 
-  Scenario Outline: End of Game - Opponent Can't Make a Valid Move (<hiptest-uid>)
+  Scenario Outline: End of the Game - Opponent Can't Make a Valid Move (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     When the player makes a move leaving no valid destination coordinates for any of the opponent's pieces
     Then the opponent loses the game
@@ -187,8 +180,8 @@ Feature: American Checkers
 
     Examples:
       | file_name | hiptest-uid |
-      | endOfTheGameOpponentCantMakeAValidMove1 | uid:596e83da-0e72-4acd-8469-53575343d2f5 |
-      | endOfTheGameOpponentCantMakeAValidMove2 | uid:6e556aca-4962-4867-8179-8fbbad2c9149 |
-      | endOfTheGameOpponentCantMakeAValidMove3 | uid:6f7d14da-aae1-4876-92f6-47c38cc0ef1f |
-      | endOfTheGameOpponentCantMakeAValidMove4 | uid:72e5c64c-80b8-43cb-ab10-7d61148f00c2 |
-      | endOfTheGameOpponentCantMakeAValidMove5 | uid:94f147bc-c8f1-4aa4-8d60-843ef86e1677 |
+      | endOfTheGameOpponentCantMakeAValidMove1 | uid:df5b44aa-ec87-467f-91c7-f379f438830c |
+      | endOfTheGameOpponentCantMakeAValidMove2 | uid:d4634752-85cb-4747-9eba-88880a66babf |
+      | endOfTheGameOpponentCantMakeAValidMove3 | uid:997524f3-122e-42b5-85d2-6bebcf7294e9 |
+      | endOfTheGameOpponentCantMakeAValidMove4 | uid:144db367-78f7-4786-bb6c-40c7266cf67b |
+      | endOfTheGameOpponentCantMakeAValidMove5 | uid:2f21172e-5d77-4c69-8d5f-87783232210b |

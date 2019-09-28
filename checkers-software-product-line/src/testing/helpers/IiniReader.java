@@ -11,5 +11,7 @@ public interface IiniReader {
 	public String getCurrentTurnPlayerIconColor();
 	public String getFileLocation();
 	public String getSectionName();
+	public String[] getExtras();
+	public boolean hasExtras();
 	
 }

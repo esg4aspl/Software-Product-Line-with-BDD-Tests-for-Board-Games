@@ -62,38 +62,6 @@ public class Actionwords {
     	scenarioTester.thePlayerIsAskedForAnotherP1Coordinate(p1);
     }
 
-    public void thereIsAPossibilityForThePlayerToMakeAJumpMove() {
-    	scenarioTester.thereIsAPossibilityForThePlayerToMakeAJumpMove();
-    }
-
-    public void thePlayerPicksAMoveThatIsNotOneOfTheAvailableJumpMoves() {
-    	scenarioTester.thePlayerPicksAMoveThatIsNotOneOfTheAvailableJumpMoves();
-    }
-
-    public void thePlayerHasPerformedOneOrMoreJumpMoves() {
-    	scenarioTester.thePlayerHasPerformedOneOrMoreJumpMoves();
-    }
-
-    public void thePlayerPicksAValidDestinationCoordinateWhereNoMoreJumpMovesWillBePossible() {
-    	scenarioTester.thePlayerPicksAValidDestinationCoordinateWhereNoMoreJumpMovesWillBePossible();
-    }
-
-    public void theMoveIsPerformed() {
-    	scenarioTester.theMoveIsPerformed();
-    }
-
-    public void thePlayerPicksAValidDestinationCoordinateWhereHisNormalPieceWillBecomeAKingPiece() {
-    	scenarioTester.thePlayerPicksAValidDestinationCoordinateWhereHisNormalPieceWillBecomeAKingPiece();
-    }
-
-    public void thePieceTransformedToAKingPiece() {
-    	scenarioTester.thePieceTransformedToAKingPiece();
-    }
-
-    public void thePlayerPicksAMoveWithANormalPieceAndADestinationCoordinateInOpponentsCrownhead() {
-    	scenarioTester.thePlayerPicksAMoveWithANormalPieceAndADestinationCoordinateInOpponentsCrownhead();
-    }
-
     public void onlyOnePieceOfTheOpponentIsPresentAtTheGameBoard() {
     	scenarioTester.onlyOnePieceOfTheOpponentIsPresentAtTheGameBoard();
     }
@@ -122,22 +90,6 @@ public class Actionwords {
     	scenarioTester.theOtherPlayerAcceptsTheOffer();
     }
 
-    public void theGameEndsInADraw() {
-    	scenarioTester.theGameEndsInADraw();
-    }
-
-    public void thePlayerMovesANormalPieceToANoncrownheadCoordinate() {
-    	scenarioTester.thePlayerMovesANormalPieceToANoncrownheadCoordinate();
-    }
-
-    public void theNumberOfMovesWithoutUpgradeIsIncrementedBy1() {
-    	scenarioTester.theNumberOfMovesWithoutUpgradeIsIncrementedBy1();
-    }
-
-    public void theGameIsEndedAsADrawIfTheNumberOfMovesWithoutUpgradeIs40() {
-    	scenarioTester.theGameIsEndedAsADrawIfTheNumberOfMovesWithoutUpgradeIs40();
-    }
-
     public void thePlayerHasOnlyOnePieceOnTheGameBoard() {
     	scenarioTester.thePlayerHasOnlyOnePieceOnTheGameBoard();
     }
@@ -148,18 +100,6 @@ public class Actionwords {
 
     public void theGameIsEndedADrawIfTheOpponentStillHasOnePieceOnTheGameBoard() {
     	scenarioTester.theGameIsEndedADrawIfTheOpponentStillHasOnePieceOnTheGameBoard();
-    }
-
-    public void thePlayerMovesAPieceWithoutUndertakingAnOpponentPiece() {
-    	scenarioTester.thePlayerMovesAPieceWithoutUndertakingAnOpponentPiece();
-    }
-
-    public void theNumberOfMovesWithoutUndertakeIsIncrementedBy1() {
-    	scenarioTester.theNumberOfMovesWithoutUndertakeIsIncrementedBy1();
-    }
-
-    public void theGameIsEndedAsInDrawIfTheNumberOfMovesWithoutUndertakeIs40() {
-    	scenarioTester.theGameIsEndedAsInDrawIfTheNumberOfMovesWithoutUndertakeIs40();
     }
 
 	public void thePlayerMakesAMoveLeavingNoValidDestinationCoordinatesForAnyOfTheOpponentsPieces() {
@@ -176,6 +116,18 @@ public class Actionwords {
 
 	public void thePieceAtTheSourceCoordinateBecomesAKingPiece() {
 		scenarioTester.thePieceAtTheSourceCoordinateBecomesAKingPiece();
+	}
+
+	public void theGameIsEndedAsADraw() {
+		scenarioTester.theGameIsEndedAsADraw();
+	}
+
+	public void theNumberOfConsecutiveIndecisiveMovesIs39() {
+		scenarioTester.theNumberOfConsecutiveIndecisiveMovesIs39();
+	}
+
+	public void thePlayerMakesARegularMoveWithoutPromoting() {
+		scenarioTester.thePlayerMakesARegularMoveWithoutPromoting();
 	}
 
 }

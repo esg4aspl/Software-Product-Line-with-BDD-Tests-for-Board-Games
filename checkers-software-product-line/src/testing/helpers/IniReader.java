@@ -22,6 +22,7 @@ public class IniReader implements IiniReader {
 	private Section board;
 	private IMoveCoordinate playerMove;
 	private String currentTurnPlayerIconColor;
+	private String[] extras;
 	private List<ICoordinatePieceDuo> coordinatePieceDuos;
 	
 	public IniReader(String fileLocation, String sectionName) {
@@ -33,6 +34,9 @@ public class IniReader implements IiniReader {
 			board = ini.get(section.get("boardSetUp"));
 			parsePlayerMove();
 			currentTurnPlayerIconColor = section.get("turn");
+			String extrasString = section.get("extras");
+			if (extrasString != null)
+				extras = extrasString.split(",");
 			coordinatePieceDuos = new ArrayList<ICoordinatePieceDuo>();
 			parseCoordinatePieceDuos();
 		} catch (IOException e) {
@@ -90,11 +94,33 @@ public class IniReader implements IiniReader {
 		return sectionName;
 	}
 
+	@Override
+	public String[] getExtras() {
+		return extras;
+	}
+
+	@Override
+	public boolean hasExtras() {
+		if (extras == null)
+			return false;
+		return true;
+	}
+
+
 	public static void main(String[] args) {
-		IiniReader reader = new IniReader("src/testing/helpers/AmericanCheckers.ini", "moveList");
+		IiniReader reader = new IniReader("src/testing/helpers/ExampleIni.ini", "exampleMove");
 		System.out.println(reader.getCoordinatePieceDuos().toString());
 		System.out.println(reader.getPlayerMove().toString());
 		System.out.println(reader.getCurrentTurnPlayerIconColor());
+		if (reader.hasExtras()) {
+			for (String extra : reader.getExtras())
+				System.out.println(extra);
+		} else {
+			System.out.println("extras is null");
+		}
 	}
+
+
+	
 
 }

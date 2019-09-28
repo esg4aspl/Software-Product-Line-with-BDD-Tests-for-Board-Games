@@ -6,6 +6,7 @@ import java.util.List;
 
 import base.AmericanCheckersBoard;
 import base.AmericanCheckersBoardConsoleView;
+import base.AmericanGameConfiguration;
 import base.Pawn;
 import base.PawnMoveConstraints;
 import base.PawnMovePossibilities;
@@ -28,6 +29,7 @@ import core.IPlayer;
 import core.IPlayerList;
 import core.IRule;
 import core.MoveOpResult;
+import core.Zone;
 import rules.RuleDestinationCoordinateMustBeValidForCurrentPiece;
 import rules.RuleDrawIfNoPromoteForFortyTurn;
 import rules.RuleEndOfGameGeneral;
@@ -55,6 +57,7 @@ public class AmericanTesterReferee extends AbstractReferee {
 	IPlayer loser;
 	boolean isDraw;
 	boolean gameEnded;
+	int noPromoteMoveCount, noCaptureMoveCount;
 
 	protected AmericanCheckersBoardConsoleView consoleView;
 	
@@ -93,6 +96,8 @@ public class AmericanTesterReferee extends AbstractReferee {
 			currentPlayerID = 1;
 			currentPlayer = playerList.getPlayer(1);
 		}
+		noPromoteMoveCount = getMoveCount("noPromote");
+		noCaptureMoveCount = getMoveCount("noCapture");
 	}
 
 	private void setupPlayers() {
@@ -194,12 +199,35 @@ public class AmericanTesterReferee extends AbstractReferee {
 		return playerMove;
 	}
 	
+	private boolean isThereAKingOnBoard() {
+		for (IPlayer p : playerList.getPlayers()) {
+			for (AbstractPiece piece : p.getPieceList()) {
+				if ( (piece instanceof King) && piece.getCurrentZone() == Zone.ONBOARD)
+					return true;
+			}
+		}
+		return false;
+	}
+	
 	public void conductGame() {	
 		boolean endOfGame = false;
 		boolean endOfGameDraw = false;
 
 		IRule noPromoteRule = new RuleDrawIfNoPromoteForFortyTurn();
 		IRule noPieceCapturedForFortyTurn = new RuleEndOfGameNoPieceCapturedForFortyTurn();
+		
+		
+		//loop limit is one more to register the current kings, which resets the turn counter. then it will stop when turns are equal to noPromoteMoveCount.
+		int loopLimit = isThereAKingOnBoard() ? noPromoteMoveCount+1 : noPromoteMoveCount;
+		for (int i = 0; i < loopLimit; i++)
+			isSatisfied(noPromoteRule, this); //Call noPromoteRule.evaluate 39 times for it to think the next move will be the 40th without promoting.
+
+		
+		for (int i = 0; i < noCaptureMoveCount+1; i++)
+			isSatisfied(noPieceCapturedForFortyTurn, this);
+		
+		
+		
 //		if (automaticGameOn) {
 //			conductAutomaticGame();
 //			endOfGame = (isSatisfied(new RuleEndOfGameGeneral(), this) || isSatisfied(new RuleEndOfGameWhenOpponentBlocked(), this));
@@ -212,6 +240,8 @@ public class AmericanTesterReferee extends AbstractReferee {
 			view.printMessage("Testing: " + reader.getSectionName());
 			view.printMessage("Player turn: " + reader.getCurrentTurnPlayerIconColor());
 			view.printMessage("Player move: " + playerMove.toString());
+			view.printMessage("No promote count: " + noPromoteMoveCount);
+			view.printMessage("No capture count: " + noCaptureMoveCount);
 			view.printMessage("B: Pawn of 'black' player");
 			view.printMessage("A: King of 'black' player");
 			view.printMessage("W: Pawn of 'white' player");
@@ -231,15 +261,22 @@ public class AmericanTesterReferee extends AbstractReferee {
 //				currentMoveCoordinate = playerMove;			
 			}
 			consoleView.drawBoardView();
-
+			boolean noPromoteDraws = false;
+			boolean noCaptureDraws = false;
 			endOfGame = (isSatisfied(new RuleEndOfGameGeneral(), this) || isSatisfied(new RuleEndOfGameWhenOpponentBlocked(), this));
-			endOfGameDraw = (isSatisfied(noPromoteRule, this) || isSatisfied(noPieceCapturedForFortyTurn, this));
+			endOfGameDraw = ((noPromoteDraws = isSatisfied(noPromoteRule, this)) || (noCaptureDraws = isSatisfied(noPieceCapturedForFortyTurn, this)));
 			
-			view.printMessage("End Of Game? " + endOfGame);
+//			view.printMessage("End Of Game? " + endOfGame);
 			if (endOfGame || endOfGameDraw) {
-				gameEnded=true;
+				if (noPromoteDraws)
+					printMessage("The game ended as a draw because there have been no promoting in the last 40 moves.");
+				else if (noCaptureDraws)
+					printMessage("The game ended as a draw because there have been no capturing in the last 40 moves.");
+				this.gameEnded = true;
 				break;
 			}
+			
+			
 			
 			if (!playerWasGoingToMakeAnotherMove) {
 				currentPlayerID++;
@@ -447,6 +484,23 @@ public class AmericanTesterReferee extends AbstractReferee {
 		return getPlayerbyID(otherPlayerId);
 	}
 	
+	
+	private int getMoveCount(String extraCandidate) {
+		if (!reader.hasExtras())
+			return 0;
+		
+		for (String e : reader.getExtras()) {
+			String[] parts = e.split("-");
+			if (parts.length != 2)
+				continue;
+			if (parts[0].equals(extraCandidate))
+				return Integer.parseInt(parts[1]);
+		}
+		
+		return 0;
+	}
+	
+	
 //	private void conductAutomaticGame() {				
 //		printMessage("Automatic Game begins ...");
 //		automaticGameOn = true;
@@ -470,6 +524,35 @@ public class AmericanTesterReferee extends AbstractReferee {
 //		automaticGameOn = false;
 //		printMessage("Automatic Game ends ...");
 //	}
+	
+	//FOR MANUAL TESTING
+	public static void main(String[] args) {
+		//String[] moveArr = {"invalidDestinationCoordinateForMoveJumpedPieceIsNull1", "invalidDestinationCoordinateForMoveJumpedPieceIsOwnPiece1"};
+		//String[] moveArr = {"invalidDestinationCoordinateForMoveOutsideBorders1", "invalidDestinationCoordinateForMoveUnplayableColor1"};
+		//String[] moveArr= {"invalidDestinationCoordinateForMoveOccupied1"};
+		//String[] moveArr = {"validRegularMove5", "validJumpMove9", "validRegularMove4"};
+		
+		//String[] moveArr = {"validJumpMove11", "validJumpMove12", "validJumpMove13", "validJumpMove14"};
+		//String[] moveArr = {"crowningTheEligiblePiece6", "crowningTheEligiblePiece7", "crowningTheEligiblePiece8"};
+		String[] moveArr = {"crowningTheEligiblePiece6"};
+		
+		//String[] moveArr = {"crowningTheEligiblePiece1", "crowningTheEligiblePiece2", "crowningTheEligiblePiece3", "crowningTheEligiblePiece4"};
+		//String[] moveArr = {"invalidSourceCoordinateForMoveOpponentsPiece1", "invalidSourceCoordinateForMoveOpponentsPiece2"};
+ 		//String[] moveArr = {"invalidSourceCoordinateForMoveUnplayableColor1"};
+		//String[] moveArr = {"invalidDestinationCoordinateForMoveNotOneOfTheJumpMoves1", "invalidDestinationCoordinateForMoveJumpedPieceIsNull1", "invalidDestinationCoordinateForMoveJumpedPieceIsOwnPiece1"};
+		//MoveArr for tests using the "usefulBoard1"
+		//String[] moveArr = {"validJumpMove6", "validJumpMove7", "validJumpMove8", "invalidSourceCoordinateForMoveOpponentsPiece3", "invalidSourceCoordinateForMoveEmpty3", "invalidSourceCoordinateForMoveUnplayableColor2", "invalidSourceCoordinateForMoveOutsideBorders2", "invalidDestinationCoordinateForMoveOutsideBorders2", "invalidDestinationCoordinateForMoveUnallowedDirection2", "invalidDestinationCoordinateForMoveUnallowedDirection3", "invalidDestinationCoordinateForMoveOccupied2", "invalidDestinationCoordinateForMoveOccupied3", "invalidDestinationCoordinateForMoveNotOneOfTheJumpMoves2", "invalidDestinationCoordinateForMoveNotOneOfTheJumpMoves3", "invalidDestinationCoordinateForMoveUnplayableColor2", "invalidDestinationCoordinateForMoveTooFarAway2", "crowningTheEligiblePiece5"};                                                    
+		
+		for (String moveID : moveArr) {
+			System.out.println("\n\n\nTESTING: " + moveID);
+			AmericanTesterReferee referee = new AmericanTesterReferee(new AmericanGameConfiguration());
+			referee.setGameSetupName(moveID);
+			referee.setup();
+			referee.readPlayerMove();
+			referee.conductGame();
+		}
+		
+	}
 	
 	
 }
