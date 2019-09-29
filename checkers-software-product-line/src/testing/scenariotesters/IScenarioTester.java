@@ -42,9 +42,9 @@ public interface IScenarioTester {
 	public void thePlayerMakesAMoveLeavingNoValidDestinationCoordinatesForAnyOfTheOpponentsPieces();
 	
 	//American Checkers Agreed Draw
-	public void noneOfThePlayersCanForceAWinOnTheOtherPlayer();
-	public void onePlayerOffersTheOtherToEndTheGameInADraw();
-	public void theOtherPlayerAcceptsTheOffer();
+	public void inThePreviousTurnTheOpponentHasOfferedToEndTheGameInADraw();
+	public void thePlayerP1TheOffer(String p1);
+	public void p1Happens(String p1);
 	public void theGameIsEndedAsADraw();
 	
 	//American Checkers Implicit Draw
@@ -53,8 +53,7 @@ public interface IScenarioTester {
 	
 	//American Checkers One Piece Draw
 	public void thePlayerHasOnlyOnePieceOnTheGameBoard();
-	public void thePlayerJumpsOverOneOrMultiplePiecesOfTheOpponent();
-	public void theGameIsEndedADrawIfTheOpponentStillHasOnePieceOnTheGameBoard();
+	public void thePlayerJumpsOverOneOrMultiplePiecesLeavingTheOpponentWithOnlyOnePieceThatIsUnableToPerformAJumpMove();
 	
 
 	

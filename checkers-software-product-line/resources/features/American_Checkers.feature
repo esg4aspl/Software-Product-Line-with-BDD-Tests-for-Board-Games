@@ -48,6 +48,9 @@ Feature: American Checkers
       | validJumpMove12 | other | uid:609b3028-54a3-441e-93f0-d883863d6411 |
       | validJumpMove13 | other | uid:06c5b80f-dccb-47bd-a060-d3e54318aa3d |
       | validJumpMove14 | other | uid:ede75e02-e9a6-40dd-898b-c5aa977afdb4 |
+      | validJumpMove15 | other | uid:ce2e0608-ddcf-4e30-b113-1e0c63de6f8e |
+      | validJumpMove16 | current | uid:2c806a48-51fb-4a0c-bd1b-cb5d7c1a528a |
+      | validJumpMove17 | other | uid:4e584853-01d8-49f0-8c38-b775f9a0e9f8 |
 
   Scenario Outline: Invalid Source Coordinate for Move (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
@@ -126,37 +129,31 @@ Feature: American Checkers
       | file_name | hiptest-uid |
       | endOfTheGame1 | uid:e3cdd31b-df84-40c7-9cf6-b0ee33be2ac4 |
       | endOfTheGame2 | uid:174ca7d0-b756-4333-9e02-98a2d111d982 |
-      | endOfTheGame3 | uid:0f84fc41-0adf-41f4-824a-fa6e90719525 |
-      | endOfTheGame4 | uid:950581a9-d84f-4ae3-8d5d-95d91b57228e |
-      | endOfTheGame5 | uid:fe61c905-94bf-453e-9666-e07ebe8e1e5a |
 
   Scenario Outline: End of the Game In Draw (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
-    And none of the players can force a win on the other player
-    When one player offers the other to end the game in a draw
-    And the other player accepts the offer
-    Then the game is ended as a draw
+    And in the previous turn the opponent has offered to end the game in a draw
+    When the player "<offer_response>" the offer
+    Then "<result>" happens
 
     Examples:
-      | file_name | hiptest-uid |
-      | endOfTheGameInDraw1 | uid:a94e962e-29d6-4f74-8b74-26371952511c |
-      | endOfTheGameInDraw2 | uid:b818109a-e741-410e-9f3f-312c4aada157 |
-      | endOfTheGameInDraw3 | uid:1a8029ee-6e8c-455d-8179-0d248eb8e244 |
-      | endOfTheGameInDraw4 | uid:74c6a712-c2f8-4d28-8289-890b9d1c5f54 |
-      | endOfTheGameInDraw5 | uid:cb582ac8-ff70-466d-be46-e0cc04900680 |
+      | file_name | offer_response | result | hiptest-uid |
+      | endOfTheGameInDraw1 | accepts | the game is ended as a draw | uid:a94e962e-29d6-4f74-8b74-26371952511c |
+      | endOfTheGameInDraw2 | rejects | the next turn is given to the other player | uid:b818109a-e741-410e-9f3f-312c4aada157 |
+      | endOfTheGameInDraw3 | accepts | the game is ended as a draw | uid:1a8029ee-6e8c-455d-8179-0d248eb8e244 |
+      | endOfTheGameInDraw4 | accepts | the game is ended as a draw | uid:74c6a712-c2f8-4d28-8289-890b9d1c5f54 |
+      | endOfTheGameInDraw5 | rejects | the next turn is given to the other player | uid:cb582ac8-ff70-466d-be46-e0cc04900680 |
 
   Scenario Outline: End of the Game In Draw - Both Players Have One Piece (<hiptest-uid>)
+    Given the game is played up to a certain point from file "<file_name>"
     Given the player has only one piece on the game board
-    When the player jumps over one or multiple pieces of the opponent
-    Then the game is ended a draw if the opponent still has one piece on the game board
+    When the player jumps over one or multiple pieces leaving the opponent with only one piece that is unable to perform a jump move
+    Then the game is ended as a draw
 
     Examples:
       | file_name | hiptest-uid |
       | endOfTheGameInDrawBothPlayersHaveOnePiece1 | uid:8160c2ac-c8e8-4c07-9f12-83bdb147c7a2 |
       | endOfTheGameInDrawBothPlayersHaveOnePiece2 | uid:fc4947e9-33da-4829-b36e-79102b679618 |
-      | endOfTheGameInDrawBothPlayersHaveOnePiece3 | uid:d3217d60-b247-41b1-aeec-d473abdd5eb4 |
-      | endOfTheGameInDrawBothPlayersHaveOnePiece4 | uid:c8bd5b89-1cfa-4fa5-b5ef-6c45011d2c6e |
-      | endOfTheGameInDrawBothPlayersHaveOnePiece5 | uid:d3f63b14-0914-4c5c-b445-5fb72467a0b7 |
 
   Scenario Outline: End of the Game In Draw - Forty Moves Without Becoming King and Without Jumping (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
@@ -169,8 +166,6 @@ Feature: American Checkers
       | endOfTheGameInDrawFortyIndecisiveMoves1 | uid:bba0bb7f-7cf2-4189-ba45-e44ade035d66 |
       | endOfTheGameInDrawFortyIndecisiveMoves2 | uid:4396c38f-a409-48c7-9ae4-b4ff0de4f1d2 |
       | endOfTheGameInDrawFortyIndecisiveMoves3 | uid:1b998bd5-7fe1-4fef-b1b4-2b2cde0421be |
-      | endOfTheGameInDrawFortyIndecisiveMoves4 | uid:617db18f-913b-4144-a95b-d2d470aeb2d9 |
-      | endOfTheGameInDrawFortyIndecisiveMoves5 | uid:43e9bfc8-5fb6-4f8f-81fc-00f8ca5e3941 |
 
   Scenario Outline: End of the Game - Opponent Can't Make a Valid Move (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
@@ -182,6 +177,3 @@ Feature: American Checkers
       | file_name | hiptest-uid |
       | endOfTheGameOpponentCantMakeAValidMove1 | uid:df5b44aa-ec87-467f-91c7-f379f438830c |
       | endOfTheGameOpponentCantMakeAValidMove2 | uid:d4634752-85cb-4747-9eba-88880a66babf |
-      | endOfTheGameOpponentCantMakeAValidMove3 | uid:997524f3-122e-42b5-85d2-6bebcf7294e9 |
-      | endOfTheGameOpponentCantMakeAValidMove4 | uid:144db367-78f7-4786-bb6c-40c7266cf67b |
-      | endOfTheGameOpponentCantMakeAValidMove5 | uid:2f21172e-5d77-4c69-8d5f-87783232210b |

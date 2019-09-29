@@ -534,7 +534,9 @@ public class AmericanTesterReferee extends AbstractReferee {
 		
 		//String[] moveArr = {"validJumpMove11", "validJumpMove12", "validJumpMove13", "validJumpMove14"};
 		//String[] moveArr = {"crowningTheEligiblePiece6", "crowningTheEligiblePiece7", "crowningTheEligiblePiece8"};
-		String[] moveArr = {"crowningTheEligiblePiece6"};
+		
+		String[] moveArr =  {"endOfTheGameInDrawBothPlayersHaveOnePiece1", "endOfTheGameInDrawBothPlayersHaveOnePiece2", "validJumpMove17"};
+		//String[] moveArr = {"endOfTheGameOpponentCantMakeAValidMove1", "endOfTheGameOpponentCantMakeAValidMove2"};
 		
 		//String[] moveArr = {"crowningTheEligiblePiece1", "crowningTheEligiblePiece2", "crowningTheEligiblePiece3", "crowningTheEligiblePiece4"};
 		//String[] moveArr = {"invalidSourceCoordinateForMoveOpponentsPiece1", "invalidSourceCoordinateForMoveOpponentsPiece2"};

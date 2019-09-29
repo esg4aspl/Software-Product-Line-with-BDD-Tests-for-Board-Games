@@ -78,28 +78,8 @@ public class Actionwords {
     	scenarioTester.thePlayerWinsTheGame();
     }
 
-    public void noneOfThePlayersCanForceAWinOnTheOtherPlayer() {
-    	scenarioTester.noneOfThePlayersCanForceAWinOnTheOtherPlayer();
-    }
-
-    public void onePlayerOffersTheOtherToEndTheGameInADraw() {
-    	scenarioTester.onePlayerOffersTheOtherToEndTheGameInADraw();
-    }
-
-    public void theOtherPlayerAcceptsTheOffer() {
-    	scenarioTester.theOtherPlayerAcceptsTheOffer();
-    }
-
     public void thePlayerHasOnlyOnePieceOnTheGameBoard() {
     	scenarioTester.thePlayerHasOnlyOnePieceOnTheGameBoard();
-    }
-
-    public void thePlayerJumpsOverOneOrMultiplePiecesOfTheOpponent() {
-    	scenarioTester.thePlayerJumpsOverOneOrMultiplePiecesOfTheOpponent();
-    }
-
-    public void theGameIsEndedADrawIfTheOpponentStillHasOnePieceOnTheGameBoard() {
-    	scenarioTester.theGameIsEndedADrawIfTheOpponentStillHasOnePieceOnTheGameBoard();
     }
 
 	public void thePlayerMakesAMoveLeavingNoValidDestinationCoordinatesForAnyOfTheOpponentsPieces() {
@@ -118,9 +98,6 @@ public class Actionwords {
 		scenarioTester.thePieceAtTheSourceCoordinateBecomesAKingPiece();
 	}
 
-	public void theGameIsEndedAsADraw() {
-		scenarioTester.theGameIsEndedAsADraw();
-	}
 
 	public void theNumberOfConsecutiveIndecisiveMovesIs39() {
 		scenarioTester.theNumberOfConsecutiveIndecisiveMovesIs39();
@@ -128,6 +105,26 @@ public class Actionwords {
 
 	public void thePlayerMakesARegularMoveWithoutPromoting() {
 		scenarioTester.thePlayerMakesARegularMoveWithoutPromoting();
+	}
+
+	public void theGameIsEndedAsADraw() {
+		scenarioTester.theGameIsEndedAsADraw();
+	}
+
+	public void inThePreviousTurnTheOpponentHasOfferedToEndTheGameInADraw() {
+		scenarioTester.inThePreviousTurnTheOpponentHasOfferedToEndTheGameInADraw();
+	}
+
+	public void thePlayerP1TheOffer(String p1) {
+		scenarioTester.thePlayerP1TheOffer(p1);
+	}
+
+	public void p1Happens(String p1) {
+		scenarioTester.p1Happens(p1);
+	}
+
+	public void thePlayerJumpsOverOneOrMultiplePiecesLeavingTheOpponentWithOnlyOnePieceThatIsUnableToPerformAJumpMove() {
+		scenarioTester.thePlayerJumpsOverOneOrMultiplePiecesLeavingTheOpponentWithOnlyOnePieceThatIsUnableToPerformAJumpMove();
 	}
 
 }

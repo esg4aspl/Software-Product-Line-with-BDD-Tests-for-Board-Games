@@ -92,34 +92,9 @@ public class StepDefinitions {
         actionwords.thePlayerWinsTheGame();
     }
 
-    @Given("^none of the players can force a win on the other player$")
-    public void noneOfThePlayersCanForceAWinOnTheOtherPlayer() {
-        actionwords.noneOfThePlayersCanForceAWinOnTheOtherPlayer();
-    }
-
-    @When("^one player offers the other to end the game in a draw$")
-    public void onePlayerOffersTheOtherToEndTheGameInADraw() {
-        actionwords.onePlayerOffersTheOtherToEndTheGameInADraw();
-    }
-
-    @When("^the other player accepts the offer$")
-    public void theOtherPlayerAcceptsTheOffer() {
-        actionwords.theOtherPlayerAcceptsTheOffer();
-    }
-
     @Given("^the player has only one piece on the game board$")
     public void thePlayerHasOnlyOnePieceOnTheGameBoard() {
         actionwords.thePlayerHasOnlyOnePieceOnTheGameBoard();
-    }
-
-    @When("^the player jumps over one or multiple pieces of the opponent$")
-    public void thePlayerJumpsOverOneOrMultiplePiecesOfTheOpponent() {
-        actionwords.thePlayerJumpsOverOneOrMultiplePiecesOfTheOpponent();
-    }
-
-    @Then("^the game is ended a draw if the opponent still has one piece on the game board$")
-    public void theGameIsEndedADrawIfTheOpponentStillHasOnePieceOnTheGameBoard() {
-        actionwords.theGameIsEndedADrawIfTheOpponentStillHasOnePieceOnTheGameBoard();
     }
 
     @When("^the player makes a move leaving no valid destination coordinates for any of the opponent's pieces$")
@@ -155,5 +130,25 @@ public class StepDefinitions {
     @When("^the player makes a regular move without promoting$")
     public void thePlayerMakesARegularMoveWithoutPromoting() {
         actionwords.thePlayerMakesARegularMoveWithoutPromoting();
+    }
+
+    @Given("^in the previous turn the opponent has offered to end the game in a draw$")
+    public void inThePreviousTurnTheOpponentHasOfferedToEndTheGameInADraw() {
+        actionwords.inThePreviousTurnTheOpponentHasOfferedToEndTheGameInADraw();
+    }
+
+    @When("^the player \"(.*)\" the offer$")
+    public void thePlayerP1TheOffer(String p1) {
+        actionwords.thePlayerP1TheOffer(p1);
+    }
+
+    @Then("^\"(.*)\" happens$")
+    public void p1Happens(String p1) {
+        actionwords.p1Happens(p1);
+    }
+
+    @When("^the player jumps over one or multiple pieces leaving the opponent with only one piece that is unable to perform a jump move$")
+    public void thePlayerJumpsOverOneOrMultiplePiecesLeavingTheOpponentWithOnlyOnePieceThatIsUnableToPerformAJumpMove() {
+        actionwords.thePlayerJumpsOverOneOrMultiplePiecesLeavingTheOpponentWithOnlyOnePieceThatIsUnableToPerformAJumpMove();
     }
 }

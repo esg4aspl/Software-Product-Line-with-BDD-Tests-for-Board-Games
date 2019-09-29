@@ -27,6 +27,8 @@ import core.IPlayer;
 import core.MoveCoordinate;
 import core.Zone;
 import cucumber.api.PendingException;
+import cucumber.api.Scenario;
+import cucumber.api.java.Before;
 import testing.scenariotesters.IScenarioTester;
 
 public class AmericanCheckersScenarioTester implements IScenarioTester {
@@ -250,40 +252,19 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		assertEquals(playerOfPlayerMove, referee.winner);
 	}
 
-	@Override
-	public void noneOfThePlayersCanForceAWinOnTheOtherPlayer() {
-		throw new PendingException();
-
-	}
-
-	@Override
-	public void onePlayerOffersTheOtherToEndTheGameInADraw() {
-		throw new PendingException();
-
-	}
-
-	@Override
-	public void theOtherPlayerAcceptsTheOffer() {
-		throw new PendingException();
-
-	}
-
+	
 	@Override
 	public void thePlayerHasOnlyOnePieceOnTheGameBoard() {
-		throw new PendingException();
-
-	}
-
-	@Override
-	public void thePlayerJumpsOverOneOrMultiplePiecesOfTheOpponent() {
-		throw new PendingException();
-
-	}
-
-	@Override
-	public void theGameIsEndedADrawIfTheOpponentStillHasOnePieceOnTheGameBoard() {
-		throw new PendingException();
-
+		int playerPieceCount = 0;
+		AbstractPiece onePieceFound = null;
+		for (AbstractPiece p : playerOfPlayerMove.getPieceList()) {
+			if (p.getCurrentZone() == Zone.ONBOARD) {
+				onePieceFound = p;
+				playerPieceCount++;
+			}
+		}
+		assertEquals(1, playerPieceCount);
+		assertEquals(pieceOfPlayerMove, onePieceFound);
 	}
 
 	@Override
@@ -325,8 +306,10 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		AbstractPiece newPiece = getPieceAtCoordinate(destinationCoordinateOfPlayerMove);
 		assertTrue(newPiece != null);
 		assertEquals(pieceOfPlayerMove.getId()+2, newPiece.getId());
-		//TODO: Check icon conversion.
-		//assertEquals(piece.getIcon(), newPiece.getIcon());
+		if (pieceOfPlayerMove.getIcon().equals("W"))
+			assertEquals("Z", newPiece.getIcon());
+		else
+			assertEquals("A", newPiece.getIcon());
 		assertEquals(playerOfPlayerMove, newPiece.getPlayer());
 		assertEquals(pieceOfPlayerMove.getGoalDirection(), newPiece.getGoalDirection());
 		assertTrue(newPiece.getPieceMovePossibilities() instanceof KingMovePossibilities);
@@ -359,6 +342,52 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		assertEquals(pieceOfPlayerMove, referee.getCoordinatePieceMap().getPieceAtCoordinate(destinationCoordinateOfPlayerMove));
 	}
 	
+	@Override
+	public void inThePreviousTurnTheOpponentHasOfferedToEndTheGameInADraw() {
+		assertTrue(referee.drawOffered);
+	}
+
+	@Override
+	public void thePlayerP1TheOffer(String p1) {
+		referee.conductGame();
+		if (p1.equals("accepts"))
+			assertTrue(referee.drawAccepted);
+		else if (p1.equals("rejects"))
+			assertFalse(referee.drawAccepted);
+		else
+			throw new PendingException();
+	}
+
+	@Override
+	public void p1Happens(String p1) {
+		if (p1.equals("the game is ended as a draw"))
+			this.theGameIsEndedAsADraw();
+		else if (p1.equals("the next turn is given to the other player"))
+			this.theNextTurnIsGivenToTheP1Player("other");
+		else
+			throw new PendingException();
+	}
+
+	@Override
+	public void thePlayerJumpsOverOneOrMultiplePiecesLeavingTheOpponentWithOnlyOnePieceThatIsUnableToPerformAJumpMove() {
+		referee.conductGame();
+		assertEquals(DestinationCoordinateValidity.VALID_JUMP, destinationCoordinateValidityOfPlayerMove);
+		int opponentPieceCount = 0;
+		IPlayer opponent = getOtherPlayer();
+		AbstractPiece onePieceFound = null;
+		for (AbstractPiece p : opponent.getPieceList()) {
+			if (p.getCurrentZone() == Zone.ONBOARD) {
+				opponentPieceCount++;
+				onePieceFound = p;
+			}
+		}
+		assertEquals(1, opponentPieceCount);
+		assertEquals(0, findPossibleJumpMoves(opponent).size());
+	}
+	
+	
+	
+
 	//PRIVATE/HELPER METHODS AND CLASSES
 	private List<IMoveCoordinate> findPossibleJumpMoves(IPlayer player) {
 		List<IMoveCoordinate> possibleJumpMoves = new ArrayList<IMoveCoordinate>();
@@ -546,6 +575,10 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		if (sectionName.equals("any"))
 			System.out.println("Mandatory breakpoint");
 	}
+
+	
+
+	
 
 
 
