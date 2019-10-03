@@ -38,6 +38,8 @@ We need Hiptest Publisher on our machine. And for that we need to have Ruby.
 
 Follow this link for Ruby installation: [https://www.tutorialspoint.com/ruby-on-rails/rails-installation.htm](https://www.tutorialspoint.com/ruby-on-rails/rails-installation.htm)
 
+>On macOS, Ruby is installed by default. However it is installed only for the system and the user does not have write access over it. You might want to use rbenv: [https://github.com/rbenv/rbenv] Or you can use any Ruby manager that you prefer.
+
 Check your Ruby installation with the following command: 
 ```
 ruby -v
