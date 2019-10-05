@@ -44,38 +44,22 @@ import rules.RuleThereMustNotBePieceAtDestinationCoordinate;
 import testing.helpers.ICoordinatePieceDuo;
 import testing.helpers.IiniReader;
 import testing.helpers.IniReader;
+import testing.scenariotesters.AbstractTesterReferee;
 
-public class AmericanTesterReferee extends AbstractReferee {
+public class AmericanTesterReferee extends AbstractTesterReferee {
 
-	IMoveCoordinate playerMove;
-	IiniReader reader;
-	String setUpName;
-	List<String> informers;
-	String endTestStatus;
-	boolean playerWasGoingToMakeAnotherMove;
-	IPlayer winner;
-	IPlayer loser;
-	boolean isDraw;
-	boolean gameEnded;
-	int noPromoteMoveCount, noCaptureMoveCount;
+	
 
 	protected AmericanCheckersBoardConsoleView consoleView;
 	
 	public AmericanTesterReferee(IGameConfiguration checkersGameConfiguration) {
 		super(checkersGameConfiguration);
-		this.playerWasGoingToMakeAnotherMove = false;
-		informers = new ArrayList<String>();
-		gameEnded = false;
-		endTestStatus = "Test running...";
 	}
 	
 	public void setIni(String setUpName) {
 		reader = new IniReader("src/testing/scenariotesters/checkersamerican/AmericanCheckers.ini", setUpName);
 	}
 	
-	public void setGameSetupName(String setUpName) {
-		this.setUpName = setUpName;
-	}
 	
 	public void defaultSetup() {
 		setupPlayers();
@@ -194,10 +178,7 @@ public class AmericanTesterReferee extends AbstractReferee {
 		//view.printMessage(playerList.getPlayerStatus());
 	}
 	
-	public IMoveCoordinate readPlayerMove() {
-		playerMove = reader.getPlayerMove();
-		return playerMove;
-	}
+	
 	
 	private boolean isThereAKingOnBoard() {
 		for (IPlayer p : playerList.getPlayers()) {
@@ -248,6 +229,7 @@ public class AmericanTesterReferee extends AbstractReferee {
 			view.printMessage("Z: King of 'white' player");
 			consoleView.drawBoardView();
 		}
+		
 		while (!endOfGame) {
 			currentMoveCoordinate = playerMove;
 			while (!conductMove()) {
@@ -455,26 +437,9 @@ public class AmericanTesterReferee extends AbstractReferee {
 	}
 
 	
-	@Override
-	public void printMessage(String message) {
-		super.printMessage(message);
-		informers.add(message);
-	}
+	
 
-	public void endTest(String status) {
-		endTestStatus = status;
-		System.out.println("\n\n-----------------------------------TEST RESULTS--------------------------------------------------------------------------------------------");
-		System.out.println("Test: " + setUpName);
-		System.out.println("Status: " + endTestStatus);
-		System.out.println("Informers: " + informers.toString());
-		System.out.println("Was player going to make another move?: " + this.playerWasGoingToMakeAnotherMove);
-		System.out.println("End of the game? " + this.gameEnded);
-		if (gameEnded)
-			System.out.println("isDraw?: " + this.isDraw + ", Winner: " + winner + ", Loser: " + loser);
-		System.out.println("Board: ");
-		view.drawBoardView();
-		System.out.println("-------------------------------------------------------------------------------------------------------------------------------\n");
-	}
+	
 	
 	private IPlayer getOtherPlayer() {
 		int currentPlayerId = this.currentPlayer.getId();
@@ -532,10 +497,10 @@ public class AmericanTesterReferee extends AbstractReferee {
 		//String[] moveArr= {"invalidDestinationCoordinateForMoveOccupied1"};
 		//String[] moveArr = {"validRegularMove5", "validJumpMove9", "validRegularMove4"};
 		
-		//String[] moveArr = {"validJumpMove11", "validJumpMove12", "validJumpMove13", "validJumpMove14"};
+		String[] moveArr = {"validJumpMove6", "validJumpMove12", "validJumpMove13", "validJumpMove14"};
 		//String[] moveArr = {"crowningTheEligiblePiece6", "crowningTheEligiblePiece7", "crowningTheEligiblePiece8"};
 		
-		String[] moveArr =  {"endOfTheGameInDrawBothPlayersHaveOnePiece1", "endOfTheGameInDrawBothPlayersHaveOnePiece2", "validJumpMove17"};
+		//String[] moveArr =  {"endOfTheGameInDrawBothPlayersHaveOnePiece1", "endOfTheGameInDrawBothPlayersHaveOnePiece2", "validJumpMove17"};
 		//String[] moveArr = {"endOfTheGameOpponentCantMakeAValidMove1", "endOfTheGameOpponentCantMakeAValidMove2"};
 		
 		//String[] moveArr = {"crowningTheEligiblePiece1", "crowningTheEligiblePiece2", "crowningTheEligiblePiece3", "crowningTheEligiblePiece4"};
@@ -548,7 +513,7 @@ public class AmericanTesterReferee extends AbstractReferee {
 		for (String moveID : moveArr) {
 			System.out.println("\n\n\nTESTING: " + moveID);
 			AmericanTesterReferee referee = new AmericanTesterReferee(new AmericanGameConfiguration());
-			referee.setGameSetupName(moveID);
+			referee.setSetUpName(moveID);
 			referee.setup();
 			referee.readPlayerMove();
 			referee.conductGame();

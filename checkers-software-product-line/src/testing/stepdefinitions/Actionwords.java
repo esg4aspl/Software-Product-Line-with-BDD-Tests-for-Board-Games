@@ -2,6 +2,7 @@ package testing.stepdefinitions;
 
 import testing.scenariotesters.IScenarioTester;
 import testing.scenariotesters.checkersamerican.AmericanCheckersScenarioTester;
+import testing.scenariotesters.checkerschildren.ChildrenCheckersScenarioTester;
 
 public class Actionwords {
 	
@@ -10,6 +11,8 @@ public class Actionwords {
     public void theP1GameIsSetUp(String p1) {
     	if (p1.equals("American Checkers")) {
     		scenarioTester = new AmericanCheckersScenarioTester();
+    	} else if (p1.equals("Children Checkers")) {
+    		scenarioTester = new ChildrenCheckersScenarioTester();
     	}
     	scenarioTester.theP1GameIsSetUp(p1);
     }
