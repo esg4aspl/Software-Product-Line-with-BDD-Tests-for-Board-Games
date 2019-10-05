@@ -97,22 +97,15 @@ Feature: Children Checkers
 
   Scenario Outline: End of the Game (1) (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
-    When the player picks a valid source coordinate
-    And the player picks a valid destination coordinate in opponent's crownhead
+    And only one piece of the opponent is present at the game board
+    When the player jumps over the last piece of the opponent
     Then the opponent loses the game
     And the player wins the game
 
     Examples:
       | file_name | hiptest-uid |
-      | crowningTheEligiblePiece1 | uid:41afb302-bb4d-44f5-aa6d-d67720f66e1d |
-      | crowningTheEligiblePiece2 | uid:aae2cdf1-4fce-4f9a-a7f0-817054cd602e |
-      | crowningTheEligiblePiece3 | uid:849c65fb-fc09-4e64-92d0-a5e41a988e3b |
-      | crowningTheEligiblePiece4 | uid:a402181b-535e-4584-bf0d-bd8015816c50 |
-      | crowningTheEligiblePiece5 | uid:f98e2dbb-25ee-4060-8d1e-b0f7a8df2ed5 |
-      | crowningTheEligiblePiece6 | uid:7dfe2252-5ff5-4a0e-aa70-09d4e38e83c6 |
-      | crowningTheEligiblePiece7 | uid:99d71eb3-37aa-4f76-a9d5-183f94120722 |
-      | crowningTheEligiblePiece8 | uid:6032df81-d991-4ef7-91e6-397bed26f5a3 |
-      | crowningTheEligiblePiece9 | uid:ae248848-9060-4f62-b42b-00e0c39a5766 |
+      | endOfTheGame1 | uid:b73467fe-346c-4a99-92c9-61d5d59a0518 |
+      | endOfTheGame2 | uid:c2cc7993-7311-4c49-871b-000237826cc9 |
 
   Scenario Outline: End of the Game In Draw (1) (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"

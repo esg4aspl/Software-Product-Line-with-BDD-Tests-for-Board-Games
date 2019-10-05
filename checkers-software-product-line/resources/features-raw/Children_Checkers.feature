@@ -96,6 +96,18 @@ Feature: Children Checkers
 
   Scenario Outline: End of the Game
     Given the game is played up to a certain point from file "<file_name>"
+    And only one piece of the opponent is present at the game board
+    When the player jumps over the last piece of the opponent
+    Then the opponent loses the game
+    And the player wins the game
+
+    Examples: 
+      | file_name     |
+      | endOfTheGame1 |
+      | endOfTheGame2 |
+
+  Scenario Outline: End of the Game - Reaching the Crownhead
+    Given the game is played up to a certain point from file "<file_name>"
     When the player picks a valid source coordinate
     And the player picks a valid destination coordinate in opponent's crownhead
     Then the opponent loses the game
@@ -112,43 +124,6 @@ Feature: Children Checkers
       | crowningTheEligiblePiece7 |
       | crowningTheEligiblePiece8 |
       | crowningTheEligiblePiece9 |
-
-  Scenario Outline: End of the Game In Draw
-    Given the game is played up to a certain point from file "<file_name>"
-    And in the previous turn the opponent has offered to end the game in a draw
-    When the player "<offer_response>" the offer
-    Then "<result>" happens
-
-    Examples: 
-      | file_name           | offer_response | result                                     |
-      | endOfTheGameInDraw1 | accepts        | the game is ended as a draw                |
-      | endOfTheGameInDraw2 | rejects        | the next turn is given to the other player |
-      | endOfTheGameInDraw3 | accepts        | the game is ended as a draw                |
-      | endOfTheGameInDraw4 | accepts        | the game is ended as a draw                |
-      | endOfTheGameInDraw5 | rejects        | the next turn is given to the other player |
-
-  Scenario Outline: End of the Game In Draw - Both Players Have One Piece
-    Given the game is played up to a certain point from file "<file_name>"
-    Given the player has only one piece on the game board
-    When the player jumps over one or multiple pieces leaving the opponent with only one piece that is unable to perform a jump move
-    Then the game is ended as a draw
-
-    Examples: 
-      | file_name                                  |
-      | endOfTheGameInDrawBothPlayersHaveOnePiece1 |
-      | endOfTheGameInDrawBothPlayersHaveOnePiece2 |
-
-  Scenario Outline: End of the Game In Draw - Forty Moves Without Becoming King and Without Jumping
-    Given the game is played up to a certain point from file "<file_name>"
-    And the number of consecutive indecisive moves is 39
-    When the player makes a regular move without promoting
-    Then the game is ended as a draw
-
-    Examples: 
-      | file_name                               |
-      | endOfTheGameInDrawFortyIndecisiveMoves1 |
-      | endOfTheGameInDrawFortyIndecisiveMoves2 |
-      | endOfTheGameInDrawFortyIndecisiveMoves3 |
 
   Scenario Outline: End of the Game - Opponent Can't Make a Valid Move
     Given the game is played up to a certain point from file "<file_name>"

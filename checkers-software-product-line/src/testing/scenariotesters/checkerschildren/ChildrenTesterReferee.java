@@ -335,7 +335,7 @@ public class ChildrenTesterReferee extends AbstractTesterReferee {
 
 	
 	public static void main(String[] args) {
-		String[] moveArr =  {"validJumpMove6"};
+		String[] moveArr =  {"endOfTheGame1", "endOfTheGame2"};
 		
 		for (String moveID : moveArr) {
 			System.out.println("\n\n\nTESTING: " + moveID);
