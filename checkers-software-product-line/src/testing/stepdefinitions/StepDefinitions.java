@@ -112,11 +112,6 @@ public class StepDefinitions {
         actionwords.thePlayerPicksAValidDestinationCoordinateInOpponentsCrownhead();
     }
 
-    @Then("^the piece at the source coordinate becomes a king piece$")
-    public void thePieceAtTheSourceCoordinateBecomesAKingPiece() {
-        actionwords.thePieceAtTheSourceCoordinateBecomesAKingPiece();
-    }
-
     @Then("^the game is ended as a draw$")
     public void theGameIsEndedAsADraw() {
         actionwords.theGameIsEndedAsADraw();
@@ -150,5 +145,10 @@ public class StepDefinitions {
     @When("^the player jumps over one or multiple pieces leaving the opponent with only one piece that is unable to perform a jump move$")
     public void thePlayerJumpsOverOneOrMultiplePiecesLeavingTheOpponentWithOnlyOnePieceThatIsUnableToPerformAJumpMove() {
         actionwords.thePlayerJumpsOverOneOrMultiplePiecesLeavingTheOpponentWithOnlyOnePieceThatIsUnableToPerformAJumpMove();
+    }
+
+    @Then("^the piece at the source coordinate becomes a crowned piece$")
+    public void thePieceAtTheSourceCoordinateBecomesACrownedPiece() {
+        actionwords.thePieceAtTheSourceCoordinateBecomesACrownedPiece();
     }
 }

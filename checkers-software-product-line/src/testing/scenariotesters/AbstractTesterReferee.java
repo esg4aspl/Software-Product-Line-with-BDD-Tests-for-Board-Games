@@ -1,129 +1,88 @@
 package testing.scenariotesters;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import core.AbstractReferee;
+import core.ICoordinate;
 import core.IGameConfiguration;
 import core.IMoveCoordinate;
 import core.IPlayer;
-import testing.helpers.IiniReader;
+import testing.helpers.DestinationCoordinateValidity;
+import testing.helpers.SourceCoordinateValidity;
 
 public abstract class AbstractTesterReferee extends AbstractReferee {
-	protected IMoveCoordinate playerMove;
-	protected IiniReader reader;
-	protected String setUpName;
-	protected List<String> informers;
-	protected String endTestStatus;
-	protected boolean playerWasGoingToMakeAnotherMove;
-	protected IPlayer winner;
-	protected IPlayer loser;
-	protected boolean isDraw;
-	protected boolean gameEnded;
-	protected int noPromoteMoveCount, noCaptureMoveCount;
-	protected boolean drawOffered, drawAccepted;
 	
-	public abstract void defaultSetup();
-	public abstract void setIni(String setUpName);
+	protected AbstractTestInfo info;
 	
-	public IMoveCoordinate readPlayerMove() {
-		playerMove = reader.getPlayerMove();
-		return playerMove;
-	}
+	public abstract void setup(String fileName);
+	public abstract SourceCoordinateValidity checkSourceCoordinate(IPlayer player, ICoordinate sourceCoordinate);
+	public abstract DestinationCoordinateValidity checkDestinationCoordinate(IPlayer player, ICoordinate sourceCoordinate, ICoordinate destinationCoordinate);
 
 	public AbstractTesterReferee(IGameConfiguration gameConfiguration) {
 		super(gameConfiguration);
-		informers = new ArrayList<String>();
-		endTestStatus = "Test running...";
-		playerWasGoingToMakeAnotherMove = false;
-		winner = null; loser = null;
-		isDraw = false; gameEnded = false;
-		noPromoteMoveCount = 0; noCaptureMoveCount = 0;
-		drawOffered = false; drawAccepted = false;
+	}
+
+	protected IMoveCoordinate getNextMove() {
+		return info.getNextMove();
+	}
+
+	protected void start() {
+		view.printMessage("Testing: " + info.getReader().getSectionName());
+		view.printMessage("Player turn: " + info.getReader().getCurrentTurnPlayerIconColor());
+		view.printMessage("Player move: " + info.getPlayerMove().toString());
+		view.printMessage("No promote count: " + info.getNoPromoteMoveCount());
+		view.printMessage("No capture count: " + info.getNoCaptureMoveCount());
+//		view.printMessage("B: Pawn of 'black' player");
+//		view.printMessage("A: King of 'black' player");
+//		view.printMessage("W: Pawn of 'white' player");
+//		view.printMessage("Z: King of 'white' player");
 	}
 	
-	protected void endTest(String status) {
-		endTestStatus = status;
-		System.out.println("\n\n-----------------------------------TEST RESULTS--------------------------------------------------------------------------------------------");
-		System.out.println("Test: " + setUpName);
-		System.out.println("Status: " + endTestStatus);
-		System.out.println("Informers: " + informers.toString());
-		System.out.println("Was player going to make another move?: " + this.playerWasGoingToMakeAnotherMove);
-		System.out.println("End of the game? " + this.gameEnded);
-		if (gameEnded)
-			System.out.println("isDraw?: " + this.isDraw + ", Winner: " + winner + ", Loser: " + loser);
+	protected void abort() {
+		info.abort();
+		System.out.println("\n\nTEST ABORTED!!!!!");
+		System.out.println("Test: " + info.getReader().getSectionName());
+		System.out.println("Informers: " + info.getInformers().toString());
+		System.out.println("Was player going to make another move?: " + info.isPlayerWasGoingToMakeAnotherMove());
+		System.out.println("End of the game? " + info.isGameEnded());
+		if (info.isGameEnded())
+			System.out.println("isDraw?: " + info.isDraw() + ", Winner: " + info.getWinner() + ", Loser: " + info.getLoser());
 		System.out.println("Board: ");
 		view.drawBoardView();
-		System.out.println("-------------------------------------------------------------------------------------------------------------------------------\n");
 	}
 	
+	protected void end() {
+		info.end();
+		System.out.println("\n\nTEST RESULTS");
+		System.out.println("Test: " + info.getReader().getSectionName());
+		System.out.println("Informers: " + info.getInformers().toString());
+		System.out.println("Was player going to make another move?: " + info.isPlayerWasGoingToMakeAnotherMove());
+		System.out.println("End of the game? " + info.isGameEnded());
+		if (info.isGameEnded())
+			System.out.println("isDraw?: " + info.isDraw() + ", Winner: " + info.getWinner() + ", Loser: " + info.getLoser());
+		System.out.println("Board: ");
+		view.drawBoardView();
+	}
+	
+	public IPlayer getNextPlayer() {
+		int nextPlayerID = currentPlayerID + 1;
+		if (nextPlayerID >= numberOfPlayers)
+			nextPlayerID = 0;
+		return playerList.getPlayer(nextPlayerID);
+	}
+
+
+	
+	//Overridden
 	@Override
 	public void printMessage(String message) {
 		super.printMessage(message);
-		informers.add(message);
+		info.register(message);
 	}
 
+	//Getters
+	public AbstractTestInfo getInfo() {
+		return info;
+	}
 	
-	public IMoveCoordinate getPlayerMove() {
-		return playerMove;
-	}
-
-	public IiniReader getReader() {
-		return reader;
-	}
-
-	public String getSetUpName() {
-		return setUpName;
-	}
-
-	public List<String> getInformers() {
-		return informers;
-	}
-
-	public String getEndTestStatus() {
-		return endTestStatus;
-	}
-
-	public boolean isPlayerWasGoingToMakeAnotherMove() {
-		return playerWasGoingToMakeAnotherMove;
-	}
-
-	public IPlayer getWinner() {
-		return winner;
-	}
-
-	public IPlayer getLoser() {
-		return loser;
-	}
-
-	public boolean isDraw() {
-		return isDraw;
-	}
-
-	public boolean isGameEnded() {
-		return gameEnded;
-	}
-
-	public int getNoPromoteMoveCount() {
-		return noPromoteMoveCount;
-	}
-
-	public int getNoCaptureMoveCount() {
-		return noCaptureMoveCount;
-	}
-
-	public boolean isDrawOffered() {
-		return drawOffered;
-	}
-
-	public boolean isDrawAccepted() {
-		return drawAccepted;
-	}
-
-	public void setSetUpName(String setUpName) {
-		this.setUpName = setUpName;
-	}
-
 	
 
 }

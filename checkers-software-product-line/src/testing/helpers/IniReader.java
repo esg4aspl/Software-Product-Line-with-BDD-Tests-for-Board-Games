@@ -14,7 +14,7 @@ import core.IMoveCoordinate;
 import core.MoveCoordinate;
 import cucumber.api.PendingException;
 
-public class IniReader implements IiniReader {
+public class IniReader implements IniReaderInterface {
 	
 	private Ini ini;
 	private String fileLocation, sectionName;
@@ -24,6 +24,9 @@ public class IniReader implements IiniReader {
 	private String currentTurnPlayerIconColor;
 	private String[] extras;
 	private List<ICoordinatePieceDuo> coordinatePieceDuos;
+	private List<IMoveCoordinate> priorMoveSequence;
+	private List<IMoveCoordinate> bestSequence;
+	private IMoveCoordinate expectedMove;
 	
 	public IniReader(String fileLocation, String sectionName) {
 		this.fileLocation = fileLocation;
@@ -32,7 +35,11 @@ public class IniReader implements IiniReader {
 			ini = new Ini(new File(fileLocation));
 			section = ini.get(sectionName);
 			board = ini.get(section.get("boardSetUp"));
-			parsePlayerMove();
+			playerMove = parseMove(section.get("playerMove"));
+			priorMoveSequence = parseMoveSequence(section.get("priorMoveSequence"));
+			bestSequence = parseMoveSequence(section.get("bestSequence"));
+			expectedMove = parseMove(section.get("expectedMove"));
+			
 			currentTurnPlayerIconColor = section.get("turn");
 			String extrasString = section.get("extras");
 			if (extrasString != null)
@@ -48,14 +55,25 @@ public class IniReader implements IiniReader {
 		}
 	}
 	
-	private void parsePlayerMove() {
-		String playerMoveString = section.get("playerMove");
-		String[] playerMoveCoordinatesString = playerMoveString.split(">");
+	private IMoveCoordinate parseMove(String moveStr) {
+		if (moveStr == null)
+			return null;
+		String[] playerMoveCoordinatesString = moveStr.split(">");
 		String[] sourceCoordinateString = playerMoveCoordinatesString[0].split(",");
 		String[] destinationCoordinateString = playerMoveCoordinatesString[1].split(",");
 		ICoordinate source = new Coordinate(Integer.parseInt(sourceCoordinateString[0]), Integer.parseInt(sourceCoordinateString[1]));
 		ICoordinate destination = new Coordinate(Integer.parseInt(destinationCoordinateString[0]), Integer.parseInt(destinationCoordinateString[1]));
-		playerMove = new MoveCoordinate(source, destination);
+		return new MoveCoordinate(source, destination);
+	}
+	
+	private List<IMoveCoordinate> parseMoveSequence(String seqStr) {
+		List<IMoveCoordinate> sequence = new ArrayList<IMoveCoordinate>();
+		if (seqStr == null)
+			return sequence;
+		String[] moveStrings = seqStr.split(":");
+		for (String moveString : moveStrings)
+			sequence.add(parseMove(moveString));
+		return sequence;
 	}
 
 	private void parseCoordinatePieceDuos() {
@@ -105,12 +123,16 @@ public class IniReader implements IiniReader {
 			return false;
 		return true;
 	}
-
+	
+	public List<IMoveCoordinate> getPriorMoveSequence() {
+		return priorMoveSequence;
+	}
 
 	public static void main(String[] args) {
-		IiniReader reader = new IniReader("src/testing/helpers/ExampleIni.ini", "exampleMove");
+		IniReaderInterface reader = new IniReader("src/testing/helpers/ExampleIni.ini", "exampleMove");
 		System.out.println(reader.getCoordinatePieceDuos().toString());
 		System.out.println(reader.getPlayerMove().toString());
+		System.out.println(reader.getPriorMoveSequence().toString());
 		System.out.println(reader.getCurrentTurnPlayerIconColor());
 		if (reader.hasExtras()) {
 			for (String extra : reader.getExtras())
@@ -118,6 +140,17 @@ public class IniReader implements IiniReader {
 		} else {
 			System.out.println("extras is null");
 		}
+	}
+
+	@Override
+	public List<IMoveCoordinate> getBestSequence() {
+		return bestSequence;
+	}
+
+	
+	@Override
+	public IMoveCoordinate getExpectedMove() {
+		return expectedMove;
 	}
 
 

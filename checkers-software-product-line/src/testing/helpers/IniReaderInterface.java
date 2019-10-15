@@ -4,7 +4,7 @@ import java.util.List;
 
 import core.IMoveCoordinate;
 
-public interface IiniReader {
+public interface IniReaderInterface {
 	
 	public List<ICoordinatePieceDuo> getCoordinatePieceDuos();
 	public IMoveCoordinate getPlayerMove();
@@ -13,5 +13,8 @@ public interface IiniReader {
 	public String getSectionName();
 	public String[] getExtras();
 	public boolean hasExtras();
+	public IMoveCoordinate getExpectedMove();
+	public List<IMoveCoordinate> getPriorMoveSequence();
+	public List<IMoveCoordinate> getBestSequence();
 	
 }

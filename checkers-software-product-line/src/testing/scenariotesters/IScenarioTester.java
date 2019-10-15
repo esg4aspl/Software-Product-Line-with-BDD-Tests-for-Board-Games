@@ -28,7 +28,7 @@ public interface IScenarioTester {
 	//Crowning
 	public void thePlayerPicksAValidSourceCoordinateThatHasAPawnPieceInIt();
 	public void thePlayerPicksAValidDestinationCoordinateInOpponentsCrownhead();
-	public void thePieceAtTheSourceCoordinateBecomesAKingPiece();
+	public void thePieceAtTheSourceCoordinateBecomesACrownedPiece();
 	
 	//Decisive Game End
 	public void theOpponentLosesTheGame();

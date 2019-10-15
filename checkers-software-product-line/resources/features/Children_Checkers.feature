@@ -107,43 +107,6 @@ Feature: Children Checkers
       | endOfTheGame1 | uid:b73467fe-346c-4a99-92c9-61d5d59a0518 |
       | endOfTheGame2 | uid:c2cc7993-7311-4c49-871b-000237826cc9 |
 
-  Scenario Outline: End of the Game In Draw (1) (<hiptest-uid>)
-    Given the game is played up to a certain point from file "<file_name>"
-    And in the previous turn the opponent has offered to end the game in a draw
-    When the player "<offer_response>" the offer
-    Then "<result>" happens
-
-    Examples:
-      | file_name | offer_response | result | hiptest-uid |
-      | endOfTheGameInDraw1 | accepts | the game is ended as a draw | uid:e4000d54-e400-47f6-be6d-8b3ef6f448c6 |
-      | endOfTheGameInDraw2 | rejects | the next turn is given to the other player | uid:98567fef-2f15-424a-af1e-5f90b3c90ef7 |
-      | endOfTheGameInDraw3 | accepts | the game is ended as a draw | uid:1ae76479-bab8-408d-a245-241b22969d77 |
-      | endOfTheGameInDraw4 | accepts | the game is ended as a draw | uid:cb7cda42-ee24-4321-87b0-3283127acec1 |
-      | endOfTheGameInDraw5 | rejects | the next turn is given to the other player | uid:77aeb31d-6b15-45c9-95ce-a860d5161977 |
-
-  Scenario Outline: End of the Game In Draw - Both Players Have One Piece (1) (<hiptest-uid>)
-    Given the game is played up to a certain point from file "<file_name>"
-    Given the player has only one piece on the game board
-    When the player jumps over one or multiple pieces leaving the opponent with only one piece that is unable to perform a jump move
-    Then the game is ended as a draw
-
-    Examples:
-      | file_name | hiptest-uid |
-      | endOfTheGameInDrawBothPlayersHaveOnePiece1 | uid:444d9698-5698-4ecf-870b-23dfc9ad1d36 |
-      | endOfTheGameInDrawBothPlayersHaveOnePiece2 | uid:35963059-7d93-4957-802c-a42ee661f6ba |
-
-  Scenario Outline: End of the Game In Draw - Forty Moves Without Becoming King and Without Jumping (1) (<hiptest-uid>)
-    Given the game is played up to a certain point from file "<file_name>"
-    And the number of consecutive indecisive moves is 39
-    When the player makes a regular move without promoting
-    Then the game is ended as a draw
-
-    Examples:
-      | file_name | hiptest-uid |
-      | endOfTheGameInDrawFortyIndecisiveMoves1 | uid:e75391cd-4cfc-4910-abfa-d817f7ab5680 |
-      | endOfTheGameInDrawFortyIndecisiveMoves2 | uid:8d41c05b-4203-49d9-a0ad-64c3a3b6f3f4 |
-      | endOfTheGameInDrawFortyIndecisiveMoves3 | uid:043e8090-7cd3-4920-a092-ce165adbddeb |
-
   Scenario Outline: End of the Game - Opponent Can't Make a Valid Move (1) (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     When the player makes a move leaving no valid destination coordinates for any of the opponent's pieces
@@ -154,3 +117,22 @@ Feature: Children Checkers
       | file_name | hiptest-uid |
       | endOfTheGameOpponentCantMakeAValidMove1 | uid:0b43d31c-883e-47a0-a463-d90060190246 |
       | endOfTheGameOpponentCantMakeAValidMove2 | uid:896a6f95-8d2f-4461-8d7c-2fecb5dd8899 |
+
+  Scenario Outline: End of the Game - Reaching the Crownhead (<hiptest-uid>)
+    Given the game is played up to a certain point from file "<file_name>"
+    When the player picks a valid source coordinate
+    And the player picks a valid destination coordinate in opponent's crownhead
+    Then the opponent loses the game
+    And the player wins the game
+
+    Examples:
+      | file_name | hiptest-uid |
+      | crowningTheEligiblePiece1 | uid:c07317ec-3f97-4497-acc9-f345e242c19f |
+      | crowningTheEligiblePiece2 | uid:0d835f7b-c705-4deb-a2cc-b0792f2e6808 |
+      | crowningTheEligiblePiece3 | uid:7a0ade73-0843-45e2-a8c8-42ba67abbf35 |
+      | crowningTheEligiblePiece4 | uid:9d4b3505-700d-4e01-bc32-acf3827a6f5b |
+      | crowningTheEligiblePiece5 | uid:e6ebad3b-3623-4256-a780-8d295c23bd64 |
+      | crowningTheEligiblePiece6 | uid:1e3b6eb8-84dc-4f95-9772-1f4eb6687bd1 |
+      | crowningTheEligiblePiece7 | uid:5bd3f0cd-27e6-4e5a-b792-0d2d89417415 |
+      | crowningTheEligiblePiece8 | uid:9d6e12ff-ebdb-44e3-b3a7-834e8f9f3ca2 |
+      | crowningTheEligiblePiece9 | uid:c164b56a-c36a-4ebc-bb13-b931641602c8 |

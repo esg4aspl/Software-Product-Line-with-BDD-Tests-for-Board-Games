@@ -1,8 +1,10 @@
 package testing.stepdefinitions;
 
+import cucumber.api.PendingException;
 import testing.scenariotesters.IScenarioTester;
 import testing.scenariotesters.checkersamerican.AmericanCheckersScenarioTester;
 import testing.scenariotesters.checkerschildren.ChildrenCheckersScenarioTester;
+import testing.scenariotesters.checkersspanish.SpanishCheckersScenarioTester;
 
 public class Actionwords {
 	
@@ -13,6 +15,10 @@ public class Actionwords {
     		scenarioTester = new AmericanCheckersScenarioTester();
     	} else if (p1.equals("Children Checkers")) {
     		scenarioTester = new ChildrenCheckersScenarioTester();
+    	} else if (p1.equals("Spanish Checkers")) {
+    		scenarioTester = new SpanishCheckersScenarioTester();
+    	} else {
+    		throw new PendingException("No Such Game");
     	}
     	scenarioTester.theP1GameIsSetUp(p1);
     }
@@ -97,10 +103,6 @@ public class Actionwords {
 		scenarioTester.thePlayerPicksAValidDestinationCoordinateInOpponentsCrownhead();
 	}
 
-	public void thePieceAtTheSourceCoordinateBecomesAKingPiece() {
-		scenarioTester.thePieceAtTheSourceCoordinateBecomesAKingPiece();
-	}
-
 
 	public void theNumberOfConsecutiveIndecisiveMovesIs39() {
 		scenarioTester.theNumberOfConsecutiveIndecisiveMovesIs39();
@@ -128,6 +130,10 @@ public class Actionwords {
 
 	public void thePlayerJumpsOverOneOrMultiplePiecesLeavingTheOpponentWithOnlyOnePieceThatIsUnableToPerformAJumpMove() {
 		scenarioTester.thePlayerJumpsOverOneOrMultiplePiecesLeavingTheOpponentWithOnlyOnePieceThatIsUnableToPerformAJumpMove();
+	}
+
+	public void thePieceAtTheSourceCoordinateBecomesACrownedPiece() {
+		scenarioTester.thePieceAtTheSourceCoordinateBecomesACrownedPiece();
 	}
 
 }

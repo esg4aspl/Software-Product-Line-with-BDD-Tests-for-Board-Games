@@ -103,7 +103,7 @@ Feature: American Checkers
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks a valid source coordinate that has a pawn piece in it
     And the player picks a valid destination coordinate in opponent's crownhead
-    Then the piece at the source coordinate becomes a king piece
+    Then the piece at the source coordinate becomes a crowned piece
     And the piece at the source coordinate is moved to the destination coordinate
     And the next turn is given to the "other" player
 
@@ -155,18 +155,6 @@ Feature: American Checkers
       | endOfTheGameInDrawBothPlayersHaveOnePiece1 | uid:8160c2ac-c8e8-4c07-9f12-83bdb147c7a2 |
       | endOfTheGameInDrawBothPlayersHaveOnePiece2 | uid:fc4947e9-33da-4829-b36e-79102b679618 |
 
-  Scenario Outline: End of the Game In Draw - Forty Moves Without Becoming King and Without Jumping (<hiptest-uid>)
-    Given the game is played up to a certain point from file "<file_name>"
-    And the number of consecutive indecisive moves is 39
-    When the player makes a regular move without promoting
-    Then the game is ended as a draw
-
-    Examples:
-      | file_name | hiptest-uid |
-      | endOfTheGameInDrawFortyIndecisiveMoves1 | uid:bba0bb7f-7cf2-4189-ba45-e44ade035d66 |
-      | endOfTheGameInDrawFortyIndecisiveMoves2 | uid:4396c38f-a409-48c7-9ae4-b4ff0de4f1d2 |
-      | endOfTheGameInDrawFortyIndecisiveMoves3 | uid:1b998bd5-7fe1-4fef-b1b4-2b2cde0421be |
-
   Scenario Outline: End of the Game - Opponent Can't Make a Valid Move (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     When the player makes a move leaving no valid destination coordinates for any of the opponent's pieces
@@ -177,3 +165,15 @@ Feature: American Checkers
       | file_name | hiptest-uid |
       | endOfTheGameOpponentCantMakeAValidMove1 | uid:df5b44aa-ec87-467f-91c7-f379f438830c |
       | endOfTheGameOpponentCantMakeAValidMove2 | uid:d4634752-85cb-4747-9eba-88880a66babf |
+
+  Scenario Outline: End of the Game In Draw - Forty Moves Without Crowning and Without Jumping (<hiptest-uid>)
+    Given the game is played up to a certain point from file "<file_name>"
+    And the number of consecutive indecisive moves is 39
+    When the player makes a regular move without promoting
+    Then the game is ended as a draw
+
+    Examples:
+      | file_name | hiptest-uid |
+      | endOfTheGameInDrawFortyIndecisiveMoves1 | uid:3547cbe0-2d1e-4aab-a4ca-a0709dc7178e |
+      | endOfTheGameInDrawFortyIndecisiveMoves2 | uid:e99a98fe-cc85-4b94-9d39-c49a2ece5594 |
+      | endOfTheGameInDrawFortyIndecisiveMoves3 | uid:827c249b-656b-4d4b-a81d-c022ace785ef |

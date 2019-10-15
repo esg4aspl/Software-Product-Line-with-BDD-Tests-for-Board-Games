@@ -1,22 +1,22 @@
-package testing.scenariotesters.checkersamerican;
+package testing.scenariotesters.checkersspanish;
 
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import base.AmericanCheckersBoard;
 import base.AmericanCheckersBoardConsoleView;
-import base.AmericanGameConfiguration;
 import base.Pawn;
 import base.PawnMoveConstraints;
 import base.PawnMovePossibilities;
 import base.Player;
 import base.PlayerList;
-import base.StartCoordinates;
-import checkersamerican.AmericanStartCoordinates;
 import checkersamerican.King;
-import checkersamerican.KingMoveConstraints;
-import checkersamerican.KingMovePossibilities;
+import checkersspanish.Queen;
+import checkersspanish.QueenMoveConstraints;
+import checkersspanish.QueenMovePossibilities;
+import checkersspanish.SpanishCheckersBoard;
+import checkersspanish.SpanishGameConfiguration;
+import checkersspanish.SpanishStartCoordinates;
 import core.AbstractPiece;
 import core.Coordinate;
 import core.Direction;
@@ -34,7 +34,6 @@ import core.Zone;
 import rules.RuleDestinationCoordinateMustBeValidForCurrentPiece;
 import rules.RuleDrawIfNoPromoteForFortyTurn;
 import rules.RuleEndOfGameGeneral;
-import rules.RuleEndOfGameNoPieceCapturedForFortyTurn;
 import rules.RuleEndOfGameWhenOpponentBlocked;
 import rules.RuleIfAnyPieceCanBeCapturedThenMoveMustBeThat;
 import rules.RuleIfJumpMoveThenJumpedPieceMustBeOpponentPiece;
@@ -48,31 +47,30 @@ import testing.helpers.SourceCoordinateValidity;
 import testing.helpers.TestResult;
 import testing.scenariotesters.AbstractTesterReferee;
 
-public class AmericanTesterReferee extends AbstractTesterReferee {
+public class SpanishTesterReferee extends AbstractTesterReferee {
 
 	protected AmericanCheckersBoardConsoleView consoleView;
-
-	public AmericanTesterReferee(IGameConfiguration checkersGameConfiguration) {
-		super(checkersGameConfiguration);
+	protected List<IMoveCoordinate> priorMoves;
+	
+	public SpanishTesterReferee(IGameConfiguration gameConfiguration) {
+		super(gameConfiguration);
+		priorMoves = new ArrayList<IMoveCoordinate>();
 	}
 
 	//GAMEPLAY METHODS
 	
-	public void conductGame() {
+	public void conductGame() {		
 		boolean endOfGame = false;
 		boolean endOfGameDraw = false;
-
 		IRule noPromoteRule = new RuleDrawIfNoPromoteForFortyTurn();
-		IRule noPieceCapturedForFortyTurn = new RuleEndOfGameNoPieceCapturedForFortyTurn();
-		prepareRules(noPromoteRule, noPieceCapturedForFortyTurn);
+		prepareRule(noPromoteRule);
 //		if (automaticGameOn) {
 //			conductAutomaticGame();
 //			endOfGame = (isSatisfied(new RuleEndOfGameGeneral(), this) || isSatisfied(new RuleEndOfGameWhenOpponentBlocked(), this));
-//			endOfGameDraw = (isSatisfied(noPromoteRule, this) || isSatisfied(noPieceCapturedForFortyTurn, this));
+//			endOfGameDraw = (isSatisfied(noPromoteRule, this));
 //			view.printMessage("End Of Game? " + endOfGame);
 //		}
-		if (!endOfGame) {
-
+		if(!endOfGame) {
 			start();
 			view.printMessage("Game begins ...");
 			consoleView.drawBoardView();
@@ -81,50 +79,38 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 			currentMoveCoordinate = getNextMove();
 			if (currentMoveCoordinate == null) { abort(); return; }
 			while (!conductMove()) {
-				currentMoveCoordinate = getNextMove();
+				currentMoveCoordinate = getNextMove();	
 				if (currentMoveCoordinate == null) { abort(); return; }
 			}
 			consoleView.drawBoardView();
 
-			endOfGame = (isSatisfied(new RuleEndOfGameGeneral(), this)
-					|| isSatisfied(new RuleEndOfGameWhenOpponentBlocked(), this));
-			endOfGameDraw = (isSatisfied(noPromoteRule, this) || isSatisfied(noPieceCapturedForFortyTurn, this));
-
-			view.printMessage("End Of Game? " + endOfGame);
-			if (endOfGame || endOfGameDraw)
-				break;
-
-			if (info.isTestAborted())
-				return;
+			endOfGame = (isSatisfied(new RuleEndOfGameGeneral(), this) || isSatisfied(new RuleEndOfGameWhenOpponentBlocked(), this));
+			endOfGameDraw = (isSatisfied(noPromoteRule, this) );
 			
+			view.printMessage("End Of Game? " + endOfGame);
+			if (endOfGame || endOfGameDraw) break;
+			
+			if (info.isTestAborted()) { return; }
 			currentPlayerID++;
-			if (currentPlayerID >= numberOfPlayers)
-				currentPlayerID = 0;
+			if (currentPlayerID >= numberOfPlayers) currentPlayerID = 0;
 			currentPlayer = getPlayerbyID(currentPlayerID);
 			if (info.isEndOfMoves()) { end(); return; }
-		}
-		// consoleView.drawBoardView();
-
-		if (endOfGameDraw) {
+		} 
+		consoleView.drawBoardView();
+		
+		if(endOfGameDraw) {
 			info.register(TestResult.GAME_END_AS_DRAW);
 			view.printMessage("DRAW\n" + announceDraw());
 		} else {
 			info.register(TestResult.GAME_END_AS_WIN);
 			view.printMessage("WINNER " + announceWinner());
 		}
-
 		end();
 		return;
-//		try {
-//			Thread.sleep(5000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 //		consoleView.closeFile();
 //		System.exit(0);
 	}
-
+	
 	protected boolean conductMove() {
 		ICoordinate sourceCoordinate = currentMoveCoordinate.getSourceCoordinate();
 		ICoordinate destinationCoordinate = currentMoveCoordinate.getDestinationCoordinate();
@@ -134,66 +120,92 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 			return false;
 		}
 		List<ICoordinate> path = board.getCBO().findPath(piece, currentMoveCoordinate);
+
 		coordinatePieceMap.removePieceFromCoordinate(piece, sourceCoordinate);
 		MoveOpResult moveOpResult = moveInterimOperation(piece, currentMoveCoordinate, path);
-		// if piece become king then terminate the move
-		AbstractPiece temp = piece;
 		piece = becomeAndOrPutOperation(piece, destinationCoordinate);
-		if (!temp.equals(piece)) {
-			info.register(TestResult.MOVE_END_CROWNED);
-			moveOpResult = new MoveOpResult(true, false);
-		}
+		priorMoves.add(currentMoveCoordinate);
 		view.printMessage("CurrentPlayerTurnAgain? " + moveOpResult.isCurrentPlayerTurnAgain());
-		if (moveOpResult.isCurrentPlayerTurnAgain() && !automaticGameOn)
+		if (moveOpResult.isCurrentPlayerTurnAgain() && !automaticGameOn) 
 			conductCurrentPlayerTurnAgain(moveOpResult, piece);
 		return true;
 	}
-
+	
 	protected boolean conductCurrentPlayerTurnAgain(MoveOpResult moveOpResult, AbstractPiece piece) {
-		AbstractPiece temp = piece;
+		AbstractPiece temp  = piece;
+		boolean flag = false;		
 		IMoveCoordinate rollbackTemp;
 		while (moveOpResult.isCurrentPlayerTurnAgain()) {
-			List<ICoordinate> secondJumpList = board.getCBO().findAllowedContinousJumpList(piece);
+			List<ICoordinate> jumpList = board.getCBO().findAllowedContinousJumpList(piece);
+			List<ICoordinate> secondJumpList = new ArrayList<ICoordinate>();
 			rollbackTemp = currentMoveCoordinate;
+			Direction lastMoveDirection = board.getCBO().findDirection(currentMoveCoordinate.getSourceCoordinate(),currentMoveCoordinate.getDestinationCoordinate());
+			
+			for(ICoordinate destinationCoordinate : jumpList) {
+				IMoveCoordinate moveCoordinate = new MoveCoordinate(piece.getCurrentCoordinate(), destinationCoordinate);
+				List<ICoordinate> path = board.getCBO().findPath(piece, moveCoordinate);
+				Direction newDirection = board.getCBO().findDirection(currentMoveCoordinate.getDestinationCoordinate(), destinationCoordinate);
+				if(!isCurrentPlayersPieceOnPath(currentPlayer, path) && !lastMoveDirection.getOppositeDirection().equals(newDirection))
+					secondJumpList.add(destinationCoordinate);	
+			}
+				
 			if (secondJumpList.size() == 0) {
-				moveOpResult = new MoveOpResult(false, false);
 				info.register(TestResult.MOVE_END_NO_MORE_JUMP_POSSIBILITY);
+				moveOpResult = new MoveOpResult(false, false);
 				break;
 			}
+			board.getCBO().printCoordinateList(secondJumpList, "Second Jump List");
 			info.register(TestResult.ANOTHER_MOVE_JUMP_POSSIBILITY);
 			currentMoveCoordinate = getNextMove();
 			if (currentMoveCoordinate == null) { abort(); return true; }
 			ICoordinate sourceCoordinate = currentMoveCoordinate.getSourceCoordinate();
 			ICoordinate destinationCoordinate = currentMoveCoordinate.getDestinationCoordinate();
-
-			if (!checkMove()) {
+			
+			
+			for(ICoordinate coord : secondJumpList) {
+				if(coord.equals(destinationCoordinate))
+					flag=true;
+			}
+			if(!flag) {
 				info.register(TestResult.ANOTHER_DESTINATION_INVALID);
 				currentMoveCoordinate = rollbackTemp;
 				continue;
 			}
-
+			
+			if (!checkMove()) { 
+				info.register(TestResult.ANOTHER_DESTINATION_INVALID);
+				currentMoveCoordinate = rollbackTemp;
+				continue;
+			}
+			
+			
 			moveOpResult = new MoveOpResult(false, false);
-			for (ICoordinate coordinate : secondJumpList) {
+			for(ICoordinate coordinate : secondJumpList) {
 				if (coordinate.equals(destinationCoordinate)) {
 					List<ICoordinate> path = board.getCBO().findPath(piece, currentMoveCoordinate);
 					coordinatePieceMap.removePieceFromCoordinate(piece, sourceCoordinate);
 					moveOpResult = moveInterimOperation(piece, currentMoveCoordinate, path);
 					piece = becomeAndOrPutOperation(piece, destinationCoordinate);
-					if (!temp.equals(piece)) {
+					priorMoves.add(currentMoveCoordinate);
+					if(!temp.equals(piece)) {
 						info.register(TestResult.MOVE_END_CROWNED);
-						moveOpResult = new MoveOpResult(true, false); 
+						moveOpResult = new MoveOpResult(true, false);
 					}
+						
 				}
 			}
-
 		}
 		return true;
 	}
-
+	
+	
 	//TESTER-ONLY METHODS
 	
+	
+	
+	@Override
 	public void setup(String fileName) {
-		info = new AmericanCheckersTestInfo(this, "src/testing/scenariotesters/checkersamerican/AmericanCheckers.ini", fileName);
+		info = new SpanishCheckersTestInfo(this, "src/testing/scenariotesters/checkersspanish/SpanishCheckers.ini", fileName);
 		setupPlayers();
 		setupBoardMVC();
 		view = consoleView;
@@ -205,6 +217,13 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 			currentPlayerID = 1;
 			currentPlayer = playerList.getPlayer(1);
 		}
+	}
+
+	@Override
+	protected void start() {
+		super.start();
+		System.out.println("Best sequence: " + info.getReader().getBestSequence());
+		System.out.println("Prior move sequence: " + info.getReader().getPriorMoveSequence());
 	}
 
 	private void setupPiecesOnBoard(List<ICoordinatePieceDuo> coordinatePieceDuos) {
@@ -241,7 +260,7 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 			player.addPiece(men);
 
 			// If the piece was a king piece, then transform it:
-			if (coordinatePieceDuo.getPieceType().equals("king")) {
+			if (coordinatePieceDuo.getPieceType().equals("queen")) {
 				men = becomeNewPiece(player, men);
 			}
 
@@ -261,71 +280,10 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 		return false;
 	}
 
-	private void prepareRules(IRule noPromoteRule, IRule noPieceCapturedForFortyTurn) {
-		// loop limit is one more to register the current kings, which resets the turn
-		// counter. then it will stop when turns are equal to noPromoteMoveCount.
-		int loopLimit = isThereAKingOnBoard() ? info.getNoPromoteMoveCount() + 1 : info.getNoPromoteMoveCount();
-		for (int i = 0; i < loopLimit; i++)
-			isSatisfied(noPromoteRule, this); // Call noPromoteRule.evaluate 39 times for it to think the next move will
-												// be the 40th without promoting.
-
-		for (int i = 0; i < info.getNoCaptureMoveCount() + 1; i++)
-			isSatisfied(noPieceCapturedForFortyTurn, this);
+	private void prepareRule(IRule noPromoteRule) {
+		//TODO: Implement this
 	}
-
-	private List<IMoveCoordinate> findPossibleJumpMoves(IPlayer player) {
-		List<IMoveCoordinate> possibleJumpMoves = new ArrayList<IMoveCoordinate>();
-		for (AbstractPiece anyPlayerPiece : player.getPieceList()) {
-			List<ICoordinate> relativeCoordsWithOpponentPiece = new ArrayList<ICoordinate>();
-			List<ICoordinate> relativeCoords = new ArrayList<ICoordinate>();
-			if (anyPlayerPiece instanceof King) {
-				relativeCoords.add(new Coordinate(-1, 1));
-				relativeCoords.add(new Coordinate(1, 1));
-				relativeCoords.add(new Coordinate(-1, -1));
-				relativeCoords.add(new Coordinate(1, -1));
-			} else if (anyPlayerPiece.getGoalDirection() == Direction.N) {
-				relativeCoords.add(new Coordinate(-1, 1));
-				relativeCoords.add(new Coordinate(1, 1));
-			} else {
-				relativeCoords.add(new Coordinate(-1, -1));
-				relativeCoords.add(new Coordinate(1, -1));
-			}
-			for (ICoordinate relativeCoord : relativeCoords) {
-				AbstractPiece adjacentPiece = getCoordinatePieceMap().getPieceAtCoordinate(new Coordinate(
-						anyPlayerPiece.getCurrentCoordinate().getXCoordinate() + relativeCoord.getXCoordinate(),
-						anyPlayerPiece.getCurrentCoordinate().getYCoordinate() + relativeCoord.getYCoordinate()));
-				if (adjacentPiece != null && !adjacentPiece.getPlayer().equals(player))
-					relativeCoordsWithOpponentPiece.add(relativeCoord);
-			}
-			for (ICoordinate relativeCoordWithOpponentPiece : relativeCoordsWithOpponentPiece) {
-				ICoordinate possibleJumpMoveDestinationCoordinate = new Coordinate(
-						anyPlayerPiece.getCurrentCoordinate().getXCoordinate()
-								+ relativeCoordWithOpponentPiece.getXCoordinate() * 2,
-						anyPlayerPiece.getCurrentCoordinate().getYCoordinate()
-								+ relativeCoordWithOpponentPiece.getYCoordinate() * 2);
-				if (possibleJumpMoveDestinationCoordinate.getXCoordinate() >= 0
-						&& possibleJumpMoveDestinationCoordinate.getXCoordinate() <= 7
-						&& possibleJumpMoveDestinationCoordinate.getYCoordinate() >= 0
-						&& possibleJumpMoveDestinationCoordinate.getYCoordinate() <= 7
-						&& getCoordinatePieceMap().getPieceAtCoordinate(possibleJumpMoveDestinationCoordinate) == null)
-					possibleJumpMoves.add(new MoveCoordinate(anyPlayerPiece.getCurrentCoordinate(),
-							possibleJumpMoveDestinationCoordinate));
-			}
-		}
-		return possibleJumpMoves;
-	}
-
-	private boolean isMoveOneOfPossibleJumpMoves(IMoveCoordinate move) {
-		List<IMoveCoordinate> possibleJumpMoves = findPossibleJumpMoves(currentPlayer);
-		if (possibleJumpMoves.size() == 0)
-			return true;
-		for (IMoveCoordinate m : possibleJumpMoves) {
-			if (m.equals(move))
-				return true;
-		}
-		return false;
-	}
-
+	
 	@Override
 	public SourceCoordinateValidity checkSourceCoordinate(IPlayer player, ICoordinate sourceCoordinate) {
 		// Set-up the source coordinate and piece.
@@ -351,72 +309,135 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 	@Override
 	public DestinationCoordinateValidity checkDestinationCoordinate(IPlayer player, ICoordinate sourceCoordinate,
 			ICoordinate destinationCoordinate) {
-
 		SourceCoordinateValidity sourceCoordinateValidity = checkSourceCoordinate(player, sourceCoordinate);
-		// If source coordinate is not set up or valid, destination coordinate can't be
-		// truly valid.
+		//If source coordinate is not set up or valid, destination coordinate can't be truly valid.
 		if (sourceCoordinateValidity == null || sourceCoordinateValidity != SourceCoordinateValidity.VALID)
 			return DestinationCoordinateValidity.SOURCE_COORDINATE_PROBLEM;
-		// Set up the destination coordinate.
-		int xOfSource = sourceCoordinate.getXCoordinate();
-		int yOfSource = sourceCoordinate.getYCoordinate();
+		//Set up the destination coordinate.
+		int xOfSource = sourceCoordinate.getXCoordinate(); int yOfSource = sourceCoordinate.getYCoordinate();
 		AbstractPiece piece = getCoordinatePieceMap().getPieceAtCoordinate(sourceCoordinate);
-		int xOfDestination = destinationCoordinate.getXCoordinate();
-		int yOfDestination = destinationCoordinate.getYCoordinate();
-		int xDiff = xOfDestination - xOfSource;
-		int yDiff = yOfDestination - yOfSource;
-		// Check if the coordinate is on board.
-		if (xOfDestination < 0 || 7 < xOfDestination || yOfDestination < 0 || 7 < yOfDestination)
+		int xOfDestination = destinationCoordinate.getXCoordinate(); int yOfDestination = destinationCoordinate.getYCoordinate();
+		int xDiff = xOfDestination - xOfSource; int yDiff = yOfDestination - yOfSource;
+		//Check if the coordinate is on board.
+		if (xOfDestination < 0 ||  7 < xOfDestination || yOfDestination < 0 || 7 < yOfDestination)
 			return DestinationCoordinateValidity.OUTSIDE_OF_THE_BOARD;
-		// Check if coordinate is the same as source.
+		//Check if coordinate is the same as source.
 		if (destinationCoordinate.equals(sourceCoordinate))
 			return DestinationCoordinateValidity.SAME_AS_SOURCE;
-		// Check if the coordinate is of valid square color.
-		if (!getBoard().isPlayableCoordinate(destinationCoordinate) || Math.abs(xDiff) != Math.abs(yDiff))
+		//Check if the coordinate is of valid square color.
+		if (Math.abs(xDiff) != Math.abs(yDiff) || !getBoard().isPlayableCoordinate(destinationCoordinate))
 			return DestinationCoordinateValidity.NOT_OF_VALID_SQUARE_COLOR;
-		// Check if destination coordinate is more than two squares away.
-		if (Math.abs(xDiff) > 2 || Math.abs(yDiff) > 2)
+		//Check if destination coordinate is more than two squares away.
+		if ((piece instanceof Pawn) && (Math.abs(xDiff) > 2 || Math.abs(yDiff) > 2))
 			return DestinationCoordinateValidity.MORE_THAN_TWO_SQUARES_AWAY_FROM_SOURCE;
-		// Check if destination coordinate is occupied.
-		if (this.getCoordinatePieceMap().getPieceAtCoordinate(destinationCoordinate) != null)
+		//Check if destination coordinate is occupied.
+		if (getCoordinatePieceMap().getPieceAtCoordinate(destinationCoordinate) != null)
 			return DestinationCoordinateValidity.OCCUPIED;
-		// Check if destination coordinate is not allowed.
-		Direction moveDirection = yOfDestination > yOfSource ? Direction.N : Direction.S;
+		//Check if destination coordinate is not allowed.
+		Direction moveDirection = yOfDestination > yOfSource ? Direction.N : Direction.S ;
 		if (piece instanceof Pawn && moveDirection != piece.getGoalDirection())
 			return DestinationCoordinateValidity.UNALLOWED_DIRECTION;
-		// Check if move is not one of possible jump moves.
-		if (!isMoveOneOfPossibleJumpMoves(new MoveCoordinate(sourceCoordinate, destinationCoordinate)))
-			return DestinationCoordinateValidity.NOT_ONE_OF_POSSIBLE_JUMP_MOVES;
-		// If there are no problems up to this point, return valid if move is a regular
-		// move.
-		if (Math.abs(xDiff) == 1 && Math.abs(yDiff) == 1)
+		//Check if move is part of the best sequence.
+		if (!isMovePartOfTheBestSequence(new MoveCoordinate(sourceCoordinate, destinationCoordinate)))
+			return DestinationCoordinateValidity.NOT_THE_BEST_SEQUENCE;
+		//If there are no problems up to this point, return valid if move is a regular move.
+		if (piece instanceof Pawn && Math.abs(xDiff) == 1 && Math.abs(yDiff) == 1)
 			return DestinationCoordinateValidity.VALID_REGULAR;
-		// Set up jumped piece.
-		ICoordinate jumpedCoordinate = new Coordinate(xOfSource + xDiff / 2, yOfSource + yDiff / 2);
-		AbstractPiece jumpedPiece = getCoordinatePieceMap().getPieceAtCoordinate(jumpedCoordinate);
-		// Check if jumped piece is null.
-		if (jumpedPiece == null)
+		
+		List<ICoordinate> occupiedJumpedCoordinates = findOccupiedJumpedCoordinates(sourceCoordinate, destinationCoordinate);
+		//Queen can move multiple squares without jumping.
+		if (piece instanceof Queen && occupiedJumpedCoordinates.size() == 0)
+			return DestinationCoordinateValidity.VALID_REGULAR;
+		//Check if pawn tries to move multiple squares without jumping.
+		if (piece instanceof Pawn && occupiedJumpedCoordinates.size() == 0)
 			return DestinationCoordinateValidity.JUMPED_PIECE_IS_NULL;
-		// Check if jumped piece is player's own piece.
+		//Check if there are more than one pieces being jumped.
+		if (occupiedJumpedCoordinates.size() > 1)
+			return DestinationCoordinateValidity.MULTIPLE_JUMPED_PIECES;
+		ICoordinate jumpedCoordinate = occupiedJumpedCoordinates.get(0);
+		AbstractPiece jumpedPiece = getCoordinatePieceMap().getPieceAtCoordinate(jumpedCoordinate);
+		//Check if jumped piece is player's own piece.
 		if (jumpedPiece.getPlayer().equals(player))
 			return DestinationCoordinateValidity.JUMPED_PIECE_IS_OWN;
-		// If everything is okay up to this point, double-check that the xDiff and yDiff
-		// are 2 and return valid jump move.
-		if (Math.abs(xDiff) == 2 && Math.abs(yDiff) == 2) {
-			return DestinationCoordinateValidity.VALID_JUMP;
-		}
-
-		return DestinationCoordinateValidity.UNKNOWN_ERROR;
+		//Check if destination coordinate is too far away form jumped coordinate.
+		if (Math.abs(xOfDestination - jumpedCoordinate.getXCoordinate()) != 1 || Math.abs(yOfDestination - jumpedCoordinate.getYCoordinate()) != 1)
+			return DestinationCoordinateValidity.MORE_THAN_ONE_SQUARE_AWAY_FROM_JUMPED_PIECE;
+		//If everything is okay up to this point, return valid jump move.
+		return DestinationCoordinateValidity.VALID_JUMP;
 	}
 
+	public List<ICoordinate> findOccupiedJumpedCoordinates(ICoordinate sourceCoordinate, ICoordinate destinationCoordinate) {
+		List<ICoordinate> occupiedCoordinates = new ArrayList<ICoordinate>();
+		for (ICoordinate c : findPath(sourceCoordinate, destinationCoordinate)) {
+			if (!c.equals(sourceCoordinate) && !c.equals(destinationCoordinate) && getCoordinatePieceMap().getPieceAtCoordinate(c) != null) {
+				occupiedCoordinates.add(c);
+			}
+		}
+		return occupiedCoordinates;
+	}
+	
+	private List<ICoordinate> findPath(ICoordinate sourceCoordinate, ICoordinate destinationCoordinate) {
+		int xSource = sourceCoordinate.getXCoordinate();
+		int ySource = sourceCoordinate.getYCoordinate();
+		int xDestination = destinationCoordinate.getXCoordinate();
+		int yDestination = destinationCoordinate.getYCoordinate();
+		int diff = Math.abs(xDestination - xSource);
+		int xStep = xDestination - xSource > 0 ? 1 : -1;
+		int yStep = yDestination - ySource > 0 ? 1 : -1;
+		int xCurrent = xSource; int yCurrent = ySource;
+		List<ICoordinate> path = new ArrayList<ICoordinate>();
+		for (int i = 0; i <= diff; i++) {
+			path.add(new Coordinate(xCurrent, yCurrent));
+			xCurrent+=xStep; yCurrent+=yStep;
+		}
+		return path;
+	}
+	
+	private boolean isMovePartOfTheBestSequence(IMoveCoordinate move) {
+		List<IMoveCoordinate> bestSequence = info.getReader().getBestSequence();
+		if (bestSequence == null || bestSequence.size() == 0)
+			return true;
+		
+		if (bestSequence.get(priorMoves.size()).equals(move))
+			return true;
+		
+		return false;
+	}
+
+	public List<IMoveCoordinate> getPriorMoves() {
+		return priorMoves;
+	}
+	
+	
+	// MAIN METHOD
+
+	public void setPriorMoves(List<IMoveCoordinate> priorMoves) {
+		this.priorMoves = priorMoves;
+	}
+
+	public static void main(String[] args) {
+		AbstractTesterReferee ref = new SpanishTesterReferee(new SpanishGameConfiguration());
+		ref.setup("randomJump");
+		ref.conductGame();
+		System.out.println(ref.getInfo().getSourceCoordinateValidity());
+		System.out.println(ref.getInfo().getDestinationCoordinateValidity());
+		System.out.println(ref.getInfo().toString());
+	}
+	
+	
+	
+	
+	
+	
 	//UNTOUCHED METHODS
 	
+	@Override
 	public void setup() {
 		setupPlayers();
 		setupBoardMVC();
 		setupPiecesOnBoard();
 	}
-
+	
 	private void setupPlayers() {
 		numberOfPlayers = gameConfiguration.getNumberOfPlayers();
 		numberOfPiecesPerPlayer = gameConfiguration.getNumberOfPiecesPerPlayer();
@@ -430,18 +451,19 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 	}
 
 	private void setupBoardMVC() {
-		board = new AmericanCheckersBoard();
+		board = new SpanishCheckersBoard();
 		coordinatePieceMap = board.getCoordinatePieceMap();
 		consoleView = new AmericanCheckersBoardConsoleView(this);
+		
 	}
 
 	private void setupPiecesOnBoard() {
 		// create pieces for players and put them on board
 		IPlayer player;
 		AbstractPiece men;
-		StartCoordinates startCoordinates = new AmericanStartCoordinates();
+		SpanishStartCoordinates startCoordinates = new SpanishStartCoordinates();
 		IPieceMovePossibilities menMovePossibilities = new PawnMovePossibilities();
-		IPieceMoveConstraints menMoveConstraints = new PawnMoveConstraints();
+		IPieceMoveConstraints menMoveConstraints =  new PawnMoveConstraints();
 
 		for (int i = 0; i < numberOfPlayers; i++) {
 			player = playerList.getPlayer(i);
@@ -450,21 +472,21 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 			if (i == 0) {
 				icon = "B";
 				direction = Direction.N;
-			} else {
+			}
+			else {
 				icon = "W";
 				direction = Direction.S;
 			}
 			for (int j = 0; j < numberOfPiecesPerPlayer; j++) {
-				men = new Pawn(1000 + i, icon, player, direction, menMovePossibilities, menMoveConstraints);
+				men = new Pawn(1000+i, icon, player, direction, menMovePossibilities, menMoveConstraints);
 				player.addPiece(men);
 				coordinatePieceMap.putPieceToCoordinate(men, startCoordinates.getNextCoordinate());
 			}
 		}
-
-		// coordinatePieceMap.printPieceMap();
-		// view.printMessage(playerList.getPlayerStatus());
+		 //coordinatePieceMap.printPieceMap();
+//		view.printMessage(playerList.getPlayerStatus());
 	}
-
+	
 	protected boolean checkMove() {
 		return isSatisfied(new RuleIfAnyPieceCanBeCapturedThenMoveMustBeThat(), this)
 				&& isSatisfied(new RuleThereMustBePieceAtSourceCoordinate(), this)
@@ -474,12 +496,20 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 				&& isSatisfied(new RuleMoveMustMatchPieceMoveConstraints(), this)
 				&& isSatisfied(new RuleIfJumpMoveThenJumpedPieceMustBeOpponentPiece(), this);
 	}
-
-	protected MoveOpResult moveInterimOperation(AbstractPiece piece, IMoveCoordinate moveCoordinate,
-			List<ICoordinate> path) {
+	
+	private List<ICoordinate> piecesOnPath(List<ICoordinate> path){
+		List<ICoordinate> coordinatesThatHasAnyPiece = new ArrayList<ICoordinate>();
+		for (ICoordinate c: path) {
+			if(coordinatePieceMap.getPieceAtCoordinate(c)!=null)
+				coordinatesThatHasAnyPiece.add(c);
+		}
+		return coordinatesThatHasAnyPiece;
+	}
+	
+	protected MoveOpResult moveInterimOperation(AbstractPiece piece, IMoveCoordinate moveCoordinate, List<ICoordinate> path) {
 		IPlayer player = piece.getPlayer();
-		if (board.getMBO().isJumpMove(piece, moveCoordinate)) {
-			ICoordinate pathCoordinate = path.get(1);
+		if (board.getMBO().isJumpMove(piece, moveCoordinate) && piecesOnPath(path).size()==1) {
+			ICoordinate pathCoordinate = piecesOnPath(path).get(0);
 			AbstractPiece pieceAtPath = coordinatePieceMap.getPieceAtCoordinate(pathCoordinate);
 			if (!pieceAtPath.getPlayer().equals(player)) {
 				// capture piece at path
@@ -490,71 +520,50 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 		}
 		return new MoveOpResult(true, false);
 	}
-
+	
+	protected AbstractPiece becomeNewPiece(IPlayer player, AbstractPiece piece) {
+		int pieceID = piece.getId();
+		Direction goalDirection = piece.getGoalDirection();
+		player.removePiece(piece);
+		IPieceMovePossibilities queenMovePossibilities = new QueenMovePossibilities();
+		IPieceMoveConstraints queenMoveConstraints =  new QueenMoveConstraints();
+		String icon;
+		if (player.getId() == 0) icon = "A";
+		else icon = "Z";
+		AbstractPiece king = new Queen(pieceID+2, icon, player, goalDirection, queenMovePossibilities, queenMoveConstraints);
+		player.addPiece(king);
+		return king;
+	}
+	
+	private boolean isCurrentPlayersPieceOnPath(IPlayer player,List<ICoordinate> path) {
+		path.remove(0);
+		path.remove(path.size()-1);
+		for(ICoordinate coordinate:path) {
+			AbstractPiece piece = coordinatePieceMap.getPieceAtCoordinate(coordinate);
+			if(piece!=null && piece.getPlayer().equals(player))
+				return true;
+		}
+		return false;
+	}
+	
+	public IPlayer announceWinner() {
+		return playerList.getPlayer(currentPlayerID);
+	}
+	
 	protected AbstractPiece becomeAndOrPutOperation(AbstractPiece piece, ICoordinate destinationCoordinate) {
-		// check the piece is already king or not
-		if (!(piece instanceof King))
+		//check the piece is already queen or not
+		if(!(piece instanceof Queen))
 			if ((piece.getGoalDirection() == Direction.N && destinationCoordinate.getYCoordinate() == 7)
-					|| (piece.getGoalDirection() == Direction.S && destinationCoordinate.getYCoordinate() == 0)) {
+					|| (piece.getGoalDirection() == Direction.S && destinationCoordinate.getYCoordinate() == 0)){
 				IPlayer player = piece.getPlayer();
 				piece = becomeNewPiece(player, piece);
 			}
 		coordinatePieceMap.putPieceToCoordinate(piece, destinationCoordinate);
 		return piece;
 	}
-
-	protected AbstractPiece becomeNewPiece(IPlayer player, AbstractPiece piece) {
-		int pieceID = piece.getId();
-		Direction goalDirection = piece.getGoalDirection();
-		player.removePiece(piece);
-		IPieceMovePossibilities kingMovePossibilities = new KingMovePossibilities();
-		IPieceMoveConstraints kingMoveConstraints = new KingMoveConstraints();
-		String icon;
-		if (player.getId() == 0)
-			icon = "A";
-		else
-			icon = "Z";
-		AbstractPiece king = new King(pieceID + 2, icon, player, goalDirection, kingMovePossibilities,
-				kingMoveConstraints);
-		player.addPiece(king);
-		return king;
-	}
-
-	public IPlayer announceWinner() {
-		return playerList.getPlayer(currentPlayerID);
-	}
-
-	public IPlayerList announceDraw() {
+	
+	public IPlayerList announceDraw(){
 		return playerList;
 	}
-
-	public IPlayer getCurrentPlayer() {
-		if (currentPlayerID >= numberOfPlayers)
-			currentPlayerID = 0;
-		return playerList.getPlayer(currentPlayerID);
-	}
-
-	public IPlayer getNextPlayer() {
-		int nextPlayerID = currentPlayerID + 1;
-		if (nextPlayerID >= numberOfPlayers)
-			nextPlayerID = 0;
-		return playerList.getPlayer(nextPlayerID);
-	}
-
-	// MAIN METHOD
-	
-	public static void main(String[] args) {
-
-		String[] moveArr = { "validJumpMove4" };
-
-		for (String moveID : moveArr) {
-			System.out.println("\n\n\nTESTING: " + moveID);
-			AmericanTesterReferee referee = new AmericanTesterReferee(new AmericanGameConfiguration());
-			referee.setup(moveID);
-			referee.conductGame();
-		}
-
-	}
-
 
 }

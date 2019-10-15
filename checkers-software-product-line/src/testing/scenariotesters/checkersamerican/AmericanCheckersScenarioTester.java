@@ -29,6 +29,9 @@ import core.Zone;
 import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.Before;
+import testing.helpers.DestinationCoordinateValidity;
+import testing.helpers.SourceCoordinateValidity;
+import testing.helpers.TestResult;
 import testing.scenariotesters.AbstractTesterReferee;
 import testing.scenariotesters.IScenarioTester;
 
@@ -37,13 +40,14 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	PrintWriter outputter;
 	
 	protected AbstractTesterReferee referee;
+	protected AmericanCheckersTestInfo info;
+	
 	protected IPlayer playerOfPlayerMove; // The player that has the current turn.
 	protected AbstractPiece pieceOfPlayerMove; // The piece that is doing the move.
 	
 	protected IMoveCoordinate playerMove; // The move that is the focus of the currently running test.
 	protected ICoordinate sourceCoordinateOfPlayerMove; // Source coordinate of the playerMove.
 	protected ICoordinate destinationCoordinateOfPlayerMove; // Destination coordinate of the playerMove.
-	protected int sourceXOfPlayerMove, sourceYOfPlayerMove, destinationXOfPlayerMove, destinationYOfPlayerMove; // Explicit coordinates of playerMove.
 	protected SourceCoordinateValidity sourceCoordinateValidityOfPlayerMove; // Info about the validity of sourceCoordinate.
 	protected DestinationCoordinateValidity destinationCoordinateValidityOfPlayerMove; // Info about the validity of destinationCoordinate.
 	
@@ -67,7 +71,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void thePlayersStartTheGame() {
-		referee.defaultSetup();
+		referee.setup();
 	}
 
 	@Override
@@ -77,33 +81,32 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void theGameIsPlayedUpToACertainPointFromFileP1(String p1) {
-		referee.setSetUpName(p1);
-		referee.setup();
+		referee.setup(p1);
+		info = (AmericanCheckersTestInfo) referee.getInfo();
 		playerOfPlayerMove = referee.getCurrentPlayer();
-		playerMove = referee.readPlayerMove();
-		output("Testing: " + referee.getReader().getSectionName());
-//		Set up source coordinate.
+		playerMove = referee.getInfo().getPlayerMove();
+		output("Testing: " + referee.getInfo().getReader().getSectionName());
+		//Set up source coordinate.
 		sourceCoordinateOfPlayerMove = playerMove.getSourceCoordinate();
-		sourceXOfPlayerMove = sourceCoordinateOfPlayerMove.getXCoordinate(); sourceYOfPlayerMove = sourceCoordinateOfPlayerMove.getYCoordinate();
 		this.pieceOfPlayerMove = getPieceAtCoordinate(sourceCoordinateOfPlayerMove);
-		sourceCoordinateValidityOfPlayerMove = checkSourceCoordinate(playerOfPlayerMove, sourceCoordinateOfPlayerMove);
+		
+	}
+	
+	private void prepareValidities() {
+		breakpoint("validJumpMove1");
+		sourceCoordinateValidityOfPlayerMove = referee.getInfo().getSourceCoordinateValidity();
 		//Set up destination coordinate.
 		destinationCoordinateOfPlayerMove = playerMove.getDestinationCoordinate();
-		destinationXOfPlayerMove = destinationCoordinateOfPlayerMove.getXCoordinate(); destinationYOfPlayerMove = this.destinationCoordinateOfPlayerMove.getYCoordinate();
-		destinationCoordinateValidityOfPlayerMove = checkDestinationCoordinate(playerOfPlayerMove, sourceCoordinateOfPlayerMove, destinationCoordinateOfPlayerMove);
-		if (destinationCoordinateValidityOfPlayerMove == DestinationCoordinateValidity.JUMPED_PIECE_IS_NULL
-				|| destinationCoordinateValidityOfPlayerMove == DestinationCoordinateValidity.JUMPED_PIECE_IS_OWN
-				|| destinationCoordinateValidityOfPlayerMove == DestinationCoordinateValidity.VALID_JUMP) {
-			jumpedCoordinateOfPlayerMove = new Coordinate(sourceXOfPlayerMove + (destinationXOfPlayerMove-sourceXOfPlayerMove)/2, sourceYOfPlayerMove + (destinationYOfPlayerMove - sourceYOfPlayerMove)/2);
-			jumpedPieceOfPlayerMove = getPieceAtCoordinate(jumpedCoordinateOfPlayerMove);
-		}
+		destinationCoordinateValidityOfPlayerMove = referee.getInfo().getDestinationCoordinateValidity();
+		jumpedCoordinateOfPlayerMove = info.getJumpedCoordinate();
+		jumpedPieceOfPlayerMove = info.getJumpedPiece();
 		
-		output("SourceCoordinateValidity: " + this.sourceCoordinateValidityOfPlayerMove);
-		output("DestinationCoordinateValidity: " + this.destinationCoordinateValidityOfPlayerMove);
 	}
 
 	@Override
 	public void thePlayerPicksAValidSourceCoordinate() {
+		referee.conductGame();
+		prepareValidities();
 		assertEquals(SourceCoordinateValidity.VALID, sourceCoordinateValidityOfPlayerMove);
 	}
 
@@ -114,8 +117,6 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		} else if (p1.equals("two")) {
 			assertEquals(DestinationCoordinateValidity.VALID_JUMP, destinationCoordinateValidityOfPlayerMove);
 		}
-		//If there were no errors up to this point, conduct the game.
-		referee.conductGame();
 	}
 	
 	@Override
@@ -130,15 +131,15 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void theNextTurnIsGivenToTheP1Player(String p1) {
-		if (referee.isGameEnded()) {
-			output("Informers: " + referee.getInformers().toString());
+		if (referee.getInfo().isGameEnded()) {
+			output("Informers: " + referee.getInfo().getInformers().toString());
 		}
-		assertFalse(referee.isGameEnded());
+		assertFalse(referee.getInfo().isGameEnded());
 		if (p1.equals("other")) {
-			assertFalse(referee.isPlayerWasGoingToMakeAnotherMove());
+			assertFalse(referee.getInfo().isPlayerWasGoingToMakeAnotherMove());
 			assertFalse(referee.getCurrentPlayer().equals(playerOfPlayerMove));
 		} else if (p1.equals("current")) {
-			assertTrue(referee.isPlayerWasGoingToMakeAnotherMove());
+			assertTrue(referee.getInfo().isPlayerWasGoingToMakeAnotherMove());
 			assertTrue(referee.getCurrentPlayer().equals(playerOfPlayerMove));
 		}
 	}
@@ -152,8 +153,9 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void thePlayerPicksAnInvalidP1CoordinateBecauseP2(String p1, String p2) {
-		playerMove = referee.readPlayerMove();
 		if (p1.equals("source")) {
+			referee.conductGame();
+			prepareValidities();
 			invalidSourceCoordinate(p2);
 		} else if (p1.equals("destination")){
 			invalidDestinationCoordinate(p2);
@@ -162,7 +164,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		}
 	}
 	
-	private void invalidDestinationCoordinate(String reason) {
+	protected void invalidDestinationCoordinate(String reason) {
 		if (reason.equals("destination coordinate is outside of the board")) {
 			assertEquals(DestinationCoordinateValidity.OUTSIDE_OF_THE_BOARD, destinationCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("destination coordinate is not of valid square color")) {
@@ -176,7 +178,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 			assertFalse(pieceOfPlayerMove instanceof King);
 			assertEquals(DestinationCoordinateValidity.UNALLOWED_DIRECTION, destinationCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("destination coordinate is more than two squares away")) {
-			assertEquals(DestinationCoordinateValidity.MORE_THAN_TWO_SQUARES_AWAY, destinationCoordinateValidityOfPlayerMove);
+			assertEquals(DestinationCoordinateValidity.MORE_THAN_TWO_SQUARES_AWAY_FROM_SOURCE, destinationCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("move is not a jump move even though there are possible jump moves")) {
 			assertEquals(DestinationCoordinateValidity.NOT_ONE_OF_POSSIBLE_JUMP_MOVES, destinationCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("jumped piece is null")) {
@@ -186,11 +188,9 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		} else {
 			throw new PendingException();
 		}
-		//If there were no errors up to this point, conduct the game.
-		referee.conductGame();
 	}	
 	
-	private void invalidSourceCoordinate(String reason) {
+	protected void invalidSourceCoordinate(String reason) {
 		if (reason.equals("source coordinate is empty")) {
 			assertEquals(SourceCoordinateValidity.EMPTY, sourceCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("source coordinate has opponent's piece")) {
@@ -206,20 +206,21 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void thePlayerPicksAnyDestinationCoordinate() {
-		referee.conductGame();
+		//TODO: What can be the implementation for this?
 	}
 
 	@Override
 	public void anErrorMessageIsShownSayingP1(String p1) {
-		assertTrue(referee.getInformers().size() > 0); //Because there is at least 1 error message and 1 message about the next move.
-		assertEquals(p1, referee.getInformers().get(0)); //Error message stays in the 0th index.
+		//TODO: Revise this
+		assertTrue(referee.getInfo().getInformers().size() > 0); //Because there is at least 1 error message and 1 message about the next move.
+		assertEquals(p1, referee.getInfo().getInformers().get(0)); //Error message stays in the 0th index.
 	}
 
 	@Override
 	public void thePlayerIsAskedForAnotherP1Coordinate(String p1) {
-		assertTrue(referee.isPlayerWasGoingToMakeAnotherMove());
+		assertTrue(referee.getInfo().isPlayerWasGoingToMakeAnotherMove());
 		if (p1.equals("source")) {
-			assertEquals("Player will be asked for another source coordinate (previous move was invalid)...", referee.getInformers().get(1));
+			assertEquals(TestResult.ANOTHER_SOURCE_INVALID.getMessage(), referee.getInfo().getInformers().get(1));
 		} else {
 			throw new PendingException();
 		}
@@ -240,20 +241,20 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	@Override
 	public void thePlayerJumpsOverTheLastPieceOfTheOpponent() {
 		referee.conductGame();
+		prepareValidities();
 		assertEquals(DestinationCoordinateValidity.VALID_JUMP, this.destinationCoordinateValidityOfPlayerMove);
 	}
 
 	@Override
 	public void theOpponentLosesTheGame() {
-		assertEquals(getOtherPlayer(), referee.getLoser());
+		assertEquals(getOtherPlayer(), referee.getInfo().getLoser());
 	}
 
 	@Override
 	public void thePlayerWinsTheGame() {
-		assertEquals(playerOfPlayerMove, referee.getWinner());
+		assertEquals(playerOfPlayerMove, referee.getInfo().getWinner());
 	}
 
-	
 	@Override
 	public void thePlayerHasOnlyOnePieceOnTheGameBoard() {
 		int playerPieceCount = 0;
@@ -271,11 +272,12 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	@Override
 	public void thePlayerMakesAMoveLeavingNoValidDestinationCoordinatesForAnyOfTheOpponentsPieces() {
 		referee.conductGame();
+		prepareValidities();
 		boolean noValidMove = true;
 		IPlayer otherPlayer = getOtherPlayer();
 		List<IMoveCoordinate> opponentAllPossibleMoves = findAllMoves(otherPlayer);
 		for (IMoveCoordinate move : opponentAllPossibleMoves) {
-			DestinationCoordinateValidity validity = checkDestinationCoordinate(otherPlayer, move.getSourceCoordinate(), move.getDestinationCoordinate());
+			DestinationCoordinateValidity validity = referee.checkDestinationCoordinate(otherPlayer, move.getSourceCoordinate(), move.getDestinationCoordinate());
 			if (validity == DestinationCoordinateValidity.VALID_REGULAR || validity == DestinationCoordinateValidity.VALID_JUMP)
 				noValidMove = false;
 		}
@@ -284,6 +286,8 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void thePlayerPicksAValidSourceCoordinateThatHasAPawnPieceInIt() {
+		referee.conductGame();
+		prepareValidities();
 		assertEquals(SourceCoordinateValidity.VALID, sourceCoordinateValidityOfPlayerMove);
 		assertTrue(pieceOfPlayerMove instanceof Pawn);
 	}
@@ -294,16 +298,14 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 					|| destinationCoordinateValidityOfPlayerMove == DestinationCoordinateValidity.VALID_JUMP);
 		
 		if (pieceOfPlayerMove.getGoalDirection() == Direction.N) {
-			assertEquals(7, destinationYOfPlayerMove);
+			assertEquals(7, destinationCoordinateOfPlayerMove.getYCoordinate());
 		} else if (pieceOfPlayerMove.getGoalDirection() == Direction.S) {
-			assertEquals(0, destinationYOfPlayerMove);
+			assertEquals(0, destinationCoordinateOfPlayerMove.getYCoordinate());
 		}
-		
-		referee.conductGame();
 	}
 
 	@Override
-	public void thePieceAtTheSourceCoordinateBecomesAKingPiece() {
+	public void thePieceAtTheSourceCoordinateBecomesACrownedPiece() {
 		AbstractPiece newPiece = getPieceAtCoordinate(destinationCoordinateOfPlayerMove);
 		assertTrue(newPiece != null);
 		assertEquals(pieceOfPlayerMove.getId()+2, newPiece.getId());
@@ -321,14 +323,14 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	
 	@Override
 	public void theGameIsEndedAsADraw() {
-		assertTrue(referee.isGameEnded());
-		assertTrue(referee.isDraw());
+		assertTrue(referee.getInfo().isGameEnded());
+		assertTrue(referee.getInfo().isDraw());
 	}
 
 	@Override
 	public void theNumberOfConsecutiveIndecisiveMovesIs39() {
-		int noPromote = referee.getNoPromoteMoveCount();
-		int noCapture = referee.getNoCaptureMoveCount();
+		int noPromote = referee.getInfo().getNoPromoteMoveCount();
+		int noCapture = referee.getInfo().getNoCaptureMoveCount();
 		if (noPromote < noCapture)
 			assertEquals(39, noPromote);
 		else
@@ -337,24 +339,25 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void thePlayerMakesARegularMoveWithoutPromoting() {
-		breakpoint("endOfTheGameInDrawFortyIndecisiveMoves2");
-		assertEquals(DestinationCoordinateValidity.VALID_REGULAR, destinationCoordinateValidityOfPlayerMove);
 		referee.conductGame();
+		prepareValidities();
+		assertEquals(DestinationCoordinateValidity.VALID_REGULAR, destinationCoordinateValidityOfPlayerMove);
 		assertEquals(pieceOfPlayerMove, referee.getCoordinatePieceMap().getPieceAtCoordinate(destinationCoordinateOfPlayerMove));
 	}
 	
 	@Override
 	public void inThePreviousTurnTheOpponentHasOfferedToEndTheGameInADraw() {
-		assertTrue(referee.isDrawOffered());
+		assertTrue(referee.getInfo().isDrawOffered());
 	}
 
 	@Override
 	public void thePlayerP1TheOffer(String p1) {
 		referee.conductGame();
+		prepareValidities();
 		if (p1.equals("accepts"))
-			assertTrue(referee.isDrawAccepted());
+			assertTrue(referee.getInfo().isDrawAccepted());
 		else if (p1.equals("rejects"))
-			assertFalse(referee.isDrawAccepted());
+			assertFalse(referee.getInfo().isDrawAccepted());
 		else
 			throw new PendingException();
 	}
@@ -372,6 +375,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	@Override
 	public void thePlayerJumpsOverOneOrMultiplePiecesLeavingTheOpponentWithOnlyOnePieceThatIsUnableToPerformAJumpMove() {
 		referee.conductGame();
+		prepareValidities();
 		assertEquals(DestinationCoordinateValidity.VALID_JUMP, destinationCoordinateValidityOfPlayerMove);
 		int opponentPieceCount = 0;
 		IPlayer opponent = getOtherPlayer();
@@ -446,130 +450,25 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		return allPossibleMoves;
 	}
 	
-	private boolean isMoveOneOfPossibleJumpMoves() {
-		List<IMoveCoordinate> possibleJumpMoves = findPossibleJumpMoves(playerOfPlayerMove);
-		if (possibleJumpMoves.size() == 0)
-			return true;
-		for (IMoveCoordinate move : possibleJumpMoves) {
-			if (move.equals(playerMove))
-				return true;
-		}
-		return false;
-	}
-	
 	protected AbstractPiece getPieceAtCoordinate(ICoordinate coordinate) {
 		return referee.getCoordinatePieceMap().getPieceAtCoordinate(coordinate);
 	}
 	
-	
-	protected enum SourceCoordinateValidity {
-		VALID, OUTSIDE_OF_THE_BOARD, NOT_OF_VALID_SQUARE_COLOR, EMPTY, OPPONENT_PIECE
-	}
-	protected SourceCoordinateValidity checkSourceCoordinate(IPlayer player, ICoordinate sourceCoordinate) {
-		//Set-up the source coordinate and piece.
-		int xOfSource = sourceCoordinate.getXCoordinate(); int yOfSource = sourceCoordinate.getYCoordinate();
-		AbstractPiece piece = getPieceAtCoordinate(sourceCoordinate);
-		//Check if the coordinate is on board.
-		if (xOfSource < 0 ||  7 < xOfSource || yOfSource < 0 || 7 < yOfSource)
-			return SourceCoordinateValidity.OUTSIDE_OF_THE_BOARD;
-		//Check if the coordinate is of valid square color.
-		if (!referee.getBoard().isPlayableCoordinate(sourceCoordinate))
-			return SourceCoordinateValidity.NOT_OF_VALID_SQUARE_COLOR;
-		//Check if coordinate is empty
-		if (piece == null)
-			return SourceCoordinateValidity.EMPTY;
-		//Check if coordinate has an opponent's piece
-		if (!piece.getPlayer().equals(player))
-			return SourceCoordinateValidity.OPPONENT_PIECE;
-		
-		return SourceCoordinateValidity.VALID;
-	}
-	
-	
-	protected enum DestinationCoordinateValidity {
-		//Destination coordinate is either valid, or its invalidity reason are one of the below
-		VALID_REGULAR, VALID_JUMP, OUTSIDE_OF_THE_BOARD, SAME_AS_SOURCE, NOT_OF_VALID_SQUARE_COLOR, OCCUPIED, UNALLOWED_DIRECTION,
-		MORE_THAN_TWO_SQUARES_AWAY, NOT_ONE_OF_POSSIBLE_JUMP_MOVES, JUMPED_PIECE_IS_NULL, JUMPED_PIECE_IS_OWN,
-		SOURCE_COORDINATE_PROBLEM, UNKNOWN_ERROR
-	}
-	protected DestinationCoordinateValidity checkDestinationCoordinate(IPlayer player, ICoordinate sourceCoordinate, ICoordinate destinationCoordinate) {
-		SourceCoordinateValidity sourceCoordinateValidity = checkSourceCoordinate(player, sourceCoordinate);
-		//If source coordinate is not set up or valid, destination coordinate can't be truly valid.
-		if (sourceCoordinateValidity == null || sourceCoordinateValidity != SourceCoordinateValidity.VALID)
-			return DestinationCoordinateValidity.SOURCE_COORDINATE_PROBLEM;
-		//Set up the destination coordinate.
-		int xOfSource = sourceCoordinate.getXCoordinate(); int yOfSource = sourceCoordinate.getYCoordinate();
-		AbstractPiece piece = getPieceAtCoordinate(sourceCoordinate);
-		int xOfDestination = destinationCoordinate.getXCoordinate(); int yOfDestination = destinationCoordinate.getYCoordinate();
-		int xDiff = xOfDestination - xOfSource; int yDiff = yOfDestination - yOfSource;
-		//Check if the coordinate is on board.
-		if (xOfDestination < 0 ||  7 < xOfDestination || yOfDestination < 0 || 7 < yOfDestination)
-			return DestinationCoordinateValidity.OUTSIDE_OF_THE_BOARD;
-		//Check if coordinate is the same as source.
-		if (destinationCoordinate.equals(sourceCoordinate))
-			return DestinationCoordinateValidity.SAME_AS_SOURCE;
-		//Check if the coordinate is of valid square color.
-		if (!referee.getBoard().isPlayableCoordinate(destinationCoordinate) || Math.abs(xDiff) != Math.abs(yDiff))
-			return DestinationCoordinateValidity.NOT_OF_VALID_SQUARE_COLOR;
-		//Check if destination coordinate is more than two squares away.
-		if (Math.abs(xDiff) > 2 || Math.abs(yDiff) > 2)
-			return DestinationCoordinateValidity.MORE_THAN_TWO_SQUARES_AWAY;
-		//Check if destination coordinate is occupied.
-		if (getPieceAtCoordinate(destinationCoordinate) != null)
-			return DestinationCoordinateValidity.OCCUPIED;
-		//Check if destination coordinate is not allowed.
-		Direction moveDirection = yOfDestination > yOfSource ? Direction.N : Direction.S ;
-		if (piece instanceof Pawn && moveDirection != piece.getGoalDirection())
-			return DestinationCoordinateValidity.UNALLOWED_DIRECTION;
-		//Check if move is not one of possible jump moves.
-		if (!isMoveOneOfPossibleJumpMoves())
-			return DestinationCoordinateValidity.NOT_ONE_OF_POSSIBLE_JUMP_MOVES;
-		//If there are no problems up to this point, return valid if move is a regular move.
-		if (Math.abs(xDiff) == 1 && Math.abs(yDiff) == 1)
-			return DestinationCoordinateValidity.VALID_REGULAR;
-		//Set up jumped piece.
-		ICoordinate jumpedCoordinate = new Coordinate(xOfSource + xDiff/2, yOfSource + yDiff/2);
-		AbstractPiece jumpedPiece = getPieceAtCoordinate(jumpedCoordinate);
-		//Check if jumped piece is null.
-		if (jumpedPiece == null)
-			return DestinationCoordinateValidity.JUMPED_PIECE_IS_NULL;
-		//Check if jumped piece is player's own piece.
-		if (jumpedPiece.getPlayer().equals(player))
-			return DestinationCoordinateValidity.JUMPED_PIECE_IS_OWN;
-		//If everything is okay up to this point, double-check that the xDiff and yDiff are 2 and return valid jump move.
-		if (Math.abs(xDiff) == 2 && Math.abs(yDiff) == 2) {
-			return DestinationCoordinateValidity.VALID_JUMP;
-		}
-		
-		return DestinationCoordinateValidity.UNKNOWN_ERROR;
-	}
-
-	private IPlayer getOtherPlayer() {
+	protected IPlayer getOtherPlayer() {
 		int currentPlayerId = this.playerOfPlayerMove.getId();
 		int otherPlayerId = currentPlayerId+1;
 		if (otherPlayerId >= referee.getNumberOfPlayers()) 
 			otherPlayerId = 0;
 		return referee.getPlayerbyID(otherPlayerId);
 	}
-	
-	private void output(String title, List<?> list) {
-		output(title);
-		for (Object obj : list)
-			output(obj.toString());
-	}
-	
+
 	private void output(String str) {
 		outputter.println(str);
 		outputter.flush();
 	}
 	
-	private void output() {
-		outputter.println();
-		outputter.flush();
-	}
-	
 	private void breakpoint(String sectionName) {
-		if (referee.getReader().getSectionName().equals(sectionName))
+		if (referee.getInfo().getReader().getSectionName().equals(sectionName))
 			//Have a breakpoint at the following line.
 			System.out.println("Breakpoint at " + sectionName);
 		
