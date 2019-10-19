@@ -418,15 +418,12 @@ public class ChildrenTesterReferee extends AbstractTesterReferee {
 
 	public static void main(String[] args) {
 		String[] moveArr = {
-				"validJumpMove4",
-				"validJumpMove5",
-				"validJumpMove6",
-				"validJumpMove7",
-				"validJumpMove8",
-				"validJumpMove9",
-				"validJumpMove10",
-				"validJumpMove11",
-				"validJumpMove12"
+				"validRegularMove1",
+				"validRegularMove2",
+				"validRegularMove3",
+				"validRegularMove4",
+				"validRegularMove5",
+				"validRegularMove6",
 			};
 		
 //		String[] moveArr = {

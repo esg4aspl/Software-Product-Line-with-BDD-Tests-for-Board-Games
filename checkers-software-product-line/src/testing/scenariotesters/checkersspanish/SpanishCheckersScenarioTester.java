@@ -2,13 +2,32 @@ package testing.scenariotesters.checkersspanish;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import base.AmericanGameConfiguration;
+import base.Pawn;
 import checkersamerican.King;
+import checkersamerican.KingMoveConstraints;
+import checkersamerican.KingMovePossibilities;
+import checkersspanish.Queen;
+import checkersspanish.QueenMoveConstraints;
+import checkersspanish.QueenMovePossibilities;
+import core.AbstractPiece;
+import core.Coordinate;
+import core.Direction;
+import core.ICoordinate;
+import core.IMoveCoordinate;
+import core.IPlayer;
+import core.MoveCoordinate;
 import cucumber.api.PendingException;
 import testing.helpers.DestinationCoordinateValidity;
+import testing.helpers.SourceCoordinateValidity;
 import testing.scenariotesters.IScenarioTester;
 import testing.scenariotesters.checkersamerican.AmericanCheckersScenarioTester;
+import testing.scenariotesters.checkersamerican.AmericanCheckersTestInfo;
 
 public class SpanishCheckersScenarioTester extends AmericanCheckersScenarioTester implements IScenarioTester {
 	
@@ -20,6 +39,7 @@ public class SpanishCheckersScenarioTester extends AmericanCheckersScenarioTeste
 
 	@Override
 	protected void invalidDestinationCoordinate(String reason) {
+		//TODO edit this
 		if (reason.equals("destination coordinate is outside of the board")) {
 			assertEquals(DestinationCoordinateValidity.OUTSIDE_OF_THE_BOARD, destinationCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("destination coordinate is not of valid square color")) {
@@ -29,8 +49,8 @@ public class SpanishCheckersScenarioTester extends AmericanCheckersScenarioTeste
 			if (destinationCoordinateValidityOfPlayerMove != DestinationCoordinateValidity.SAME_AS_SOURCE)
 				assertEquals(DestinationCoordinateValidity.OCCUPIED, destinationCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("destination coordinate's direction is not allowed")) {
-			//If piece is king, then it can move in any direction. The test fails here. Game set-up (ini file) is not good.
-			assertFalse(pieceOfPlayerMove instanceof King);
+			//If piece is queen, then it can move in any direction. The test fails here. Game set-up (ini file) is not good.
+			assertFalse(pieceOfPlayerMove instanceof Queen);
 			assertEquals(DestinationCoordinateValidity.UNALLOWED_DIRECTION, destinationCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("destination coordinate is more than two squares away")) {
 			assertEquals(DestinationCoordinateValidity.MORE_THAN_TWO_SQUARES_AWAY_FROM_SOURCE, destinationCoordinateValidityOfPlayerMove);
@@ -51,6 +71,51 @@ public class SpanishCheckersScenarioTester extends AmericanCheckersScenarioTeste
 		} else {
 			throw new PendingException();
 		}
+	}
+	
+	@Override
+	public void thePieceAtTheSourceCoordinateBecomesACrownedPiece() {
+		AbstractPiece newPiece = getPieceAtCoordinate(destinationCoordinateOfPlayerMove);
+		assertTrue(newPiece != null);
+		assertEquals(pieceOfPlayerMove.getId()+2, newPiece.getId());
+		if (pieceOfPlayerMove.getIcon().equals("W"))
+			assertEquals("Z", newPiece.getIcon());
+		else
+			assertEquals("A", newPiece.getIcon());
+		assertEquals(playerOfPlayerMove, newPiece.getPlayer());
+		assertEquals(pieceOfPlayerMove.getGoalDirection(), newPiece.getGoalDirection());
+		assertTrue(newPiece.getPieceMovePossibilities() instanceof QueenMovePossibilities);
+		assertTrue(newPiece.getPieceMoveConstraints() instanceof QueenMoveConstraints);
+		assertTrue(newPiece instanceof Queen);
+		pieceOfPlayerMove = newPiece;
+	}
+	
+	
+
+	
+	@Override
+	public void thePlayerPicksAValidSourceCoordinateThatHasAP1PieceInIt(String p1) {
+		referee.conductGame();
+		prepareValidities();
+		assertEquals(SourceCoordinateValidity.VALID, sourceCoordinateValidityOfPlayerMove);
+		if (p1.equals("pawn")) {
+			assertTrue(pieceOfPlayerMove instanceof Pawn);
+		} else if (p1.equals("queen")) {
+			assertTrue(pieceOfPlayerMove instanceof Queen);
+		}
+	}
+	
+	@Override
+	public void theGameIsPlayedUpToACertainPointFromFileP1(String p1) {
+		referee.setup(p1);
+		info = (SpanishCheckersTestInfo) referee.getInfo();
+		playerOfPlayerMove = referee.getCurrentPlayer();
+		playerMove = referee.getInfo().getPlayerMove();
+		output("Testing: " + referee.getInfo().getReader().getSectionName());
+		//Set up source coordinate.
+		sourceCoordinateOfPlayerMove = playerMove.getSourceCoordinate();
+		this.pieceOfPlayerMove = getPieceAtCoordinate(sourceCoordinateOfPlayerMove);
+		
 	}
 	
 	

@@ -11,7 +11,7 @@ public interface IScenarioTester {
 	public void theGameIsPlayedUpToACertainPointFromFileP1(String p1);
 	
 	//Move Pick
-	public void thePlayerPicksAValidSourceCoordinate();
+	public void thePlayerPicksAValidSourceCoordinateThatHasAP1PieceInIt(String p1);
 	public void thePlayerPicksAValidDestinationCoordinateThatIsP1SquaresAwayFromTheSourceCoordinate(String p1);
 	public void thePlayerPicksAnInvalidP1CoordinateBecauseP2(String p1, String p2);
 	public void thePlayerPicksAnyDestinationCoordinate();
@@ -26,7 +26,6 @@ public interface IScenarioTester {
 	public void thePlayerIsAskedForAnotherP1Coordinate(String p1);
 
 	//Crowning
-	public void thePlayerPicksAValidSourceCoordinateThatHasAPawnPieceInIt();
 	public void thePlayerPicksAValidDestinationCoordinateInOpponentsCrownhead();
 	public void thePieceAtTheSourceCoordinateBecomesACrownedPiece();
 	

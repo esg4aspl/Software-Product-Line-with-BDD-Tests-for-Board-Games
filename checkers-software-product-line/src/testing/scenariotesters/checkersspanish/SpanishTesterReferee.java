@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import base.AmericanCheckersBoard;
 import base.AmericanCheckersBoardConsoleView;
 import base.Pawn;
 import base.PawnMoveConstraints;
@@ -219,6 +220,16 @@ public class SpanishTesterReferee extends AbstractTesterReferee {
 		}
 	}
 
+	private void setupBoardMVC() {
+		//board = new SpanishCheckersBoard();
+		//This change is for the reusability of the ini file. It doesn't affect the tests' validity.
+		board = new AmericanCheckersBoard();
+		
+		coordinatePieceMap = board.getCoordinatePieceMap();
+		consoleView = new AmericanCheckersBoardConsoleView(this);
+		
+	}
+	
 	@Override
 	protected void start() {
 		super.start();
@@ -417,7 +428,7 @@ public class SpanishTesterReferee extends AbstractTesterReferee {
 
 	public static void main(String[] args) {
 		AbstractTesterReferee ref = new SpanishTesterReferee(new SpanishGameConfiguration());
-		ref.setup("randomJump");
+		ref.setup("validRegularMove7");
 		ref.conductGame();
 		System.out.println(ref.getInfo().getSourceCoordinateValidity());
 		System.out.println(ref.getInfo().getDestinationCoordinateValidity());
@@ -450,12 +461,12 @@ public class SpanishTesterReferee extends AbstractTesterReferee {
 		currentPlayer = player0;
 	}
 
-	private void setupBoardMVC() {
-		board = new SpanishCheckersBoard();
-		coordinatePieceMap = board.getCoordinatePieceMap();
-		consoleView = new AmericanCheckersBoardConsoleView(this);
-		
-	}
+//	private void setupBoardMVC() {
+//		board = new SpanishCheckersBoard();
+//		coordinatePieceMap = board.getCoordinatePieceMap();
+//		consoleView = new AmericanCheckersBoardConsoleView(this);
+//		
+//	}
 
 	private void setupPiecesOnBoard() {
 		// create pieces for players and put them on board

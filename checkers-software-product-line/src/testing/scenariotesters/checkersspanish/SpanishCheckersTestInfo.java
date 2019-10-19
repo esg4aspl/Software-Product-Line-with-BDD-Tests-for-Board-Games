@@ -5,10 +5,10 @@ import java.util.List;
 import core.AbstractPiece;
 import core.ICoordinate;
 import testing.helpers.DestinationCoordinateValidity;
-import testing.scenariotesters.AbstractTestInfo;
 import testing.scenariotesters.AbstractTesterReferee;
+import testing.scenariotesters.checkersamerican.AmericanCheckersTestInfo;
 
-public class SpanishCheckersTestInfo extends AbstractTestInfo {
+public class SpanishCheckersTestInfo extends AmericanCheckersTestInfo {
 
 	private ICoordinate jumpedCoordinate;
 	private AbstractPiece jumpedPiece;

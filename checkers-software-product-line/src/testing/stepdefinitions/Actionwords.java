@@ -35,10 +35,6 @@ public class Actionwords {
     	scenarioTester.theGameIsPlayedUpToACertainPointFromFileP1(p1);
     }
 
-    public void thePlayerPicksAValidSourceCoordinate() {
-    	scenarioTester.thePlayerPicksAValidSourceCoordinate();
-    }
-
     public void thePieceAtTheSourceCoordinateIsMovedToTheDestinationCoordinate() {
     	scenarioTester.thePieceAtTheSourceCoordinateIsMovedToTheDestinationCoordinate();
     }
@@ -95,10 +91,6 @@ public class Actionwords {
 		scenarioTester.thePlayerMakesAMoveLeavingNoValidDestinationCoordinatesForAnyOfTheOpponentsPieces();
 	}
 
-	public void thePlayerPicksAValidSourceCoordinateThatHasAPawnPieceInIt() {
-		scenarioTester.thePlayerPicksAValidSourceCoordinateThatHasAPawnPieceInIt();
-	}
-
 	public void thePlayerPicksAValidDestinationCoordinateInOpponentsCrownhead() {
 		scenarioTester.thePlayerPicksAValidDestinationCoordinateInOpponentsCrownhead();
 	}
@@ -134,6 +126,10 @@ public class Actionwords {
 
 	public void thePieceAtTheSourceCoordinateBecomesACrownedPiece() {
 		scenarioTester.thePieceAtTheSourceCoordinateBecomesACrownedPiece();
+	}
+
+	public void thePlayerPicksAValidSourceCoordinateThatHasAP1PieceInIt(String p1) {
+		scenarioTester.thePlayerPicksAValidSourceCoordinateThatHasAP1PieceInIt(p1);
 	}
 
 }

@@ -27,11 +27,6 @@ public class StepDefinitions {
         actionwords.theGameIsPlayedUpToACertainPointFromFileP1(p1);
     }
 
-    @When("^the player picks a valid source coordinate$")
-    public void thePlayerPicksAValidSourceCoordinate() {
-        actionwords.thePlayerPicksAValidSourceCoordinate();
-    }
-
     @Then("^the piece at the source coordinate is moved to the destination coordinate$")
     public void thePieceAtTheSourceCoordinateIsMovedToTheDestinationCoordinate() {
         actionwords.thePieceAtTheSourceCoordinateIsMovedToTheDestinationCoordinate();
@@ -102,11 +97,6 @@ public class StepDefinitions {
         actionwords.thePlayerMakesAMoveLeavingNoValidDestinationCoordinatesForAnyOfTheOpponentsPieces();
     }
 
-    @When("^the player picks a valid source coordinate that has a pawn piece in it$")
-    public void thePlayerPicksAValidSourceCoordinateThatHasAPawnPieceInIt() {
-        actionwords.thePlayerPicksAValidSourceCoordinateThatHasAPawnPieceInIt();
-    }
-
     @When("^the player picks a valid destination coordinate in opponent's crownhead$")
     public void thePlayerPicksAValidDestinationCoordinateInOpponentsCrownhead() {
         actionwords.thePlayerPicksAValidDestinationCoordinateInOpponentsCrownhead();
@@ -150,5 +140,10 @@ public class StepDefinitions {
     @Then("^the piece at the source coordinate becomes a crowned piece$")
     public void thePieceAtTheSourceCoordinateBecomesACrownedPiece() {
         actionwords.thePieceAtTheSourceCoordinateBecomesACrownedPiece();
+    }
+
+    @When("^the player picks a valid source coordinate that has a \"(.*)\" piece in it$")
+    public void thePlayerPicksAValidSourceCoordinateThatHasAP1PieceInIt(String p1) {
+        actionwords.thePlayerPicksAValidSourceCoordinateThatHasAP1PieceInIt(p1);
     }
 }

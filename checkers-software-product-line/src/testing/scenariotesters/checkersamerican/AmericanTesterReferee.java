@@ -409,6 +409,28 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 		return DestinationCoordinateValidity.UNKNOWN_ERROR;
 	}
 
+	
+	// MAIN METHOD
+	
+	// MAIN METHOD
+	
+		public static void main(String[] args) {
+
+			String[] moveArr = { 
+					"validJumpMove6"
+					};
+
+			for (String moveID : moveArr) {
+				System.out.println("\n\n\nTESTING: " + moveID);
+				AmericanTesterReferee referee = new AmericanTesterReferee(new AmericanGameConfiguration());
+				referee.setup(moveID);
+				referee.conductGame();
+			}
+
+		}
+
+	
+	
 	//UNTOUCHED METHODS
 	
 	public void setup() {
@@ -540,21 +562,5 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 			nextPlayerID = 0;
 		return playerList.getPlayer(nextPlayerID);
 	}
-
-	// MAIN METHOD
-	
-	public static void main(String[] args) {
-
-		String[] moveArr = { "validJumpMove4" };
-
-		for (String moveID : moveArr) {
-			System.out.println("\n\n\nTESTING: " + moveID);
-			AmericanTesterReferee referee = new AmericanTesterReferee(new AmericanGameConfiguration());
-			referee.setup(moveID);
-			referee.conductGame();
-		}
-
-	}
-
 
 }

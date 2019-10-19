@@ -21,6 +21,7 @@ public abstract class AbstractTestInfo {
 	protected IMoveCoordinate playerMove;
 	protected IMoveCoordinate expectedMove;
 	protected List<String> informers;
+	protected List<String> finalInformers;
 	protected IPlayer winner, loser;
 	protected boolean isDraw, gameEnded;
 	protected boolean playerWasGoingToMakeAnotherMove;
@@ -39,6 +40,7 @@ public abstract class AbstractTestInfo {
 		reader = new IniReader(file_path, file_name);
 		playerMove = reader.getPlayerMove();
 		informers = new ArrayList<String>();
+		finalInformers = new ArrayList<String>();
 		
 		reset();
 		
@@ -77,10 +79,15 @@ public abstract class AbstractTestInfo {
 		} else if (res == TestResult.ANOTHER_SOURCE_INVALID || res == TestResult.ANOTHER_DESTINATION_INVALID || res == TestResult.ANOTHER_MOVE_JUMP_POSSIBILITY) {
 			playerWasGoingToMakeAnotherMove = true;
 		}
+		
+		if (endOfMoves)
+			finalInformers.add(res.getMessage());
 	}
 	
 	public void register(String message) {
 		informers.add(message);
+		if (endOfMoves)
+			finalInformers.add(message);
 	}
 	
 	
@@ -205,6 +212,11 @@ public abstract class AbstractTestInfo {
 	
 	public boolean isEndOfMoves() {
 		return endOfMoves;
+	}
+
+	
+	public List<String> getFinalInformers() {
+		return finalInformers;
 	}
 	
 	
