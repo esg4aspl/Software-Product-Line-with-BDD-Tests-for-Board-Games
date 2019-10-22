@@ -116,6 +116,9 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 			assertEquals(DestinationCoordinateValidity.VALID_REGULAR, destinationCoordinateValidityOfPlayerMove);
 		} else if (p1.equals("two")) {
 			assertEquals(DestinationCoordinateValidity.VALID_JUMP, destinationCoordinateValidityOfPlayerMove);
+		} else if (p1.equals("multiple")) {
+			assertTrue(destinationCoordinateValidityOfPlayerMove == DestinationCoordinateValidity.VALID_REGULAR
+						|| destinationCoordinateValidityOfPlayerMove == DestinationCoordinateValidity.VALID_JUMP);
 		}
 	}
 	
@@ -360,7 +363,6 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	public void thePlayerPicksAValidSourceCoordinateThatHasAP1PieceInIt(String p1) {
 		referee.conductGame();
 		prepareValidities();
-		breakpoint("validRegularMove6");
 		assertEquals(SourceCoordinateValidity.VALID, sourceCoordinateValidityOfPlayerMove);
 		if (p1.equals("pawn")) {
 			assertTrue(pieceOfPlayerMove instanceof Pawn);
@@ -384,6 +386,8 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void thePieceIsP1ToACrownedPiece(String p1) {
+		//TODO: Implement "not promoted" case
+		
 		if (!p1.equals("promoted"))
 			throw new PendingException();
 		

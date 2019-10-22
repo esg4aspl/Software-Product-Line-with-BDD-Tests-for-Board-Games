@@ -100,9 +100,9 @@ Feature: Spanish Checkers
       | invalidDestinationCoordinateForMoveJumpedPieceIsOwnPiece1               | pawn       | jumped piece is not opponent piece                                    | Jumped Piece Must Be Opponent Piece           |
       | invalidDestinationCoordinateForMoveJumpedPieceIsFarAwayFromSource1      | pawn       | jumped piece is too far away from source coordinate                   | Destination Valid? false                      |
       | invalidDestinationCoordinateForMoveJumpedPieceIsFarAwayFromDestination1 | queen      | destination coordinate is more than one square away from jumped piece | Must land just behind jumped piece            |
-      | invalidDestinationCoordinateForMoveMultipleJumpedPieces1                | queen      | there are more than one pieces in jump path                           | There must be only one piece on jump path [2] |
+      | invalidDestinationCoordinateForMoveMultipleJumpedPieces1                | queen      | there are more than one pieces in jump path                           | There must be only one piece on jump path 2   |
       | invalidDestinationCoordinateForMoveNotBestSequence1                     | queen      | move is not part of the best sequence                                 | Not the best move                             |
-      | invalidDestinationCoordinateForMoveNotBestSequence2                     | pawn       | move is not part of the best sequence                                 | Not the best move                             |
+      | invalidDestinationCoordinateForMoveNotBestSequence2                     | queen      | move is not part of the best sequence                                 | Not the best move                             |
       | invalidDestinationCoordinateForMoveNotBestSequence3                     | queen      | move is not part of the best sequence                                 | Not the best move                             |
 
   Scenario Outline: Crowning the Eligible Piece

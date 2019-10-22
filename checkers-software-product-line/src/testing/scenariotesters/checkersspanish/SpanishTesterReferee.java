@@ -429,7 +429,7 @@ public class SpanishTesterReferee extends AbstractTesterReferee {
 
 	public static void main(String[] args) {
 		AbstractTesterReferee ref = new SpanishTesterReferee(new SpanishGameConfiguration());
-		ref.setup("validRegularMove7");
+		ref.setup("invalidDestinationCoordinateForMoveNotBestSequence1");
 		ref.conductGame();
 		System.out.println(ref.getInfo().getSourceCoordinateValidity());
 		System.out.println(ref.getInfo().getDestinationCoordinateValidity());

@@ -60,7 +60,6 @@ public class SpanishCheckersScenarioTester extends AmericanCheckersScenarioTeste
 		}
 	}
 
-	
 	@Override
 	public void thePieceIsP1ToACrownedPiece(String p1) {
 		if (!p1.equals("promoted"))
