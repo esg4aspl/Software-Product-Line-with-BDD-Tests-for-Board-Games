@@ -6,13 +6,13 @@ Feature: American Checkers
 
   Scenario: Start of the Game (uid:29e7e813-631c-4e8b-b40c-ea1a47a3df45)
     When the players start the game
-    Then the player with the dark-colored pieces is given the turn
+    Then the player with the "dark" colored pieces is given the turn
 
   Scenario Outline: Valid Regular Move (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks a valid source coordinate that has a "<piece_type>" piece in it
     And the player picks a valid destination coordinate that is "one" squares away from the source coordinate
-    Then the piece at the source coordinate is moved to the destination coordinate
+    Then the piece is moved to the destination coordinate
     And the next turn is given to the "other" player
 
     Examples:
@@ -28,7 +28,7 @@ Feature: American Checkers
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks a valid source coordinate that has a "<piece_type>" piece in it
     And the player picks a valid destination coordinate that is "two" squares away from the source coordinate
-    Then the piece at the source coordinate is moved to the destination coordinate
+    Then the piece is moved to the destination coordinate
     And the opponent piece in between the source and destination coordinates are removed from the board
     And the next turn is given to the "<next_turn_player>" player
 
@@ -101,22 +101,22 @@ Feature: American Checkers
 
   Scenario Outline: Crowning the Eligible Piece (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
-    When the player picks a valid source coordinate that has a "<piece_type>" piece in it
+    When the player picks a valid source coordinate that has a "pawn" piece in it
     And the player picks a valid destination coordinate in opponent's crownhead
-    Then the piece at the source coordinate becomes a crowned piece
-    And the piece at the source coordinate is moved to the destination coordinate
+    Then the piece is "promoted" to a crowned piece
+    And the piece is moved to the destination coordinate
     And the next turn is given to the "other" player
 
     Examples:
-      | file_name | piece_type | hiptest-uid |
-      | crowningTheEligiblePiece1 | pawn | uid:49be234c-e7a2-4dcc-8666-709c7fa5c7b9 |
-      | crowningTheEligiblePiece2 | pawn | uid:718addf2-52c2-4897-8e3a-95dda58bb60d |
-      | crowningTheEligiblePiece3 | pawn | uid:5efcaa48-92f3-4f6c-a99f-d712a4505ea0 |
-      | crowningTheEligiblePiece4 | pawn | uid:eafd3c78-e036-48a6-8ca7-ac52b4689fa6 |
-      | crowningTheEligiblePiece5 | pawn | uid:0f9fe1b9-038b-45dc-b4e1-9cce778db199 |
-      | crowningTheEligiblePiece6 | pawn | uid:8449ff16-b30d-4bbe-9365-78648e3fe5b5 |
-      | crowningTheEligiblePiece7 | pawn | uid:a63dbeb8-bc55-4733-b4f0-aaff44cdf4ac |
-      | crowningTheEligiblePiece8 | pawn | uid:a83fc15b-f398-4b3f-9ef8-6d26a8983a0a |
+      | file_name | hiptest-uid |
+      | crowningTheEligiblePiece1 | uid:49be234c-e7a2-4dcc-8666-709c7fa5c7b9 |
+      | crowningTheEligiblePiece2 | uid:718addf2-52c2-4897-8e3a-95dda58bb60d |
+      | crowningTheEligiblePiece3 | uid:5efcaa48-92f3-4f6c-a99f-d712a4505ea0 |
+      | crowningTheEligiblePiece4 | uid:eafd3c78-e036-48a6-8ca7-ac52b4689fa6 |
+      | crowningTheEligiblePiece5 | uid:0f9fe1b9-038b-45dc-b4e1-9cce778db199 |
+      | crowningTheEligiblePiece6 | uid:8449ff16-b30d-4bbe-9365-78648e3fe5b5 |
+      | crowningTheEligiblePiece7 | uid:a63dbeb8-bc55-4733-b4f0-aaff44cdf4ac |
+      | crowningTheEligiblePiece8 | uid:a83fc15b-f398-4b3f-9ef8-6d26a8983a0a |
 
   Scenario Outline: End of the Game (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"

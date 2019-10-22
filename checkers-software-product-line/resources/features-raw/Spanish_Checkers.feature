@@ -5,13 +5,13 @@ Feature: Spanish Checkers
 
   Scenario: Start of the Game
     When the players start the game
-    Then the player with the dark-colored pieces is given the turn
+    Then the player with the "light" colored pieces is given the turn
 
   Scenario Outline: Valid Regular Move
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks a valid source coordinate that has a "<piece_type>" piece in it
     And the player picks a valid destination coordinate that is "one" squares away from the source coordinate
-    Then the piece at the source coordinate is moved to the destination coordinate
+    Then the piece is moved to the destination coordinate
     And the next turn is given to the "other" player
 
     Examples: 
@@ -29,7 +29,7 @@ Feature: Spanish Checkers
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks a valid source coordinate that has a "<piece_type>" piece in it
     And the player picks a valid destination coordinate that is "multiple" squares away from the source coordinate
-    Then the piece at the source coordinate is moved to the destination coordinate
+    Then the piece is moved to the destination coordinate
     And the opponent piece in between the source and destination coordinates are removed from the board
     And the next turn is given to the "<next_turn_player>" player
 
@@ -42,7 +42,7 @@ Feature: Spanish Checkers
       | validJumpMove5  | current          | pawn       |
       | validJumpMove6  | other            | pawn       |
       | validJumpMove7  | current          | queen      |
-      | validJumpMove8  | other            | queen      |
+      | validJumpMove8  | current          | queen      |
       | validJumpMove9  | other            | queen      |
       | validJumpMove10 | other            | pawn       |
       | validJumpMove11 | other            | pawn       |
@@ -83,46 +83,46 @@ Feature: Spanish Checkers
     And the player is asked for another "source" coordinate
 
     Examples: 
-      | file_name                                                               | piece_type | invalidity_reason                                                     | error_message                                   |  
-      | invalidDestinationCoordinateForMoveOutsideBorders1                      | pawn       | destination coordinate is outside of the board                        | Destination Valid? false                        |  
-      | invalidDestinationCoordinateForMoveOutsideBorders2                      | pawn       | destination coordinate is outside of the board                        | Destination Valid? false                        |  
-      | invalidDestinationCoordinateForMoveUnplayableColor1                     | pawn       | destination coordinate is not of valid square color                   | Destination Valid? false                        |  
-      | invalidDestinationCoordinateForMoveUnplayableColor2                     | pawn       | destination coordinate is not of valid square color                   | Destination Valid? false                        |  
-      | invalidDestinationCoordinateForMoveOccupied1                            | pawn       | destination coordinate is occupied                                    | A piece at destination coordinate               |  
-      | invalidDestinationCoordinateForMoveOccupied2                            | pawn       | destination coordinate is occupied                                    | A piece at destination coordinate               |  
-      | invalidDestinationCoordinateForMoveOccupied3                            | pawn       | destination coordinate is occupied                                    | A piece at destination coordinate               |  
-      | invalidDestinationCoordinateForMoveUnallowedDirection1                  | pawn       | destination coordinate's direction is not allowed                     | Destination Valid? false                        |  
-      | invalidDestinationCoordinateForMoveUnallowedDirection2                  | pawn       | destination coordinate's direction is not allowed                     | Destination Valid? false                        |  
-      | invalidDestinationCoordinateForMoveUnallowedDirection3                  | pawn       | destination coordinate's direction is not allowed                     | Destination Valid? false                        |  
-      | invalidDestinationCoordinateForMoveTooFarAway1                          | pawn       | destination coordinate is more than two squares away                  | Destination Valid? false                        |  
-      | invalidDestinationCoordinateForMoveTooFarAway2                          | pawn       | destination coordinate is more than two squares away                  | Destination Valid? false                        |  
-      | invalidDestinationCoordinateForMoveJumpedPieceIsNull1                   | pawn       | jumped piece is null                                                  | There must be one piece on jump path 0          |  
-      | invalidDestinationCoordinateForMoveJumpedPieceIsOwnPiece1               | pawn       | jumped piece is not opponent piece                                    | Jumped Piece Must Be Opponent Piece             |  
-      | invalidDestinationCoordinateForMoveJumpedPieceIsFarAwayFromSource1      | pawn       | jumped piece is too far away from source coordinate                   | Destination Valid? false                        |  
-      | invalidDestinationCoordinateForMoveJumpedPieceIsFarAwayFromDestination1 | queen      | destination coordinate is more than one square away from jumped piece | Must land just behind jumped piece              |  
-      | invalidDestinationCoordinateForMoveMultipleJumpedPieces1                | queen      | there are more than one pieces in jump path                           | There must be only one piece on jump path [num] |  
-      | invalidDestinationCoordinateForMoveNotBestSequence1                     | queen      | move is not part of the best sequence                                 | Not the best move                               |  
-      | invalidDestinationCoordinateForMoveNotBestSequence2                     | queen      | move is not part of the best sequence                                 | Not the best move                               |  
-      | invalidDestinationCoordinateForMoveNotBestSequence3                     | queen      | move is not part of the best sequence                                 | Not the best move                               |  
+      | file_name                                                               | piece_type | invalidity_reason                                                     | error_message                                 |
+      | invalidDestinationCoordinateForMoveOutsideBorders1                      | pawn       | destination coordinate is outside of the board                        | Destination Valid? false                      |
+      | invalidDestinationCoordinateForMoveOutsideBorders2                      | pawn       | destination coordinate is outside of the board                        | Destination Valid? false                      |
+      | invalidDestinationCoordinateForMoveUnplayableColor1                     | pawn       | destination coordinate is not of valid square color                   | Destination Valid? false                      |
+      | invalidDestinationCoordinateForMoveUnplayableColor2                     | pawn       | destination coordinate is not of valid square color                   | Destination Valid? false                      |
+      | invalidDestinationCoordinateForMoveOccupied1                            | pawn       | destination coordinate is occupied                                    | A piece at destination coordinate             |
+      | invalidDestinationCoordinateForMoveOccupied2                            | pawn       | destination coordinate is occupied                                    | A piece at destination coordinate             |
+      | invalidDestinationCoordinateForMoveOccupied3                            | pawn       | destination coordinate is occupied                                    | A piece at destination coordinate             |
+      | invalidDestinationCoordinateForMoveUnallowedDirection1                  | pawn       | destination coordinate's direction is not allowed                     | Destination Valid? false                      |
+      | invalidDestinationCoordinateForMoveUnallowedDirection2                  | pawn       | destination coordinate's direction is not allowed                     | Destination Valid? false                      |
+      | invalidDestinationCoordinateForMoveUnallowedDirection3                  | pawn       | destination coordinate's direction is not allowed                     | Destination Valid? false                      |
+      | invalidDestinationCoordinateForMoveTooFarAway1                          | pawn       | destination coordinate is more than two squares away                  | Destination Valid? false                      |
+      | invalidDestinationCoordinateForMoveTooFarAway2                          | pawn       | destination coordinate is more than two squares away                  | Destination Valid? false                      |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsNull1                   | pawn       | jumped piece is null                                                  | There must be one piece on jump path 0        |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsOwnPiece1               | pawn       | jumped piece is not opponent piece                                    | Jumped Piece Must Be Opponent Piece           |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsFarAwayFromSource1      | pawn       | jumped piece is too far away from source coordinate                   | Destination Valid? false                      |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsFarAwayFromDestination1 | queen      | destination coordinate is more than one square away from jumped piece | Must land just behind jumped piece            |
+      | invalidDestinationCoordinateForMoveMultipleJumpedPieces1                | queen      | there are more than one pieces in jump path                           | There must be only one piece on jump path [2] |
+      | invalidDestinationCoordinateForMoveNotBestSequence1                     | queen      | move is not part of the best sequence                                 | Not the best move                             |
+      | invalidDestinationCoordinateForMoveNotBestSequence2                     | pawn       | move is not part of the best sequence                                 | Not the best move                             |
+      | invalidDestinationCoordinateForMoveNotBestSequence3                     | queen      | move is not part of the best sequence                                 | Not the best move                             |
 
   Scenario Outline: Crowning the Eligible Piece
     Given the game is played up to a certain point from file "<file_name>"
-    When the player picks a valid source coordinate that has a "<piece_type>" piece in it
+    When the player picks a valid source coordinate that has a "pawn" piece in it
     And the player picks a valid destination coordinate in opponent's crownhead
-    Then the piece at the source coordinate becomes a crowned piece
-    And the piece at the source coordinate is moved to the destination coordinate
+    Then the piece is "promoted" to a crowned piece
+    And the piece is moved to the destination coordinate
     And the next turn is given to the "other" player
 
     Examples: 
-      | file_name                 | piece_type |
-      | crowningTheEligiblePiece1 | pawn       |
-      | crowningTheEligiblePiece2 | pawn       |
-      | crowningTheEligiblePiece3 | pawn       |
-      | crowningTheEligiblePiece4 | pawn       |
-      | crowningTheEligiblePiece5 | pawn       |
-      | crowningTheEligiblePiece6 | pawn       |
-      | crowningTheEligiblePiece7 | pawn       |
-      | crowningTheEligiblePiece8 | pawn       |
+      | file_name                 |
+      | crowningTheEligiblePiece1 |
+      | crowningTheEligiblePiece2 |
+      | crowningTheEligiblePiece3 |
+      | crowningTheEligiblePiece4 |
+      | crowningTheEligiblePiece5 |
+      | crowningTheEligiblePiece6 |
+      | crowningTheEligiblePiece7 |
+      | crowningTheEligiblePiece8 |
 
   Scenario Outline: End of the Game
     Given the game is played up to a certain point from file "<file_name>"

@@ -15,7 +15,6 @@ import checkersamerican.King;
 import checkersspanish.Queen;
 import checkersspanish.QueenMoveConstraints;
 import checkersspanish.QueenMovePossibilities;
-import checkersspanish.SpanishCheckersBoard;
 import checkersspanish.SpanishGameConfiguration;
 import checkersspanish.SpanishStartCoordinates;
 import core.AbstractPiece;
@@ -92,9 +91,11 @@ public class SpanishTesterReferee extends AbstractTesterReferee {
 			if (endOfGame || endOfGameDraw) break;
 			
 			if (info.isTestAborted()) { return; }
+			
 			currentPlayerID++;
 			if (currentPlayerID >= numberOfPlayers) currentPlayerID = 0;
 			currentPlayer = getPlayerbyID(currentPlayerID);
+			
 			if (info.isEndOfMoves()) { end(); return; }
 		} 
 		consoleView.drawBoardView();

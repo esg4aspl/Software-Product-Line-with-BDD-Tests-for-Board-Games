@@ -5,9 +5,9 @@ public interface IScenarioTester {
 	//Start of the Game
 	public void theP1GameIsSetUp(String p1);
 	public void thePlayersStartTheGame();
-	public void thePlayerWithTheDarkcoloredPiecesIsGivenTheTurn();
 	
 	//Set-up
+	public void thePlayerWithTheP1ColoredPiecesIsGivenTheTurn(String p1);
 	public void theGameIsPlayedUpToACertainPointFromFileP1(String p1);
 	
 	//Move Pick
@@ -17,7 +17,7 @@ public interface IScenarioTester {
 	public void thePlayerPicksAnyDestinationCoordinate();
 	
 	//After Move
-	public void thePieceAtTheSourceCoordinateIsMovedToTheDestinationCoordinate();
+	public void thePieceIsMovedToTheDestinationCoordinate();
 	public void theOpponentPieceInBetweenTheSourceAndDestinationCoordinatesAreRemovedFromTheBoard();
 	public void theNextTurnIsGivenToTheP1Player(String p1);
 	
@@ -27,7 +27,7 @@ public interface IScenarioTester {
 
 	//Crowning
 	public void thePlayerPicksAValidDestinationCoordinateInOpponentsCrownhead();
-	public void thePieceAtTheSourceCoordinateBecomesACrownedPiece();
+	public void thePieceIsP1ToACrownedPiece(String p1);
 	
 	//Decisive Game End
 	public void theOpponentLosesTheGame();

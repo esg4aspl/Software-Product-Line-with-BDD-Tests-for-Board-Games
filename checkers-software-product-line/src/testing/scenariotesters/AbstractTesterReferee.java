@@ -43,7 +43,7 @@ public abstract class AbstractTesterReferee extends AbstractReferee {
 		System.out.println("Informers: " + info.getInformers().toString());
 		System.out.println("Final Informers: " + info.getFinalInformers().toString());
 		System.out.println("Was player going to make another move?: " + info.isPlayerWasGoingToMakeAnotherMove());
-		System.out.println("End of the game? " + info.isGameEnded());
+		System.out.println("End of the game?: " + info.isGameEnded());
 		if (info.isGameEnded())
 			System.out.println("isDraw?: " + info.isDraw() + ", Winner: " + info.getWinner() + ", Loser: " + info.getLoser());
 		System.out.println("Board: ");

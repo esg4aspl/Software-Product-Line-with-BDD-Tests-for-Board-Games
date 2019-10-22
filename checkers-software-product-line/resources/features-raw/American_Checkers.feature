@@ -5,13 +5,13 @@ Feature: American Checkers
 
   Scenario: Start of the Game
     When the players start the game
-    Then the player with the dark-colored pieces is given the turn
+    Then the player with the "dark" colored pieces is given the turn
 
   Scenario Outline: Valid Regular Move
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks a valid source coordinate that has a "<piece_type>" piece in it
     And the player picks a valid destination coordinate that is "one" squares away from the source coordinate
-    Then the piece at the source coordinate is moved to the destination coordinate
+    Then the piece is moved to the destination coordinate
     And the next turn is given to the "other" player
 
     Examples: 
@@ -27,7 +27,7 @@ Feature: American Checkers
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks a valid source coordinate that has a "<piece_type>" piece in it
     And the player picks a valid destination coordinate that is "two" squares away from the source coordinate
-    Then the piece at the source coordinate is moved to the destination coordinate
+    Then the piece is moved to the destination coordinate
     And the opponent piece in between the source and destination coordinates are removed from the board
     And the next turn is given to the "<next_turn_player>" player
 
@@ -100,22 +100,22 @@ Feature: American Checkers
 
   Scenario Outline: Crowning the Eligible Piece
     Given the game is played up to a certain point from file "<file_name>"
-    When the player picks a valid source coordinate that has a "<piece_type>" piece in it
+    When the player picks a valid source coordinate that has a "pawn" piece in it
     And the player picks a valid destination coordinate in opponent's crownhead
-    Then the piece at the source coordinate becomes a crowned piece
-    And the piece at the source coordinate is moved to the destination coordinate
+    Then the piece is "promoted" to a crowned piece
+    And the piece is moved to the destination coordinate
     And the next turn is given to the "other" player
 
     Examples: 
-      | file_name                 | piece_type |
-      | crowningTheEligiblePiece1 | pawn       |
-      | crowningTheEligiblePiece2 | pawn       |
-      | crowningTheEligiblePiece3 | pawn       |
-      | crowningTheEligiblePiece4 | pawn       |
-      | crowningTheEligiblePiece5 | pawn       |
-      | crowningTheEligiblePiece6 | pawn       |
-      | crowningTheEligiblePiece7 | pawn       |
-      | crowningTheEligiblePiece8 | pawn       |
+      | file_name                 |
+      | crowningTheEligiblePiece1 |
+      | crowningTheEligiblePiece2 |
+      | crowningTheEligiblePiece3 |
+      | crowningTheEligiblePiece4 |
+      | crowningTheEligiblePiece5 |
+      | crowningTheEligiblePiece6 |
+      | crowningTheEligiblePiece7 |
+      | crowningTheEligiblePiece8 |
 
   Scenario Outline: End of the Game
     Given the game is played up to a certain point from file "<file_name>"

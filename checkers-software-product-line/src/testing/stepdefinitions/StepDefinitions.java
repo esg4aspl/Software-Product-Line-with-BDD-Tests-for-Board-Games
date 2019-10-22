@@ -17,19 +17,9 @@ public class StepDefinitions {
         actionwords.thePlayersStartTheGame();
     }
 
-    @Then("^the player with the dark-colored pieces is given the turn$")
-    public void thePlayerWithTheDarkcoloredPiecesIsGivenTheTurn() {
-        actionwords.thePlayerWithTheDarkcoloredPiecesIsGivenTheTurn();
-    }
-
     @Given("^the game is played up to a certain point from file \"(.*)\"$")
     public void theGameIsPlayedUpToACertainPointFromFileP1(String p1) {
         actionwords.theGameIsPlayedUpToACertainPointFromFileP1(p1);
-    }
-
-    @Then("^the piece at the source coordinate is moved to the destination coordinate$")
-    public void thePieceAtTheSourceCoordinateIsMovedToTheDestinationCoordinate() {
-        actionwords.thePieceAtTheSourceCoordinateIsMovedToTheDestinationCoordinate();
     }
 
     @Then("^the next turn is given to the \"(.*)\" player$")
@@ -137,13 +127,23 @@ public class StepDefinitions {
         actionwords.thePlayerJumpsOverOneOrMultiplePiecesLeavingTheOpponentWithOnlyOnePieceThatIsUnableToPerformAJumpMove();
     }
 
-    @Then("^the piece at the source coordinate becomes a crowned piece$")
-    public void thePieceAtTheSourceCoordinateBecomesACrownedPiece() {
-        actionwords.thePieceAtTheSourceCoordinateBecomesACrownedPiece();
-    }
-
     @When("^the player picks a valid source coordinate that has a \"(.*)\" piece in it$")
     public void thePlayerPicksAValidSourceCoordinateThatHasAP1PieceInIt(String p1) {
         actionwords.thePlayerPicksAValidSourceCoordinateThatHasAP1PieceInIt(p1);
+    }
+
+    @Then("^the piece is moved to the destination coordinate$")
+    public void thePieceIsMovedToTheDestinationCoordinate() {
+        actionwords.thePieceIsMovedToTheDestinationCoordinate();
+    }
+
+    @Then("^the piece is \"(.*)\" to a crowned piece$")
+    public void thePieceIsP1ToACrownedPiece(String p1) {
+        actionwords.thePieceIsP1ToACrownedPiece(p1);
+    }
+
+    @Then("^the player with the \"(.*)\" colored pieces is given the turn$")
+    public void thePlayerWithTheP1ColoredPiecesIsGivenTheTurn(String p1) {
+        actionwords.thePlayerWithTheP1ColoredPiecesIsGivenTheTurn(p1);
     }
 }

@@ -6,13 +6,13 @@ Feature: Spanish Checkers
 
   Scenario: Start of the Game (2) (uid:18cb697b-29ea-4331-b8c3-8314afb408e4)
     When the players start the game
-    Then the player with the dark-colored pieces is given the turn
+    Then the player with the "light" colored pieces is given the turn
 
   Scenario Outline: Valid Regular Move (2) (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks a valid source coordinate that has a "<piece_type>" piece in it
     And the player picks a valid destination coordinate that is "one" squares away from the source coordinate
-    Then the piece at the source coordinate is moved to the destination coordinate
+    Then the piece is moved to the destination coordinate
     And the next turn is given to the "other" player
 
     Examples:
@@ -30,7 +30,7 @@ Feature: Spanish Checkers
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks a valid source coordinate that has a "<piece_type>" piece in it
     And the player picks a valid destination coordinate that is "multiple" squares away from the source coordinate
-    Then the piece at the source coordinate is moved to the destination coordinate
+    Then the piece is moved to the destination coordinate
     And the opponent piece in between the source and destination coordinates are removed from the board
     And the next turn is given to the "<next_turn_player>" player
 
@@ -43,7 +43,7 @@ Feature: Spanish Checkers
       | validJumpMove5 | current | pawn | uid:173a43d3-38e2-4aad-aad9-89df0f2a306c |
       | validJumpMove6 | other | pawn | uid:894088e3-f839-47ef-87d2-5a27fba32dad |
       | validJumpMove7 | current | queen | uid:188158b7-1d2b-4c8e-91aa-268ed021aab8 |
-      | validJumpMove8 | other | queen | uid:5125ef2c-f3f8-4896-9fd5-06c64262639e |
+      | validJumpMove8 | current | queen | uid:997bd2ea-9b74-4840-9c04-56dc4affca8e |
       | validJumpMove9 | other | queen | uid:1d404770-45fd-4e69-8e61-f399ce22bc87 |
       | validJumpMove10 | other | pawn | uid:e9f9cab4-361e-4d9a-bac0-3002bc05236e |
       | validJumpMove11 | other | pawn | uid:1318dfee-21a7-4c61-a8bb-272e9899cd76 |
@@ -101,29 +101,29 @@ Feature: Spanish Checkers
       | invalidDestinationCoordinateForMoveJumpedPieceIsOwnPiece1 | pawn | jumped piece is not opponent piece | Jumped Piece Must Be Opponent Piece | uid:b718fe28-1b7c-411e-805c-30857992bbac |
       | invalidDestinationCoordinateForMoveJumpedPieceIsFarAwayFromSource1 | pawn | jumped piece is too far away from source coordinate | Destination Valid? false | uid:869d48ff-832e-4ee0-8b6c-57d508bbefa3 |
       | invalidDestinationCoordinateForMoveJumpedPieceIsFarAwayFromDestination1 | queen | destination coordinate is more than one square away from jumped piece | Must land just behind jumped piece | uid:55ec7b73-5b16-47d7-8983-31b0721113fd |
-      | invalidDestinationCoordinateForMoveMultipleJumpedPieces1 | queen | there are more than one pieces in jump path | There must be only one piece on jump path [num] | uid:c2c5a9e2-c6c1-45de-bea8-de9a7d2d35f4 |
+      | invalidDestinationCoordinateForMoveMultipleJumpedPieces1 | queen | there are more than one pieces in jump path | There must be only one piece on jump path [2] | uid:82438339-07fe-4f38-ab61-b331d6e9ae5a |
       | invalidDestinationCoordinateForMoveNotBestSequence1 | queen | move is not part of the best sequence | Not the best move | uid:6e0eec37-65b6-473f-bf6f-2edc6abf5ce2 |
-      | invalidDestinationCoordinateForMoveNotBestSequence2 | queen | move is not part of the best sequence | Not the best move | uid:9f109fbf-a044-4d05-a0ef-3fb36105760f |
+      | invalidDestinationCoordinateForMoveNotBestSequence2 | pawn | move is not part of the best sequence | Not the best move | uid:63cbef7e-4f43-4838-b378-6238616bb77b |
       | invalidDestinationCoordinateForMoveNotBestSequence3 | queen | move is not part of the best sequence | Not the best move | uid:f6c2c203-8871-4d9d-b840-700ef3bd6847 |
 
   Scenario Outline: Crowning the Eligible Piece (1) (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
-    When the player picks a valid source coordinate that has a "<piece_type>" piece in it
+    When the player picks a valid source coordinate that has a "pawn" piece in it
     And the player picks a valid destination coordinate in opponent's crownhead
-    Then the piece at the source coordinate becomes a crowned piece
-    And the piece at the source coordinate is moved to the destination coordinate
+    Then the piece is "promoted" to a crowned piece
+    And the piece is moved to the destination coordinate
     And the next turn is given to the "other" player
 
     Examples:
-      | file_name | piece_type | hiptest-uid |
-      | crowningTheEligiblePiece1 | pawn | uid:301d7970-e5ef-4ec9-9527-c6b7a997ec16 |
-      | crowningTheEligiblePiece2 | pawn | uid:6323d752-ce74-4682-b034-1738296052ca |
-      | crowningTheEligiblePiece3 | pawn | uid:22c130e3-b11e-4643-8fd1-d751dd2cbee4 |
-      | crowningTheEligiblePiece4 | pawn | uid:13006862-8489-4373-a111-828f838fa578 |
-      | crowningTheEligiblePiece5 | pawn | uid:35d245b4-c9af-4285-9759-98ae5ae3007d |
-      | crowningTheEligiblePiece6 | pawn | uid:20679bb1-60a1-4125-aa59-1cdcc63677c2 |
-      | crowningTheEligiblePiece7 | pawn | uid:1b2d2e52-661f-4203-934b-59fd559c9cc5 |
-      | crowningTheEligiblePiece8 | pawn | uid:8cd7de02-605f-4c02-8958-b14e40c4e6b1 |
+      | file_name | hiptest-uid |
+      | crowningTheEligiblePiece1 | uid:301d7970-e5ef-4ec9-9527-c6b7a997ec16 |
+      | crowningTheEligiblePiece2 | uid:6323d752-ce74-4682-b034-1738296052ca |
+      | crowningTheEligiblePiece3 | uid:22c130e3-b11e-4643-8fd1-d751dd2cbee4 |
+      | crowningTheEligiblePiece4 | uid:13006862-8489-4373-a111-828f838fa578 |
+      | crowningTheEligiblePiece5 | uid:35d245b4-c9af-4285-9759-98ae5ae3007d |
+      | crowningTheEligiblePiece6 | uid:20679bb1-60a1-4125-aa59-1cdcc63677c2 |
+      | crowningTheEligiblePiece7 | uid:1b2d2e52-661f-4203-934b-59fd559c9cc5 |
+      | crowningTheEligiblePiece8 | uid:8cd7de02-605f-4c02-8958-b14e40c4e6b1 |
 
   Scenario Outline: End of the Game (2) (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"

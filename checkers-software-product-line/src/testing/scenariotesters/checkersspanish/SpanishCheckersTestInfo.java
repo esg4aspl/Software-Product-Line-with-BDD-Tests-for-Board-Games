@@ -21,6 +21,11 @@ public class SpanishCheckersTestInfo extends AmericanCheckersTestInfo {
 	public void setupPlayerMoveInfo() {
 		ICoordinate src = playerMove.getSourceCoordinate();
 		ICoordinate dest = playerMove.getDestinationCoordinate();
+		
+		pieceOfPlayerMove = referee.getCoordinatePieceMap().getPieceAtCoordinate(src);
+		if (pieceOfPlayerMove != null)
+			playerOfPlayerMove = pieceOfPlayerMove.getPlayer();
+		
 		this.sourceCoordinateValidity = referee.checkSourceCoordinate(referee.getCurrentPlayer(),
 				this.playerMove.getSourceCoordinate());
 		this.destinationCoordinateValidity = referee.checkDestinationCoordinate(referee.getCurrentPlayer(),

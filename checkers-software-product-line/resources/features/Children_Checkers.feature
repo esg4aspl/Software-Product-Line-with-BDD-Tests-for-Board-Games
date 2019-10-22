@@ -6,13 +6,13 @@ Feature: Children Checkers
 
   Scenario: Start of the Game (1) (uid:9ecdf0ae-1f63-4f75-95c1-f58d00776fdd)
     When the players start the game
-    Then the player with the dark-colored pieces is given the turn
+    Then the player with the "dark" colored pieces is given the turn
 
   Scenario Outline: Valid Regular Move (1) (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks a valid source coordinate that has a "<piece_type>" piece in it
     And the player picks a valid destination coordinate that is "one" squares away from the source coordinate
-    Then the piece at the source coordinate is moved to the destination coordinate
+    Then the piece is moved to the destination coordinate
     And the next turn is given to the "other" player
 
     Examples:
@@ -22,13 +22,13 @@ Feature: Children Checkers
       | validRegularMove3 | pawn | uid:8e0f0786-f6ab-4c60-ba8f-d61d0c72e243 |
       | validRegularMove4 | pawn | uid:5047b010-2f07-45de-9509-b35e8ac90158 |
       | validRegularMove5 | pawn | uid:0442e42f-ae6a-43a0-8523-57789d44f717 |
-      | validRegularMove6 | pawn    | uid:1c082bde-3bb3-4920-b669-f171fc8f61d0 |
+      | validRegularMove6 | pawn | uid:ac304013-5c04-4732-8145-ac66ed0feccb |
 
   Scenario Outline: Valid Jump Move (1) (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks a valid source coordinate that has a "<piece_type>" piece in it
     And the player picks a valid destination coordinate that is "two" squares away from the source coordinate
-    Then the piece at the source coordinate is moved to the destination coordinate
+    Then the piece is moved to the destination coordinate
     And the opponent piece in between the source and destination coordinates are removed from the board
     And the next turn is given to the "<next_turn_player>" player
 

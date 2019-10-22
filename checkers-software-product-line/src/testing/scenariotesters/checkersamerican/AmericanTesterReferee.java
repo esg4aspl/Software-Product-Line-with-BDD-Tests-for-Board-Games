@@ -409,15 +409,12 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 		return DestinationCoordinateValidity.UNKNOWN_ERROR;
 	}
 
-	
 	// MAIN METHOD
 	
-	// MAIN METHOD
-	
-		public static void main(String[] args) {
+	public static void main(String[] args) {
 
 			String[] moveArr = { 
-					"validJumpMove6"
+					"crowningTheEligiblePiece6"
 					};
 
 			for (String moveID : moveArr) {
@@ -429,8 +426,6 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 
 		}
 
-	
-	
 	//UNTOUCHED METHODS
 	
 	public void setup() {

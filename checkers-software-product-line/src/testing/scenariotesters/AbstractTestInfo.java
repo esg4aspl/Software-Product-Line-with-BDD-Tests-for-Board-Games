@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import core.AbstractPiece;
 import core.IMoveCoordinate;
 import core.IPlayer;
 import testing.helpers.DestinationCoordinateValidity;
@@ -32,6 +33,8 @@ public abstract class AbstractTestInfo {
 	protected boolean endOfMoves;
 	protected SourceCoordinateValidity sourceCoordinateValidity;
 	protected DestinationCoordinateValidity destinationCoordinateValidity;
+	protected IPlayer playerOfPlayerMove;
+	protected AbstractPiece pieceOfPlayerMove;
 	
 	public AbstractTestInfo(AbstractTesterReferee referee, String file_path, String file_name) {
 		testEnded = false;
@@ -217,6 +220,18 @@ public abstract class AbstractTestInfo {
 	
 	public List<String> getFinalInformers() {
 		return finalInformers;
+	}
+
+	public AbstractTesterReferee getReferee() {
+		return referee;
+	}
+
+	public IPlayer getPlayerOfPlayerMove() {
+		return playerOfPlayerMove;
+	}
+
+	public AbstractPiece getPieceOfPlayerMove() {
+		return pieceOfPlayerMove;
 	}
 	
 	

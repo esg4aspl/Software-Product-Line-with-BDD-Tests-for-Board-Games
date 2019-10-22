@@ -75,8 +75,13 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	}
 
 	@Override
-	public void thePlayerWithTheDarkcoloredPiecesIsGivenTheTurn() {
-		assertEquals(Color.BLACK, referee.getCurrentPlayer().getColor());
+	public void thePlayerWithTheP1ColoredPiecesIsGivenTheTurn(String p1) {
+		if (p1.equals("dark"))
+			assertEquals(Color.BLACK, referee.getCurrentPlayer().getColor());
+		else if (p1.equals("light"))
+			assertEquals(Color.WHITE, referee.getCurrentPlayer().getColor());
+		else
+			throw new PendingException("No such player color for this game.");
 	}
 
 	@Override
@@ -88,11 +93,14 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		output("Testing: " + referee.getInfo().getReader().getSectionName());
 		//Set up source coordinate.
 		sourceCoordinateOfPlayerMove = playerMove.getSourceCoordinate();
-		this.pieceOfPlayerMove = getPieceAtCoordinate(sourceCoordinateOfPlayerMove);
+//		this.pieceOfPlayerMove = getPieceAtCoordinate(sourceCoordinateOfPlayerMove);
 		
 	}
 	
 	protected void prepareValidities() {
+
+		pieceOfPlayerMove = info.getPieceOfPlayerMove();
+//		playerOfPlayerMove = info.getPlayerOfPlayerMove();
 		sourceCoordinateValidityOfPlayerMove = referee.getInfo().getSourceCoordinateValidity();
 		//Set up destination coordinate.
 		destinationCoordinateOfPlayerMove = playerMove.getDestinationCoordinate();
@@ -111,16 +119,6 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		}
 	}
 	
-	@Override
-	public void thePieceAtTheSourceCoordinateIsMovedToTheDestinationCoordinate() {
-		//Check if destination coordinate now holds the moved piece.
-		assertEquals(pieceOfPlayerMove, getPieceAtCoordinate(destinationCoordinateOfPlayerMove));
-		//Check if the source coordinate is now empty.
-		assertTrue(getPieceAtCoordinate(sourceCoordinateOfPlayerMove) == null);
-		//Check if the piece's current coordinate is the same as player move's destination coordinate.
-		assertEquals(destinationCoordinateOfPlayerMove, pieceOfPlayerMove.getCurrentCoordinate());
-	}
-
 	@Override
 	public void theNextTurnIsGivenToTheP1Player(String p1) {
 		if (referee.getInfo().isGameEnded()) {
@@ -290,23 +288,6 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	}
 
 	@Override
-	public void thePieceAtTheSourceCoordinateBecomesACrownedPiece() {
-		AbstractPiece newPiece = getPieceAtCoordinate(destinationCoordinateOfPlayerMove);
-		assertTrue(newPiece != null);
-		assertEquals(pieceOfPlayerMove.getId()+2, newPiece.getId());
-		if (pieceOfPlayerMove.getIcon().equals("W"))
-			assertEquals("Z", newPiece.getIcon());
-		else
-			assertEquals("A", newPiece.getIcon());
-		assertEquals(playerOfPlayerMove, newPiece.getPlayer());
-		assertEquals(pieceOfPlayerMove.getGoalDirection(), newPiece.getGoalDirection());
-		assertTrue(newPiece.getPieceMovePossibilities() instanceof KingMovePossibilities);
-		assertTrue(newPiece.getPieceMoveConstraints() instanceof KingMoveConstraints);
-		assertTrue(newPiece instanceof King);
-		pieceOfPlayerMove = newPiece;
-	}
-	
-	@Override
 	public void theGameIsEndedAsADraw() {
 		assertTrue(referee.getInfo().isGameEnded());
 		assertTrue(referee.getInfo().isDraw());
@@ -379,6 +360,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	public void thePlayerPicksAValidSourceCoordinateThatHasAP1PieceInIt(String p1) {
 		referee.conductGame();
 		prepareValidities();
+		breakpoint("validRegularMove6");
 		assertEquals(SourceCoordinateValidity.VALID, sourceCoordinateValidityOfPlayerMove);
 		if (p1.equals("pawn")) {
 			assertTrue(pieceOfPlayerMove instanceof Pawn);
@@ -389,7 +371,36 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		}
 	}
 	
-	
+
+	@Override
+	public void thePieceIsMovedToTheDestinationCoordinate() {
+		//Check if destination coordinate now holds the moved piece.
+		assertEquals(pieceOfPlayerMove, getPieceAtCoordinate(destinationCoordinateOfPlayerMove));
+		//Check if the source coordinate is now empty.
+		assertTrue(getPieceAtCoordinate(sourceCoordinateOfPlayerMove) == null);
+		//Check if the piece's current coordinate is the same as player move's destination coordinate.
+		assertEquals(destinationCoordinateOfPlayerMove, pieceOfPlayerMove.getCurrentCoordinate());
+	}
+
+	@Override
+	public void thePieceIsP1ToACrownedPiece(String p1) {
+		if (!p1.equals("promoted"))
+			throw new PendingException();
+		
+		AbstractPiece newPiece = getPieceAtCoordinate(destinationCoordinateOfPlayerMove);
+		assertTrue(newPiece != null);
+		assertEquals(pieceOfPlayerMove.getId()+2, newPiece.getId());
+		if (pieceOfPlayerMove.getIcon().equals("W"))
+			assertEquals("Z", newPiece.getIcon());
+		else
+			assertEquals("A", newPiece.getIcon());
+		assertEquals(playerOfPlayerMove, newPiece.getPlayer());
+		assertEquals(pieceOfPlayerMove.getGoalDirection(), newPiece.getGoalDirection());
+		assertTrue(newPiece.getPieceMovePossibilities() instanceof KingMovePossibilities);
+		assertTrue(newPiece.getPieceMoveConstraints() instanceof KingMoveConstraints);
+		assertTrue(newPiece instanceof King);
+		pieceOfPlayerMove = newPiece;
+	}
 
 
 	protected AbstractPiece getPieceAtCoordinate(ICoordinate coordinate) {
@@ -409,7 +420,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		outputter.flush();
 	}
 	
-	private void breakpoint(String sectionName) {
+	protected void breakpoint(String sectionName) {
 		if (referee.getInfo().getReader().getSectionName().equals(sectionName))
 			//Have a breakpoint at the following line.
 			System.out.println("Breakpoint at " + sectionName);
@@ -417,6 +428,9 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		if (sectionName.equals("any"))
 			System.out.println("Mandatory breakpoint");
 	}
+
+	
+
 
 	
 

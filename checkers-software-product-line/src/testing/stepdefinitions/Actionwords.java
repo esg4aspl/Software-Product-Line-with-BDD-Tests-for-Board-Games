@@ -26,17 +26,13 @@ public class Actionwords {
     public void thePlayersStartTheGame() {
     	scenarioTester.thePlayersStartTheGame();
     }
-
-    public void thePlayerWithTheDarkcoloredPiecesIsGivenTheTurn() {
-    	scenarioTester.thePlayerWithTheDarkcoloredPiecesIsGivenTheTurn();
-    }
+    
+	public void thePlayerWithTheP1ColoredPiecesIsGivenTheTurn(String p1) {
+		scenarioTester.thePlayerWithTheP1ColoredPiecesIsGivenTheTurn(p1);
+	}
 
     public void theGameIsPlayedUpToACertainPointFromFileP1(String p1) {
     	scenarioTester.theGameIsPlayedUpToACertainPointFromFileP1(p1);
-    }
-
-    public void thePieceAtTheSourceCoordinateIsMovedToTheDestinationCoordinate() {
-    	scenarioTester.thePieceAtTheSourceCoordinateIsMovedToTheDestinationCoordinate();
     }
 
     public void theNextTurnIsGivenToTheP1Player(String p1) {
@@ -124,12 +120,17 @@ public class Actionwords {
 		scenarioTester.thePlayerJumpsOverOneOrMultiplePiecesLeavingTheOpponentWithOnlyOnePieceThatIsUnableToPerformAJumpMove();
 	}
 
-	public void thePieceAtTheSourceCoordinateBecomesACrownedPiece() {
-		scenarioTester.thePieceAtTheSourceCoordinateBecomesACrownedPiece();
-	}
-
 	public void thePlayerPicksAValidSourceCoordinateThatHasAP1PieceInIt(String p1) {
 		scenarioTester.thePlayerPicksAValidSourceCoordinateThatHasAP1PieceInIt(p1);
 	}
+
+	public void thePieceIsMovedToTheDestinationCoordinate() {
+		scenarioTester.thePieceIsMovedToTheDestinationCoordinate();
+	}
+
+	public void thePieceIsP1ToACrownedPiece(String p1) {
+		scenarioTester.thePieceIsP1ToACrownedPiece(p1);
+	}
+
 
 }

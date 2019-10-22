@@ -4,30 +4,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import base.AmericanGameConfiguration;
 import base.Pawn;
-import checkersamerican.King;
-import checkersamerican.KingMoveConstraints;
-import checkersamerican.KingMovePossibilities;
 import checkersspanish.Queen;
 import checkersspanish.QueenMoveConstraints;
 import checkersspanish.QueenMovePossibilities;
 import core.AbstractPiece;
-import core.Coordinate;
-import core.Direction;
-import core.ICoordinate;
-import core.IMoveCoordinate;
-import core.IPlayer;
-import core.MoveCoordinate;
 import cucumber.api.PendingException;
 import testing.helpers.DestinationCoordinateValidity;
 import testing.helpers.SourceCoordinateValidity;
 import testing.scenariotesters.IScenarioTester;
 import testing.scenariotesters.checkersamerican.AmericanCheckersScenarioTester;
-import testing.scenariotesters.checkersamerican.AmericanCheckersTestInfo;
 
 public class SpanishCheckersScenarioTester extends AmericanCheckersScenarioTester implements IScenarioTester {
 	
@@ -72,9 +59,13 @@ public class SpanishCheckersScenarioTester extends AmericanCheckersScenarioTeste
 			throw new PendingException();
 		}
 	}
+
 	
 	@Override
-	public void thePieceAtTheSourceCoordinateBecomesACrownedPiece() {
+	public void thePieceIsP1ToACrownedPiece(String p1) {
+		if (!p1.equals("promoted"))
+			throw new PendingException();
+		
 		AbstractPiece newPiece = getPieceAtCoordinate(destinationCoordinateOfPlayerMove);
 		assertTrue(newPiece != null);
 		assertEquals(pieceOfPlayerMove.getId()+2, newPiece.getId());
@@ -89,10 +80,7 @@ public class SpanishCheckersScenarioTester extends AmericanCheckersScenarioTeste
 		assertTrue(newPiece instanceof Queen);
 		pieceOfPlayerMove = newPiece;
 	}
-	
-	
 
-	
 	@Override
 	public void thePlayerPicksAValidSourceCoordinateThatHasAP1PieceInIt(String p1) {
 		referee.conductGame();
@@ -101,6 +89,7 @@ public class SpanishCheckersScenarioTester extends AmericanCheckersScenarioTeste
 		if (p1.equals("pawn")) {
 			assertTrue(pieceOfPlayerMove instanceof Pawn);
 		} else if (p1.equals("queen")) {
+			breakpoint("invalidDestinationCoordinateForMoveNotBestSequence3");
 			assertTrue(pieceOfPlayerMove instanceof Queen);
 		}
 	}
@@ -114,7 +103,6 @@ public class SpanishCheckersScenarioTester extends AmericanCheckersScenarioTeste
 		output("Testing: " + referee.getInfo().getReader().getSectionName());
 		//Set up source coordinate.
 		sourceCoordinateOfPlayerMove = playerMove.getSourceCoordinate();
-		this.pieceOfPlayerMove = getPieceAtCoordinate(sourceCoordinateOfPlayerMove);
 		
 	}
 	
