@@ -1,6 +1,5 @@
 package testing.stepdefinitions;
 
-import cucumber.api.DataTable;
 import cucumber.api.java.en.*;
 
 public class StepDefinitions {
