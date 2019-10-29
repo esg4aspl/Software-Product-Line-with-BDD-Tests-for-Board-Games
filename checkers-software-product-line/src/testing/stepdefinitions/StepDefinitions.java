@@ -146,4 +146,24 @@ public class StepDefinitions {
     public void thePlayerWithTheP1ColoredPiecesIsGivenTheTurn(String p1) {
         actionwords.thePlayerWithTheP1ColoredPiecesIsGivenTheTurn(p1);
     }
+
+    @Given("^the player has a \"(.*)\" piece in opponent's crownhead$")
+    public void thePlayerHasAP1PieceInOpponentsCrownhead(String p1) {
+        actionwords.thePlayerHasAP1PieceInOpponentsCrownhead(p1);
+    }
+
+    @When("^the player jumps over all the vulnerable opponent kings in the crownhead$")
+    public void thePlayerJumpsOverAllTheVulnerableOpponentKingsInTheCrownhead() {
+        actionwords.thePlayerJumpsOverAllTheVulnerableOpponentKingsInTheCrownhead();
+    }
+
+    @Given("^there are some board states that have been reached two times$")
+    public void thereAreSomeBoardStatesThatHaveBeenReachedTwoTimes() {
+        actionwords.thereAreSomeBoardStatesThatHaveBeenReachedTwoTimes();
+    }
+
+    @When("^the player finishes his turn leaving the board in a previously reached state$")
+    public void thePlayerFinishesHisTurnLeavingTheBoardInAPreviouslyReachedState() {
+        actionwords.thePlayerFinishesHisTurnLeavingTheBoardInAPreviouslyReachedState();
+    }
 }

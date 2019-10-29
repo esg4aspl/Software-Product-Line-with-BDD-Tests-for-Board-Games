@@ -11,7 +11,6 @@ import base.PawnMoveConstraints;
 import base.PawnMovePossibilities;
 import base.Player;
 import base.PlayerList;
-import checkersamerican.King;
 import checkersspanish.Queen;
 import checkersspanish.QueenMoveConstraints;
 import checkersspanish.QueenMovePossibilities;
@@ -285,7 +284,7 @@ public class SpanishTesterReferee extends AbstractTesterReferee {
 	private boolean isThereAKingOnBoard() {
 		for (IPlayer p : playerList.getPlayers()) {
 			for (AbstractPiece piece : p.getPieceList()) {
-				if ((piece instanceof King) && piece.getCurrentZone() == Zone.ONBOARD)
+				if ((piece instanceof Queen) && piece.getCurrentZone() == Zone.ONBOARD)
 					return true;
 			}
 		}
@@ -293,7 +292,12 @@ public class SpanishTesterReferee extends AbstractTesterReferee {
 	}
 
 	private void prepareRule(IRule noPromoteRule) {
-		//TODO: Implement this
+		// loop limit is one more to register the current kings, which resets the turn
+		// counter. then it will stop when turns are equal to noPromoteMoveCount.
+		int loopLimit = isThereAKingOnBoard() ? info.getNoPromoteMoveCount() + 1 : info.getNoPromoteMoveCount();
+		for (int i = 0; i < loopLimit; i++)
+			isSatisfied(noPromoteRule, this); // Call noPromoteRule.evaluate 39 times for it to think the next move will
+												// be the 40th without promoting.
 	}
 	
 	@Override
@@ -428,12 +432,19 @@ public class SpanishTesterReferee extends AbstractTesterReferee {
 	}
 
 	public static void main(String[] args) {
-		AbstractTesterReferee ref = new SpanishTesterReferee(new SpanishGameConfiguration());
-		ref.setup("invalidDestinationCoordinateForMoveNotBestSequence1");
-		ref.conductGame();
-		System.out.println(ref.getInfo().getSourceCoordinateValidity());
-		System.out.println(ref.getInfo().getDestinationCoordinateValidity());
-		System.out.println(ref.getInfo().toString());
+		String[] iniArr = {
+				"endOfTheGameInDrawFortyIndecisiveMoves1",
+				"endOfTheGameInDrawFortyIndecisiveMoves2",
+				"endOfTheGameInDrawFortyIndecisiveMoves3",
+		};
+		for (String iniName : iniArr ) {
+			AbstractTesterReferee ref = new SpanishTesterReferee(new SpanishGameConfiguration());
+			ref.setup(iniName);
+			ref.conductGame();
+			System.out.println(ref.getInfo().getSourceCoordinateValidity());
+			System.out.println(ref.getInfo().getDestinationCoordinateValidity());
+			System.out.println(ref.getInfo().toString());
+		}
 	}
 	
 	

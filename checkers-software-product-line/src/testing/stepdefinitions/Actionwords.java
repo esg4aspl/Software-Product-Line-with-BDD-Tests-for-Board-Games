@@ -5,6 +5,8 @@ import testing.scenariotesters.IScenarioTester;
 import testing.scenariotesters.checkersamerican.AmericanCheckersScenarioTester;
 import testing.scenariotesters.checkerschildren.ChildrenCheckersScenarioTester;
 import testing.scenariotesters.checkersspanish.SpanishCheckersScenarioTester;
+import testing.scenariotesters.checkersturkish.ITurkishScenarioTester;
+import testing.scenariotesters.checkersturkish.TurkishCheckersScenarioTester;
 
 public class Actionwords {
 	
@@ -17,6 +19,8 @@ public class Actionwords {
     		scenarioTester = new ChildrenCheckersScenarioTester();
     	} else if (p1.equals("Spanish Checkers")) {
     		scenarioTester = new SpanishCheckersScenarioTester();
+    	} else if (p1.equals("Turkish Checkers")) {
+    		scenarioTester = new TurkishCheckersScenarioTester();
     	} else {
     		throw new PendingException("No Such Game");
     	}
@@ -130,6 +134,22 @@ public class Actionwords {
 
 	public void thePieceIsP1ToACrownedPiece(String p1) {
 		scenarioTester.thePieceIsP1ToACrownedPiece(p1);
+	}
+
+	public void thePlayerHasAP1PieceInOpponentsCrownhead(String p1) {
+		((ITurkishScenarioTester) scenarioTester).thePlayerHasAP1PieceInOpponentsCrownhead(p1);
+	}
+
+	public void thePlayerJumpsOverAllTheVulnerableOpponentKingsInTheCrownhead() {
+		((ITurkishScenarioTester) scenarioTester).thePlayerJumpsOverAllTheVulnerableOpponentKingsInTheCrownhead();
+	}
+
+	public void thereAreSomeBoardStatesThatHaveBeenReachedTwoTimes() {
+		((ITurkishScenarioTester) scenarioTester).thereAreSomeBoardStatesThatHaveBeenReachedTwoTimes();
+	}
+
+	public void thePlayerFinishesHisTurnLeavingTheBoardInAPreviouslyReachedState() {
+		((ITurkishScenarioTester) scenarioTester).thePlayerFinishesHisTurnLeavingTheBoardInAPreviouslyReachedState();
 	}
 
 

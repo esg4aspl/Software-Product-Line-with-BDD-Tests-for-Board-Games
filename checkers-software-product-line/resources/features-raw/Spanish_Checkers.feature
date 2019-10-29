@@ -15,15 +15,15 @@ Feature: Spanish Checkers
     And the next turn is given to the "other" player
 
     Examples: 
-      | file_name         | piece_type |
-      | validRegularMove1 | queen      |
-      | validRegularMove2 | pawn       |
-      | validRegularMove3 | pawn       |
-      | validRegularMove4 | pawn       |
-      | validRegularMove5 | pawn       |
-      | validRegularMove6 | pawn       |
-      | validRegularMove7 | queen      |
-      | validRegularMove8 | queen      |
+      | file_name         | piece_type | explanation                                                                  |
+      | validRegularMove1 | queen      | f: king moves backwards                                                      |
+      | validRegularMove2 | pawn       | f: regular move                                                              |
+      | validRegularMove3 | pawn       | f: regular move                                                              |
+      | validRegularMove4 | pawn       | f: opponent is not blocked, his queen can jump backward, game should not end |
+      | validRegularMove5 | pawn       | f: opponent is not blocked, his pawn can jump forward, game should not end   |
+      | validRegularMove6 | pawn       | f: opponent is not blocked, his pawn can jump forward, game should not end   |
+      | validRegularMove7 | queen      | f: queen can jump multiple squares without capturing                         |
+      | validRegularMove8 | queen      | f: queen can jump multiple squares without capturing                         |
 
   Scenario Outline: Valid Jump Move
     Given the game is played up to a certain point from file "<file_name>"
@@ -34,26 +34,26 @@ Feature: Spanish Checkers
     And the next turn is given to the "<next_turn_player>" player
 
     Examples: 
-      | file_name       | next_turn_player | piece_type |
-      | validJumpMove1  | other            | pawn       |
-      | validJumpMove2  | other            | queen      |
-      | validJumpMove3  | other            | pawn       |
-      | validJumpMove4  | current          | queen      |
-      | validJumpMove5  | current          | pawn       |
-      | validJumpMove6  | other            | pawn       |
-      | validJumpMove7  | current          | queen      |
-      | validJumpMove8  | current          | queen      |
-      | validJumpMove9  | other            | queen      |
-      | validJumpMove10 | other            | pawn       |
-      | validJumpMove11 | other            | pawn       |
-      | validJumpMove12 | other            | pawn       |
-      | validJumpMove13 | other            | pawn       |
-      | validJumpMove14 | other            | pawn       |
-      | validJumpMove15 | other            | queen      |
-      | validJumpMove16 | current          | queen      |
-      | validJumpMove17 | other            | pawn       |
-      | validJumpMove18 | current          | queen      |
-      | validJumpMove19 | other            | queen      |
+      | file_name       | next_turn_player | piece_type | explanation                                                                                                                  |
+      | validJumpMove1  | other            | pawn       | f: end of jump possibilities, own piece is not jumpable                                                                      |
+      | validJumpMove2  | other            | queen      | f: end of jump possibilities, own piece is not jumpable                                                                      |
+      | validJumpMove3  | other            | pawn       | f: end of jump possibilities, no adjacent piece                                                                              |
+      | validJumpMove4  | current          | queen      | f: another jump possibility                                                                                                  |
+      | validJumpMove5  | current          | pawn       | f: another jump possibility                                                                                                  |
+      | validJumpMove6  | other            | pawn       | f: end of jump possibilities, opponent is not jumpable because destination would be out of borders                           |
+      | validJumpMove7  | current          | queen      | f: another jump possibility                                                                                                  |
+      | validJumpMove8  | current          | queen      | f: another jump possiblity, opponent piece in distance                                                                       |
+      | validJumpMove9  | other            | queen      | f: this valid jump move proves the case in validRegularMove4                                                                 |
+      | validJumpMove10 | other            | pawn       | f: this valid jump move proves the case in validRegularMove6                                                                 |
+      | validJumpMove11 | other            | pawn       | f: no promote is 39, no capture is 0, a jump move is a decisive move, game should not end in draw                            |
+      | validJumpMove12 | other            | pawn       | f: no promote is 0, no capture is 39, this jump move should clear that, game should not end in draw                          |
+      | validJumpMove13 | other            | pawn       | f: no promote is 45, no capture is 0, a jump move is a decisive move, game should not end in draw                            |
+      | validJumpMove14 | other            | pawn       | f: no promote is 0, no capture is 45, this jump move should clear that, game should not end in draw                          |
+      | validJumpMove15 | other            | queen      | f: end of jump possiblities, opponent is not jumpable because possible destination is occupied                               |
+      | validJumpMove16 | current          | queen      | f: another jump possibility, even though the destination is in crownhead, the piece is already king, it can continue jumping |
+      | validJumpMove17 | other            | pawn       | f: both players are left with one piece, but one of them is vulnerable to the other, game should not end ind draw            |
+      | validJumpMove18 | current          | queen      | f: queen can jump and capture from distance                                                                                  |
+      | validJumpMove19 | other            | queen      | s: queen can jump and capture from distance                                                                                  |
 
   Scenario Outline: Invalid Source Coordinate for Move
     Given the game is played up to a certain point from file "<file_name>"
@@ -83,27 +83,27 @@ Feature: Spanish Checkers
     And the player is asked for another "source" coordinate
 
     Examples: 
-      | file_name                                                               | piece_type | invalidity_reason                                                     | error_message                                 |
-      | invalidDestinationCoordinateForMoveOutsideBorders1                      | pawn       | destination coordinate is outside of the board                        | Destination Valid? false                      |
-      | invalidDestinationCoordinateForMoveOutsideBorders2                      | pawn       | destination coordinate is outside of the board                        | Destination Valid? false                      |
-      | invalidDestinationCoordinateForMoveUnplayableColor1                     | pawn       | destination coordinate is not of valid square color                   | Destination Valid? false                      |
-      | invalidDestinationCoordinateForMoveUnplayableColor2                     | pawn       | destination coordinate is not of valid square color                   | Destination Valid? false                      |
-      | invalidDestinationCoordinateForMoveOccupied1                            | pawn       | destination coordinate is occupied                                    | A piece at destination coordinate             |
-      | invalidDestinationCoordinateForMoveOccupied2                            | pawn       | destination coordinate is occupied                                    | A piece at destination coordinate             |
-      | invalidDestinationCoordinateForMoveOccupied3                            | pawn       | destination coordinate is occupied                                    | A piece at destination coordinate             |
-      | invalidDestinationCoordinateForMoveUnallowedDirection1                  | pawn       | destination coordinate's direction is not allowed                     | Destination Valid? false                      |
-      | invalidDestinationCoordinateForMoveUnallowedDirection2                  | pawn       | destination coordinate's direction is not allowed                     | Destination Valid? false                      |
-      | invalidDestinationCoordinateForMoveUnallowedDirection3                  | pawn       | destination coordinate's direction is not allowed                     | Destination Valid? false                      |
-      | invalidDestinationCoordinateForMoveTooFarAway1                          | pawn       | destination coordinate is more than two squares away                  | Destination Valid? false                      |
-      | invalidDestinationCoordinateForMoveTooFarAway2                          | pawn       | destination coordinate is more than two squares away                  | Destination Valid? false                      |
-      | invalidDestinationCoordinateForMoveJumpedPieceIsNull1                   | pawn       | jumped piece is null                                                  | There must be one piece on jump path 0        |
-      | invalidDestinationCoordinateForMoveJumpedPieceIsOwnPiece1               | pawn       | jumped piece is not opponent piece                                    | Jumped Piece Must Be Opponent Piece           |
-      | invalidDestinationCoordinateForMoveJumpedPieceIsFarAwayFromSource1      | pawn       | jumped piece is too far away from source coordinate                   | Destination Valid? false                      |
-      | invalidDestinationCoordinateForMoveJumpedPieceIsFarAwayFromDestination1 | queen      | destination coordinate is more than one square away from jumped piece | Must land just behind jumped piece            |
-      | invalidDestinationCoordinateForMoveMultipleJumpedPieces1                | queen      | there are more than one pieces in jump path                           | There must be only one piece on jump path 2   |
-      | invalidDestinationCoordinateForMoveNotBestSequence1                     | queen      | move is not part of the best sequence                                 | Not the best move                             |
-      | invalidDestinationCoordinateForMoveNotBestSequence2                     | queen      | move is not part of the best sequence                                 | Not the best move                             |
-      | invalidDestinationCoordinateForMoveNotBestSequence3                     | queen      | move is not part of the best sequence                                 | Not the best move                             |
+      | file_name                                                               | piece_type | invalidity_reason                                                     | error_message                               |
+      | invalidDestinationCoordinateForMoveOutsideBorders1                      | pawn       | destination coordinate is outside of the board                        | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveOutsideBorders2                      | pawn       | destination coordinate is outside of the board                        | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveUnplayableColor1                     | pawn       | destination coordinate is not of valid square color                   | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveUnplayableColor2                     | pawn       | destination coordinate is not of valid square color                   | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveOccupied1                            | pawn       | destination coordinate is occupied                                    | A piece at destination coordinate           |
+      | invalidDestinationCoordinateForMoveOccupied2                            | pawn       | destination coordinate is occupied                                    | A piece at destination coordinate           |
+      | invalidDestinationCoordinateForMoveOccupied3                            | pawn       | destination coordinate is occupied                                    | A piece at destination coordinate           |
+      | invalidDestinationCoordinateForMoveUnallowedDirection1                  | pawn       | destination coordinate's direction is not allowed                     | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveUnallowedDirection2                  | pawn       | destination coordinate's direction is not allowed                     | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveUnallowedDirection3                  | pawn       | destination coordinate's direction is not allowed                     | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveTooFarAway1                          | pawn       | destination coordinate is more than two squares away                  | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveTooFarAway2                          | pawn       | destination coordinate is more than two squares away                  | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsNull1                   | pawn       | jumped piece is null                                                  | There must be one piece on jump path 0      |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsOwnPiece1               | pawn       | jumped piece is not opponent piece                                    | Jumped Piece Must Be Opponent Piece         |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsFarAwayFromSource1      | pawn       | jumped piece is too far away from source coordinate                   | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsFarAwayFromDestination1 | queen      | destination coordinate is more than one square away from jumped piece | Must land just behind jumped piece          |
+      | invalidDestinationCoordinateForMoveMultipleJumpedPieces1                | queen      | there are more than one pieces in jump path                           | There must be only one piece on jump path 2 |
+      | invalidDestinationCoordinateForMoveNotBestSequence1                     | queen      | move is not part of the best sequence                                 | Not the best move                           |
+      | invalidDestinationCoordinateForMoveNotBestSequence2                     | queen      | move is not part of the best sequence                                 | Not the best move                           |
+      | invalidDestinationCoordinateForMoveNotBestSequence3                     | queen      | move is not part of the best sequence                                 | Not the best move                           |
 
   Scenario Outline: Crowning the Eligible Piece
     Given the game is played up to a certain point from file "<file_name>"
@@ -114,15 +114,15 @@ Feature: Spanish Checkers
     And the next turn is given to the "other" player
 
     Examples: 
-      | file_name                 |
-      | crowningTheEligiblePiece1 |
-      | crowningTheEligiblePiece2 |
-      | crowningTheEligiblePiece3 |
-      | crowningTheEligiblePiece4 |
-      | crowningTheEligiblePiece5 |
-      | crowningTheEligiblePiece6 |
-      | crowningTheEligiblePiece7 |
-      | crowningTheEligiblePiece8 |
+      | file_name                 | explanation                                                                                                            |
+      | crowningTheEligiblePiece1 | f:                                                                                                                     |
+      | crowningTheEligiblePiece2 | f:                                                                                                                     |
+      | crowningTheEligiblePiece3 | f: there are possibilities for a jump move but piece is crowned, so the next turn should be given to the opponent      |
+      | crowningTheEligiblePiece4 | f:                                                                                                                     |
+      | crowningTheEligiblePiece5 | f: there are possibilities for a jump move but piece is crowned, so the next turn should be given to the opponent      |
+      | crowningTheEligiblePiece6 | f: no promote is 39, no capture is 39, crowning is a decisive move, game should not end in draw                        |
+      | crowningTheEligiblePiece7 | f: no promote is 45, no capture is 0, crowning is a decisive move, game should not end in draw                         |
+      | crowningTheEligiblePiece8 | f: no promote is 0, no capture is 45, crowning is a decisive move, game should not end in draw                         |
 
   Scenario Outline: End of the Game
     Given the game is played up to a certain point from file "<file_name>"
@@ -168,10 +168,10 @@ Feature: Spanish Checkers
     Then the game is ended as a draw
 
     Examples: 
-      | file_name                               |
-      | endOfTheGameInDrawFortyIndecisiveMoves1 |
-      | endOfTheGameInDrawFortyIndecisiveMoves2 |
-      | endOfTheGameInDrawFortyIndecisiveMoves3 |
+      | file_name                               | explanation                                                                 |
+      | endOfTheGameInDrawFortyIndecisiveMoves1 | f: no promote is 39, no capture is 39, a regular move ends the game in draw |
+      | endOfTheGameInDrawFortyIndecisiveMoves2 | f: no promote is 45, no capture is 39, a regular move ends the game in draw |
+      | endOfTheGameInDrawFortyIndecisiveMoves3 | f: no promote is 39, no capture is 45, a regular move ends the game in draw |
 
   Scenario Outline: End of the Game - Opponent Can't Make a Valid Move
     Given the game is played up to a certain point from file "<file_name>"

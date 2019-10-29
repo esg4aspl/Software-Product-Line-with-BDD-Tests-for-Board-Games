@@ -413,8 +413,10 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 	
 	public static void main(String[] args) {
 
-			String[] moveArr = { 
-					"crowningTheEligiblePiece6"
+			String[] moveArr = {
+					"endOfTheGameInDrawFortyIndecisiveMoves1",
+					"endOfTheGameInDrawFortyIndecisiveMoves2",
+					"endOfTheGameInDrawFortyIndecisiveMoves3",
 					};
 
 			for (String moveID : moveArr) {

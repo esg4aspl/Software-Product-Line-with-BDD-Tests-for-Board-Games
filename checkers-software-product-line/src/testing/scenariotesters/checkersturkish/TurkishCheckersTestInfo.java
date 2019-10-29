@@ -1,16 +1,20 @@
-package testing.scenariotesters.checkersamerican;
+package testing.scenariotesters.checkersturkish;
 
-import core.Coordinate;
+import java.util.List;
+
 import core.ICoordinate;
 import testing.helpers.DestinationCoordinateValidity;
-import testing.scenariotesters.AbstractTestInfo;
 import testing.scenariotesters.AbstractTesterReferee;
+import testing.scenariotesters.checkersamerican.AmericanCheckersTestInfo;
+import testing.scenariotesters.checkersspanish.SpanishTesterReferee;
 
-public class AmericanCheckersTestInfo extends AbstractTestInfo {
+public class TurkishCheckersTestInfo extends AmericanCheckersTestInfo {
+	
+	protected boolean reachedCrownheadWithJumpMove;
 
-
-	public AmericanCheckersTestInfo(AbstractTesterReferee referee, String file_path, String file_name) {
+	public TurkishCheckersTestInfo(AbstractTesterReferee referee, String file_path, String file_name) {
 		super(referee, file_path, file_name);
+		reachedCrownheadWithJumpMove = false;
 	}
 
 	@Override
@@ -27,12 +31,16 @@ public class AmericanCheckersTestInfo extends AbstractTestInfo {
 		this.destinationCoordinateValidity = referee.checkDestinationCoordinate(referee.getCurrentPlayer(),
 				this.playerMove.getSourceCoordinate(), this.playerMove.getDestinationCoordinate());
 		
-		if (destinationCoordinateValidity == DestinationCoordinateValidity.JUMPED_PIECE_IS_NULL
-				|| destinationCoordinateValidity == DestinationCoordinateValidity.JUMPED_PIECE_IS_OWN
+		if (destinationCoordinateValidity == DestinationCoordinateValidity.JUMPED_PIECE_IS_OWN
 				|| destinationCoordinateValidity == DestinationCoordinateValidity.VALID_JUMP) {
-			jumpedCoordinate = new Coordinate(src.getXCoordinate() + (dest.getXCoordinate()-src.getXCoordinate())/2, src.getYCoordinate() + (dest.getYCoordinate() - src.getYCoordinate())/2);
+			List<ICoordinate> occupiedJumpedCoordinates = ((TurkishTesterReferee) referee).findOccupiedJumpedCoordinates(src, dest);
+			jumpedCoordinate = occupiedJumpedCoordinates.get(0);
 			jumpedPiece = referee.getCoordinatePieceMap().getPieceAtCoordinate(jumpedCoordinate);
 		}
+	}
+
+	public boolean isReachedCrownheadWithJumpMove() {
+		return reachedCrownheadWithJumpMove;
 	}
 	
 	

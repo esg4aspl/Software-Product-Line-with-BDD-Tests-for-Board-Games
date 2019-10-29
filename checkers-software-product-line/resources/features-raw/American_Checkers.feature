@@ -15,13 +15,13 @@ Feature: American Checkers
     And the next turn is given to the "other" player
 
     Examples: 
-      | file_name         | piece_type |
-      | validRegularMove1 | king       |
-      | validRegularMove2 | pawn       |
-      | validRegularMove3 | pawn       |
-      | validRegularMove4 | pawn       |
-      | validRegularMove5 | pawn       |
-      | validRegularMove6 | pawn       |
+      | file_name         | piece_type | explanation                                                                 |
+      | validRegularMove1 | king       | f: king moves backwards                                                     |
+      | validRegularMove2 | pawn       | f: regular move                                                             |
+      | validRegularMove3 | pawn       | f: regular move                                                             |
+      | validRegularMove4 | pawn       | f: opponent is not blocked, his king can jump backward, game should not end |
+      | validRegularMove5 | pawn       | f: opponent is not blocked, his pawn can jump forward, game should not end  |
+      | validRegularMove6 | pawn       | f: opponent is not blocked, his pawn can jump forward, game should not end  |
 
   Scenario Outline: Valid Jump Move
     Given the game is played up to a certain point from file "<file_name>"
@@ -32,24 +32,24 @@ Feature: American Checkers
     And the next turn is given to the "<next_turn_player>" player
 
     Examples: 
-      | file_name       | next_turn_player | piece_type |
-      | validJumpMove1  | other            | pawn       |
-      | validJumpMove2  | other            | king       |
-      | validJumpMove3  | other            | pawn       |
-      | validJumpMove4  | current          | king       |
-      | validJumpMove5  | current          | pawn       |
-      | validJumpMove6  | other            | pawn       |
-      | validJumpMove7  | current          | king       |
-      | validJumpMove8  | other            | king       |
-      | validJumpMove9  | other            | king       |
-      | validJumpMove10 | other            | pawn       |
-      | validJumpMove11 | other            | pawn       |
-      | validJumpMove12 | other            | pawn       |
-      | validJumpMove13 | other            | pawn       |
-      | validJumpMove14 | other            | pawn       |
-      | validJumpMove15 | other            | king       |
-      | validJumpMove16 | current          | king       |
-      | validJumpMove17 | other            | pawn       |
+      | file_name       | next_turn_player | piece_type | explanation                                                                                                                                                             |
+      | validJumpMove1  | other            | pawn       | f: end of jump possibilities, own piece is not jumpable                                                                                                                 |
+      | validJumpMove2  | other            | king       | f: end of jump possibilities, own piece is not jumpable                                                                                                                 |
+      | validJumpMove3  | other            | pawn       | f: end of jump possibilities, no adjacent piece                                                                                                                         |
+      | validJumpMove4  | current          | king       | f: another jump possibility                                                                                                                                             |
+      | validJumpMove5  | current          | pawn       | f: another jump possibility                                                                                                                                             |
+      | validJumpMove6  | other            | pawn       | f: end of jump possibilities, opponent is not jumpable because destination would be out of borders                                                                      |
+      | validJumpMove7  | current          | king       | f: another jump possibility                                                                                                                                             |
+      | validJumpMove8  | other            | king       | f: end of jump possibilities, own piece is not jumpable                                                                                                                 |
+      | validJumpMove9  | other            | king       | f: this valid jump move proves the case in validRegularMove4                                                                                                            |
+      | validJumpMove10 | other            | pawn       | f: this valid jump move proves the case in validRegularMove6                                                                                                            |
+      | validJumpMove11 | other            | pawn       | f: no promote is 39, no capture is 0, a jump move is a decisive move, game should not end in draw                                                                       |
+      | validJumpMove12 | other            | pawn       | f: no promote is 0, no capture is 39, this jump move should clear that, game should not end in draw                                                                     |
+      | validJumpMove13 | other            | pawn       | f: no promote is 45, no capture is 0, a jump move is a decisive move, game should not end in draw  (checked at 45 to see if rule class can keep correct count above 40) |
+      | validJumpMove14 | other            | pawn       | f: no promote is 0, no capture is 45, this jump move should clear that, game should not end in draw                                                                     |
+      | validJumpMove15 | other            | king       | f: end of jump possiblities, opponent is not jumpable because possible destination is occupied                                                                          |
+      | validJumpMove16 | current          | king       | f: another jump possibility, even though the destination is in crownhead, the piece is already king, it can continue jumping                                            |
+      | validJumpMove17 | other            | pawn       | f: both players are left with one piece, but one of them is vulnerable to the other, game should not end ind draw                                                       |
 
   Scenario Outline: Invalid Source Coordinate for Move
     Given the game is played up to a certain point from file "<file_name>"
@@ -107,15 +107,15 @@ Feature: American Checkers
     And the next turn is given to the "other" player
 
     Examples: 
-      | file_name                 |
-      | crowningTheEligiblePiece1 |
-      | crowningTheEligiblePiece2 |
-      | crowningTheEligiblePiece3 |
-      | crowningTheEligiblePiece4 |
-      | crowningTheEligiblePiece5 |
-      | crowningTheEligiblePiece6 |
-      | crowningTheEligiblePiece7 |
-      | crowningTheEligiblePiece8 |
+      | file_name                 | explanation                                                                                                       |
+      | crowningTheEligiblePiece1 | f:                                                                                                                |
+      | crowningTheEligiblePiece2 | f:                                                                                                                |
+      | crowningTheEligiblePiece3 | f: there are possibilities for a jump move but piece is crowned, so the next turn should be given to the opponent |
+      | crowningTheEligiblePiece4 | f:                                                                                                                |
+      | crowningTheEligiblePiece5 | f: there are possibilities for a jump move but piece is crowned, so the next turn should be given to the opponent |
+      | crowningTheEligiblePiece6 | f: no promote is 39, no capture is 39, crowning is a decisive move, game should not end in draw                   |
+      | crowningTheEligiblePiece7 | f: no promote is 45, no capture is 0, crowning is a decisive move, game should not end in draw                    |
+      | crowningTheEligiblePiece8 | f: no promote is 0, no capture is 45, crowning is a decisive move, game should not end in draw                    |
 
   Scenario Outline: End of the Game
     Given the game is played up to a certain point from file "<file_name>"
@@ -161,10 +161,10 @@ Feature: American Checkers
     Then the game is ended as a draw
 
     Examples: 
-      | file_name                               |
-      | endOfTheGameInDrawFortyIndecisiveMoves1 |
-      | endOfTheGameInDrawFortyIndecisiveMoves2 |
-      | endOfTheGameInDrawFortyIndecisiveMoves3 |
+      | file_name                               | explanation                                                                 |
+      | endOfTheGameInDrawFortyIndecisiveMoves1 | f: no promote is 39, no capture is 39, a regular move ends the game in draw |
+      | endOfTheGameInDrawFortyIndecisiveMoves2 | f: no promote is 45, no capture is 39, a regular move ends the game in draw |
+      | endOfTheGameInDrawFortyIndecisiveMoves3 | f: no promote is 39, no capture is 45, a regular move ends the game in draw |
 
   Scenario Outline: End of the Game - Opponent Can't Make a Valid Move
     Given the game is played up to a certain point from file "<file_name>"
