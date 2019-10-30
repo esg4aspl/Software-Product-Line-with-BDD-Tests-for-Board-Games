@@ -489,9 +489,9 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 	//MAIN METHOD
 	public static void main(String[] args) {
 		String[] iniArr = {
-				"validJumpMove4",
-				"validJumpMove5",
-				"validJumpMove6",
+				"invalidSourceCoordinateForMoveOpponentsPiece1",
+				"invalidSourceCoordinateForMoveOpponentsPiece2",
+				"invalidSourceCoordinateForMoveOpponentsPiece3"
 		};
 		for (String iniName : iniArr ) {
 			AbstractTesterReferee ref = new TurkishTesterReferee(new TurkishGameConfiguration());

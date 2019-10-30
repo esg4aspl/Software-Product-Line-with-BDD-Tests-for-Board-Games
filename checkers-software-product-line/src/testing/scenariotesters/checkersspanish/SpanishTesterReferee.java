@@ -424,18 +424,16 @@ public class SpanishTesterReferee extends AbstractTesterReferee {
 		return priorMoves;
 	}
 	
-	
-	// MAIN METHOD
-
 	public void setPriorMoves(List<IMoveCoordinate> priorMoves) {
 		this.priorMoves = priorMoves;
 	}
+	
+	// MAIN METHOD
 
 	public static void main(String[] args) {
 		String[] iniArr = {
-				"endOfTheGameInDrawFortyIndecisiveMoves1",
-				"endOfTheGameInDrawFortyIndecisiveMoves2",
-				"endOfTheGameInDrawFortyIndecisiveMoves3",
+				"crowningTheEligiblePiece3",
+				"crowningTheEligiblePiece5"
 		};
 		for (String iniName : iniArr ) {
 			AbstractTesterReferee ref = new SpanishTesterReferee(new SpanishGameConfiguration());

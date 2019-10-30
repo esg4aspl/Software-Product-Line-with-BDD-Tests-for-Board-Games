@@ -34,26 +34,26 @@ Feature: Turkish Checkers
     And the next turn is given to the "<next_turn_player>" player
 
     Examples: 
-      | file_name       | next_turn_player | piece_type | explanation                                                                                                                  |
-      | validJumpMove1  | other            | pawn       | f: end of jump possibilities, own piece is not jumpable                                                                      |
-      | validJumpMove2  | other            | king       | f: end of jump possibilities, own piece is not jumpable                                                                      |
-      | validJumpMove3  | other            | pawn       | f: end of jump possibilities, no adjacent piece                                                                              |
-      | validJumpMove4  | current          | pawn       | s: another jump possibility, also shows that any of the best sequences can be chosen (with validJumpMove5)                   |
-      | validJumpMove5  | current          | pawn       | s: another jump possibility, also shows that any of the best sequences can be chosen (with validJumpMove4)                   |
-      | validJumpMove6  | other            | pawn       | s: end of jump possibilities, opponent is not jumpable because destination would be out of borders                           |
-      | validJumpMove7  | current          | king       | f: another jump possibility                                                                                                  |
-      | validJumpMove8  | current          | king       | f: another jump possiblity, opponent piece in distance                                                                       |
-      | validJumpMove9  | other            | king       | f: this valid jump move proves the case in validRegularMove4                                                                 |
-      | validJumpMove10 | other            | pawn       | f: this valid jump move proves the case in validRegularMove6                                                                 |
-      | validJumpMove11 | other            | pawn       | f: no promote is 39, no capture is 0, a jump move is a decisive move, game should not end in draw                            |
-      | validJumpMove12 | other            | pawn       | f: no promote is 0, no capture is 39, this jump move should clear that, game should not end in draw                          |
-      | validJumpMove13 | other            | pawn       | f: no promote is 45, no capture is 0, a jump move is a decisive move, game should not end in draw                            |
-      | validJumpMove14 | other            | pawn       | f: no promote is 0, no capture is 45, this jump move should clear that, game should not end in draw                          |
-      | validJumpMove15 | other            | king       | f: end of jump possiblities, opponent is not jumpable because possible destination is occupied                               |
-      | validJumpMove16 | current          | king       | f: another jump possibility, even though the destination is in crownhead, the piece is already king, it can continue jumping |
-      | validJumpMove17 | other            | pawn       | f: both players are left with one piece, but one of them is vulnerable to the other, game should not end ind draw            |
-      | validJumpMove18 | current          | king       | f: king can jump and capture from distance                                                                                   |
-      | validJumpMove19 | other            | king       | s: king can jump and capture from distance                                                                                   |
+      | file_name       | next_turn_player | piece_type | explanation                                                                                                                                                               |
+      | validJumpMove1  | other            | pawn       | f: end of jump possibilities, own piece is not jumpable                                                                                                                   |
+      | validJumpMove2  | other            | king       | f: end of jump possibilities, own piece is not jumpable                                                                                                                   |
+      | validJumpMove3  | other            | pawn       | f: end of jump possibilities, no adjacent piece                                                                                                                           |
+      | validJumpMove4  | current          | pawn       | s: another jump possibility, also shows that any of the best sequences can be chosen (with validJumpMove5)                                                                |
+      | validJumpMove5  | current          | pawn       | s: another jump possibility, also shows that any of the best sequences can be chosen (with validJumpMove4)                                                                |
+      | validJumpMove6  | other            | pawn       | s: end of jump possibilities, opponent is not jumpable because destination would be out of borders                                                                        |
+      | validJumpMove7  | current          | king       | f: another jump possibility                                                                                                                                               |
+      | validJumpMove8  | current          | king       | f: another jump possibility, opponent piece in distance                                                                                                                   |
+      | validJumpMove9  | other            | king       | f: this valid jump move proves the case in validRegularMove4                                                                                                              |
+      | validJumpMove10 | other            | pawn       | f: this valid jump move proves the case in validRegularMove6                                                                                                              |
+      | validJumpMove11 | other            | king       | f: no promote is 39, no capture is 0, a jump move is a decisive move, game should not end in draw                                                                         |
+      | validJumpMove12 | other            | king       | f: no promote is 0, no capture is 39, this jump move should clear that, game should not end in draw                                                                       |
+      | validJumpMove13 | other            | king       | f: no promote is 45, no capture is 0, a jump move is a decisive move, game should not end in draw                                                                         |
+      | validJumpMove14 | other            | king       | f: no promote is 0, no capture is 45, this jump move should clear that, game should not end in draw                                                                       |
+      | validJumpMove15 | other            | king       | f: end of jump possibilities, opponent is not jumpable because possible destination is occupied                                                                           |
+      | validJumpMove16 | current          | king       | f: another jump possibility, even though the destination is in crownhead, the piece is already king, it can continue jumping, also a similar situation to validJumpMove17 |
+      | validJumpMove17 | other            | pawn       | f: both players are left with one piece, but one of them is vulnerable to the other, game should not end in draw                                                         |
+      | validJumpMove18 | current          | king       | f: king can jump and capture from distance                                                                                                                                |
+      | validJumpMove19 | other            | king       | s: king can jump and capture from distance                                                                                                                                |
 
   Scenario Outline: Invalid Source Coordinate for Move
     Given the game is played up to a certain point from file "<file_name>"
@@ -61,6 +61,17 @@ Feature: Turkish Checkers
     And the player picks any destination coordinate
     Then an error message is shown saying "<error_message>"
     And the player is asked for another "source" coordinate
+
+    Examples: 
+      | file_name                                      | invalidity_reason                              | error_message                           |
+      | invalidSourceCoordinateForMoveOutsideBorders1  | source coordinate is outside of the board      | No piece at source coordinate           |
+      | invalidSourceCoordinateForMoveOutsideBorders2  | source coordinate is outside of the board      | No piece at source coordinate           |
+      | invalidSourceCoordinateForMoveEmpty1           | source coordinate is empty                     | No piece at source coordinate           |
+      | invalidSourceCoordinateForMoveEmpty2           | source coordinate is empty                     | No piece at source coordinate           |
+      | invalidSourceCoordinateForMoveEmpty3           | source coordinate is empty                     | No piece at source coordinate           |
+      | invalidSourceCoordinateForMoveOpponentsPiece1  | source coordinate has opponent's piece         | Piece does not belong to current player |
+      | invalidSourceCoordinateForMoveOpponentsPiece2  | source coordinate has opponent's piece         | Piece does not belong to current player |
+      | invalidSourceCoordinateForMoveOpponentsPiece3  | source coordinate has opponent's piece         | Piece does not belong to current player |
 
   Scenario Outline: Invalid Destination Coordinate for Move
     Given the game is played up to a certain point from file "<file_name>"
