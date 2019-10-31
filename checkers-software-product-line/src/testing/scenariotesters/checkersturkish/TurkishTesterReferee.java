@@ -312,6 +312,8 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 		// Check if coordinate has an opponent's piece
 		if (!piece.getPlayer().equals(player))
 			return SourceCoordinateValidity.OPPONENT_PIECE;
+		if (isPieceAtSourceNotPawnInCrownhead(player, sourceCoordinate))
+			return SourceCoordinateValidity.NOT_THE_PAWN_IN_CROWNHEAD;
 
 		return SourceCoordinateValidity.VALID;
 	}
@@ -336,7 +338,8 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 			return DestinationCoordinateValidity.SAME_AS_SOURCE;
 		//Check if the move is orthogonal.
 		if (xDiff != 0 && yDiff != 0)
-			return DestinationCoordinateValidity.NOT_ORTHOGONAL;
+			return DestinationCoordinateValidity.UNALLOWED_DIRECTION;
+			//return DestinationCoordinateValidity.NOT_ORTHOGONAL;
 		//Check if destination coordinate is more than two squares away.
 		if ((piece instanceof Pawn) && (Math.abs(xDiff) > 2 || Math.abs(yDiff) > 2))
 			return DestinationCoordinateValidity.MORE_THAN_TWO_SQUARES_AWAY_FROM_SOURCE;
@@ -375,8 +378,7 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 		return DestinationCoordinateValidity.VALID_JUMP;
 	}
 	
-	public boolean isPawnInCrownheadIllegalMove(IPlayer player, IMoveCoordinate move) {
-		ICoordinate src = move.getSourceCoordinate();
+	public boolean isPieceAtSourceNotPawnInCrownhead(IPlayer player, ICoordinate src) {
 		AbstractPiece piece = coordinatePieceMap.getPieceAtCoordinate(src);
 		
 		//Find all pawns in opponent's crownhead. There can be maximum 1 though.
@@ -393,24 +395,22 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 			return false;
 		
 		//If player has a pawn in opponent's crownhead, but the chosen piece is not that, then the move is illegal.
-		if (pawnsInCrownhead.size() == 1 && !piece.equals(pawnsInCrownhead.get(0)))
+		if (pawnsInCrownhead.size() == 1 && piece.equals(pawnsInCrownhead.get(0)))
+			return false;
+		
+		return true;
+	}
+	
+	public boolean isPawnInCrownheadIllegalMove(IPlayer player, IMoveCoordinate move) {
+		ICoordinate src = move.getSourceCoordinate();
+		
+		if (isPieceAtSourceNotPawnInCrownhead(player, src))
 			return true;
 		
-		//Double check: If the chosen piece is not pawn, the move can not be illegal in this aspect.
-		if (!(piece instanceof Pawn))
-			return false;
-		
-		//Double check: If the chosen piece is not in opponent's crownhead, then the move can not be illegal in this aspect.
-		if (src.getYCoordinate() != crownheadY) {
-			return false;
-		}
-		
-		List<IMoveCoordinate> jumpMovesForPawnInCrownhead = findJumpMovesForPawnInCrownhead(src);
-		
+		List<IMoveCoordinate> jumpMovesForPawnInCrownhead = findJumpMovesForPawnInCrownhead(player, src);
 		//If the pawn in opponent's crownhead does not have any possible jump moves (there is no vulnerable opponent king near), then the move can not be illegal in this aspect.
 		if (jumpMovesForPawnInCrownhead.size() == 0)
 			return false;
-		
 		//If the move is one of the legal moves, then 
 		for (IMoveCoordinate m : jumpMovesForPawnInCrownhead) {
 			if (m.equals(move))
@@ -421,8 +421,11 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 		
 	}
 	
-	private List<IMoveCoordinate> findJumpMovesForPawnInCrownhead(ICoordinate source) {
+	private List<IMoveCoordinate> findJumpMovesForPawnInCrownhead(IPlayer player, ICoordinate source) {
 		List<IMoveCoordinate> result = new ArrayList<IMoveCoordinate>();
+		AbstractPiece piece = this.coordinatePieceMap.getPieceAtCoordinate(source);
+		if (!(piece instanceof Pawn) || !piece.getPlayer().equals(player))
+			return result;
 		int srcY = source.getYCoordinate();
 		int srcX = source.getXCoordinate();
 		for (int i = -1; i <= 1; i+=2) {
@@ -433,8 +436,8 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 			ICoordinate jumpedCoord = new Coordinate(jumpedX, srcY);
 			ICoordinate possibleDest = new Coordinate(landedX, srcY);
 			AbstractPiece jumpedPiece = coordinatePieceMap.getPieceAtCoordinate(jumpedCoord);
-			if (jumpedPiece != null && jumpedPiece.getPlayer() != this.getCurrentPlayer()
-					&& coordinatePieceMap.getPieceAtCoordinate(possibleDest) == null)
+			if (jumpedPiece != null && !jumpedPiece.getPlayer().equals(player)
+					&& jumpedPiece instanceof King && coordinatePieceMap.getPieceAtCoordinate(possibleDest) == null)
 				result.add(new MoveCoordinate(source, possibleDest));
 		}
 		return result;
@@ -489,9 +492,8 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 	//MAIN METHOD
 	public static void main(String[] args) {
 		String[] iniArr = {
-				"invalidSourceCoordinateForMoveOpponentsPiece1",
-				"invalidSourceCoordinateForMoveOpponentsPiece2",
-				"invalidSourceCoordinateForMoveOpponentsPiece3"
+				"invalidSourceCoordinateForMovePawnInCrownhead1",
+				"invalidDestinationCoordinateForMovePawnInCrownhead1"
 		};
 		for (String iniName : iniArr ) {
 			AbstractTesterReferee ref = new TurkishTesterReferee(new TurkishGameConfiguration());

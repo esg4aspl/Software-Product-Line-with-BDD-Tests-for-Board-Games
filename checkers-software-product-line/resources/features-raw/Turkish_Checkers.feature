@@ -51,7 +51,7 @@ Feature: Turkish Checkers
       | validJumpMove14 | other            | king       | f: no promote is 0, no capture is 45, this jump move should clear that, game should not end in draw                                                                       |
       | validJumpMove15 | other            | king       | f: end of jump possibilities, opponent is not jumpable because possible destination is occupied                                                                           |
       | validJumpMove16 | current          | king       | f: another jump possibility, even though the destination is in crownhead, the piece is already king, it can continue jumping, also a similar situation to validJumpMove17 |
-      | validJumpMove17 | other            | pawn       | f: both players are left with one piece, but one of them is vulnerable to the other, game should not end in draw                                                         |
+      | validJumpMove17 | other            | pawn       | f: both players are left with one piece, but one of them is vulnerable to the other, game should not end in draw                                                          |
       | validJumpMove18 | current          | king       | f: king can jump and capture from distance                                                                                                                                |
       | validJumpMove19 | other            | king       | s: king can jump and capture from distance                                                                                                                                |
 
@@ -63,15 +63,16 @@ Feature: Turkish Checkers
     And the player is asked for another "source" coordinate
 
     Examples: 
-      | file_name                                      | invalidity_reason                              | error_message                           |
-      | invalidSourceCoordinateForMoveOutsideBorders1  | source coordinate is outside of the board      | No piece at source coordinate           |
-      | invalidSourceCoordinateForMoveOutsideBorders2  | source coordinate is outside of the board      | No piece at source coordinate           |
-      | invalidSourceCoordinateForMoveEmpty1           | source coordinate is empty                     | No piece at source coordinate           |
-      | invalidSourceCoordinateForMoveEmpty2           | source coordinate is empty                     | No piece at source coordinate           |
-      | invalidSourceCoordinateForMoveEmpty3           | source coordinate is empty                     | No piece at source coordinate           |
-      | invalidSourceCoordinateForMoveOpponentsPiece1  | source coordinate has opponent's piece         | Piece does not belong to current player |
-      | invalidSourceCoordinateForMoveOpponentsPiece2  | source coordinate has opponent's piece         | Piece does not belong to current player |
-      | invalidSourceCoordinateForMoveOpponentsPiece3  | source coordinate has opponent's piece         | Piece does not belong to current player |
+      | file_name                                      | invalidity_reason                                 | error_message                                      |
+      | invalidSourceCoordinateForMoveOutsideBorders1  | source coordinate is outside of the board         | No piece at source coordinate                      |
+      | invalidSourceCoordinateForMoveOutsideBorders2  | source coordinate is outside of the board         | No piece at source coordinate                      |
+      | invalidSourceCoordinateForMoveEmpty1           | source coordinate is empty                        | No piece at source coordinate                      |
+      | invalidSourceCoordinateForMoveEmpty2           | source coordinate is empty                        | No piece at source coordinate                      |
+      | invalidSourceCoordinateForMoveEmpty3           | source coordinate is empty                        | No piece at source coordinate                      |
+      | invalidSourceCoordinateForMoveOpponentsPiece1  | source coordinate has opponent's piece            | Piece does not belong to current player            |
+      | invalidSourceCoordinateForMoveOpponentsPiece2  | source coordinate has opponent's piece            | Piece does not belong to current player            |
+      | invalidSourceCoordinateForMoveOpponentsPiece3  | source coordinate has opponent's piece            | Piece does not belong to current player            |
+      | invalidSourceCoordinateForMovePawnInCrownhead1 | there is a pawn in crownhead but move is not that | Pawn in crownhead must capture king to be promoted |
 
   Scenario Outline: Invalid Destination Coordinate for Move
     Given the game is played up to a certain point from file "<file_name>"
@@ -81,8 +82,22 @@ Feature: Turkish Checkers
     And the player is asked for another "source" coordinate
 
     Examples: 
-      | file_name                                           | piece_type | invalidity_reason                                         | error_message                    |
-      | invalidDestinationCoordinateForMovePawnInCrownhead1 | pawn       | the pawn in crownhead did not capture the vulnerable king | Must capture king to be promoted |
+      | file_name                                                          | piece_type | invalidity_reason                                         | error_message                               |
+      | invalidDestinationCoordinateForMoveOutsideBorders1                 | king       | destination coordinate is outside of the board            | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveOutsideBorders2                 | king       | destination coordinate is outside of the board            | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveOccupied1                       | king       | destination coordinate is occupied                        | A piece at destination coordinate           |
+      | invalidDestinationCoordinateForMoveOccupied2                       | king       | destination coordinate is occupied                        | A piece at destination coordinate           |
+      | invalidDestinationCoordinateForMoveUnallowedDirection1             | pawn       | destination coordinate's direction is not allowed         | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveUnallowedDirection2             | pawn       | destination coordinate's direction is not allowed         | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveUnallowedDirection3             | king       | destination coordinate's direction is not allowed         | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveTooFarAway1                     | pawn       | destination coordinate is more than two squares away      | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsNull1              | pawn       | jumped piece is null                                      | There must be one piece on jump path 0      |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsOwnPiece1          | king       | jumped piece is not opponent piece                        | Jumped Piece Must Be Opponent Piece         |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsFarAwayFromSource1 | pawn       | jumped piece is too far away from source coordinate       | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveMultipleJumpedPieces1           | king       | there are more than one pieces in jump path               | There must be only one piece on jump path 2 |
+      | invalidDestinationCoordinateForMoveNotBestSequence1                | king       | move is not part of the best sequence                     | Not the best move                           |
+      | invalidDestinationCoordinateForMoveNotBestSequence2                | king       | move is not part of the best sequence                     | Not the best move                           |
+      | invalidDestinationCoordinateForMovePawnInCrownhead1                | pawn       | the pawn in crownhead did not capture the vulnerable king | Must capture king to be promoted            |
 
   Scenario Outline: Crowning the Eligible Piece
     Given the game is played up to a certain point from file "<file_name>"
@@ -99,7 +114,7 @@ Feature: Turkish Checkers
       | crowningTheEligiblePiece3 | promoted     | other            | jump move, no adjacent vulnerable kings                                         |
       | crowningTheEligiblePiece4 | promoted     | other            | jump move, no adjacent vulnerable kings                                         |
       | crowningTheEligiblePiece5 | not promoted | current          | jump move, adjacent vulnerable kings, crowning is hold until kings are captured |
-      | crowningTheEligiblePiece5 | not promoted | current          | jump move, adjacent vulnerable kings, crowning is hold until kings are captured |
+      | crowningTheEligiblePiece6 | not promoted | current          | jump move, adjacent vulnerable kings, crowning is hold until kings are captured |
 
   #There is an opponent king threatened from the destination coordinate. It must be captured for the crowning to complete.
   #Only if the piece reached the crownhead with a jump move
