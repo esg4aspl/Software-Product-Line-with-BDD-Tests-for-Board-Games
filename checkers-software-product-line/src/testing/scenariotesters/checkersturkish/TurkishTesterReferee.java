@@ -293,6 +293,7 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 		super.start();
 		System.out.println("Best sequence: " + info.getReader().getBestSequence());
 		System.out.println("Prior move sequence: " + info.getReader().getPriorMoveSequence());
+		System.out.println("Resulting Board State Will Be Reached For The Third Time: " + ((TurkishCheckersTestInfo)info).isResultingBoardStateWillBeReachedForTheThirdTime());
 	}
 	
 	public SourceCoordinateValidity checkSourceCoordinate(IPlayer player, ICoordinate sourceCoordinate) {
@@ -303,9 +304,6 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 		// Check if the coordinate is on board.
 		if (xOfSource < 0 || 7 < xOfSource || yOfSource < 0 || 7 < yOfSource)
 			return SourceCoordinateValidity.OUTSIDE_OF_THE_BOARD;
-		// Check if the coordinate is of valid square color.
-		if (!getBoard().isPlayableCoordinate(sourceCoordinate))
-			return SourceCoordinateValidity.NOT_OF_VALID_SQUARE_COLOR;
 		// Check if coordinate is empty
 		if (piece == null)
 			return SourceCoordinateValidity.EMPTY;
@@ -378,17 +376,22 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 		return DestinationCoordinateValidity.VALID_JUMP;
 	}
 	
+	public List<AbstractPiece> findPlayerPawnsInOpponentCrownhead(IPlayer player) {
+		List<AbstractPiece> pawnsInCrownhead = new ArrayList<AbstractPiece>();
+		int opponentCrownheadY = player.getId() == 0 ? 7 : 0;
+		for (int x = 0; x <=7; x++) {
+			AbstractPiece p = coordinatePieceMap.getPieceAtCoordinate(new Coordinate(x, opponentCrownheadY));
+			if (p != null && p.getPlayer().equals(player) && p instanceof Pawn)
+				pawnsInCrownhead.add(p);
+		}
+		return pawnsInCrownhead;
+	}
+	
 	public boolean isPieceAtSourceNotPawnInCrownhead(IPlayer player, ICoordinate src) {
 		AbstractPiece piece = coordinatePieceMap.getPieceAtCoordinate(src);
 		
 		//Find all pawns in opponent's crownhead. There can be maximum 1 though.
-		List<AbstractPiece> pawnsInCrownhead = new ArrayList<AbstractPiece>();
-		int crownheadY = piece.getGoalDirection() == Direction.N ? 7 : 0;
-		for (int x = 0; x <=7; x++) {
-			AbstractPiece p = coordinatePieceMap.getPieceAtCoordinate(new Coordinate(x, crownheadY));
-			if (p != null && p.getPlayer().equals(player) && p instanceof Pawn)
-				pawnsInCrownhead.add(p);
-		}
+		List<AbstractPiece> pawnsInCrownhead = findPlayerPawnsInOpponentCrownhead(player);
 		
 		//If player has no pawns in opponent's crownhead, then the move can not be illegal in this aspect.
 		if (pawnsInCrownhead.size() == 0)
@@ -488,12 +491,13 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 		return priorMoves;
 	}
 	
-	
 	//MAIN METHOD
 	public static void main(String[] args) {
 		String[] iniArr = {
-				"invalidSourceCoordinateForMovePawnInCrownhead1",
-				"invalidDestinationCoordinateForMovePawnInCrownhead1"
+				"endOfTheGameOpponentCantMakeAValidMove1",
+				"validRegularMove6",
+				"endOfTheGameOpponentCantMakeAValidMove2",
+				"endOfTheGameInDrawResultingBoardStateWillBeReachedForTheThirdTime1"
 		};
 		for (String iniName : iniArr ) {
 			AbstractTesterReferee ref = new TurkishTesterReferee(new TurkishGameConfiguration());
@@ -507,7 +511,6 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 	
 	//UNTOUCHED METHODS
 	
-
 	@Override
 	public void setup() {
 		setupPlayers();

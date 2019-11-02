@@ -43,25 +43,37 @@ Feature: Turkish Checkers
       | validJumpMove5 | current | pawn | s: another jump possibility, also shows that any of the best sequences can be chosen (with validJumpMove4) | uid:558b2de6-6e6c-44e1-8ad9-7bc9a72289d2 |
       | validJumpMove6 | other | pawn | s: end of jump possibilities, opponent is not jumpable because destination would be out of borders | uid:305699ec-69a2-405e-aff6-c1d9d9b27920 |
       | validJumpMove7 | current | king | f: another jump possibility | uid:262190ae-5a0b-47a7-a0de-ec261734fcb4 |
-      | validJumpMove8 | current | king | f: another jump possiblity, opponent piece in distance | uid:3c4c027a-7f81-4694-b709-57233f7dc08f |
+      | validJumpMove8 | current | king | f: another jump possibility, opponent piece in distance | uid:fe105c6e-2e96-4891-9b5f-3ad2d9301915 |
       | validJumpMove9 | other | king | f: this valid jump move proves the case in validRegularMove4 | uid:afc4a3d2-78fa-46bf-adc8-cc6e905131b7 |
       | validJumpMove10 | other | pawn | f: this valid jump move proves the case in validRegularMove6 | uid:0ad75b67-23e0-4752-81fc-a8c7c9987cc7 |
-      | validJumpMove11 | other | pawn | f: no promote is 39, no capture is 0, a jump move is a decisive move, game should not end in draw | uid:52c7a9d1-b850-4f7d-98a9-835fd737fc3c |
-      | validJumpMove12 | other | pawn | f: no promote is 0, no capture is 39, this jump move should clear that, game should not end in draw | uid:ee702e74-b330-45aa-be23-c2c9d7189b4d |
-      | validJumpMove13 | other | pawn | f: no promote is 45, no capture is 0, a jump move is a decisive move, game should not end in draw | uid:a9f5c3dc-24c8-4900-a9bf-e4ec4bcca85a |
-      | validJumpMove14 | other | pawn | f: no promote is 0, no capture is 45, this jump move should clear that, game should not end in draw | uid:83fbeb62-84d5-4f3b-b202-f73105ce8f21 |
-      | validJumpMove15 | other | king | f: end of jump possiblities, opponent is not jumpable because possible destination is occupied | uid:49b3f27d-abe7-4fc6-b45a-d08b2521f4c3 |
-      | validJumpMove16 | current | king | f: another jump possibility, even though the destination is in crownhead, the piece is already king, it can continue jumping | uid:d92f0334-ae53-465f-b41b-ec0d5252f1ca |
-      | validJumpMove17 | other | pawn | f: both players are left with one piece, but one of them is vulnerable to the other, game should not end ind draw | uid:385c8a4f-73a6-4822-bc23-060081f3c6e8 |
+      | validJumpMove11 | other | king | f: no promote is 39, no capture is 0, a jump move is a decisive move, game should not end in draw | uid:74287f2e-398c-4be7-9f20-4969a610dc4e |
+      | validJumpMove12 | other | king | f: no promote is 0, no capture is 39, this jump move should clear that, game should not end in draw | uid:05899f1a-95d7-42c2-a7f9-cda6f583750c |
+      | validJumpMove13 | other | king | f: no promote is 45, no capture is 0, a jump move is a decisive move, game should not end in draw | uid:43b2ff9d-c062-4eee-9877-97f8f24ed3c5 |
+      | validJumpMove14 | other | king | f: no promote is 0, no capture is 45, this jump move should clear that, game should not end in draw | uid:81ef1942-72a9-468e-8431-ecaf915671c9 |
+      | validJumpMove15 | other | king | f: end of jump possibilities, opponent is not jumpable because possible destination is occupied | uid:13e82b8f-b7ab-440d-bcdd-abfd973ffc06 |
+      | validJumpMove16 | current | king | f: another jump possibility, even though the destination is in crownhead, the piece is already king, it can continue jumping, also a similar situation to validJumpMove17 | uid:3ad82263-3651-447d-a018-8bc425559bb4 |
+      | validJumpMove17 | other | pawn | f: both players are left with one piece, but one of them is vulnerable to the other, game should not end in draw | uid:b83722d3-6ab0-4dff-9766-63fdbc44a044 |
       | validJumpMove18 | current | king | f: king can jump and capture from distance | uid:e1d7287e-b9d1-4c22-b24b-97534d182cf3 |
       | validJumpMove19 | other | king | s: king can jump and capture from distance | uid:a35ada50-2cca-45ff-b6b9-8ba74d10560e |
 
-  Scenario: Invalid Source Coordinate for Move (3) (uid:32444ded-193a-42d5-931b-9e18e045b4ae)
+  Scenario Outline: Invalid Source Coordinate for Move (3) (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks an invalid "source" coordinate because "<invalidity_reason>"
     And the player picks any destination coordinate
     Then an error message is shown saying "<error_message>"
     And the player is asked for another "source" coordinate
+
+    Examples:
+      | file_name | invalidity_reason | error_message | hiptest-uid |
+      | invalidSourceCoordinateForMoveOutsideBorders1 | source coordinate is outside of the board | No piece at source coordinate | uid:e4f03640-3f9d-47fc-b348-680021b7b9ab |
+      | invalidSourceCoordinateForMoveOutsideBorders2 | source coordinate is outside of the board | No piece at source coordinate | uid:40265826-1416-4c91-96ea-c33fe7c75078 |
+      | invalidSourceCoordinateForMoveEmpty1 | source coordinate is empty | No piece at source coordinate | uid:8dde8251-7b8e-4cb2-9cd6-cc1b8c09867c |
+      | invalidSourceCoordinateForMoveEmpty2 | source coordinate is empty | No piece at source coordinate | uid:478fdb7a-7e3a-4b64-96aa-d25a2708d522 |
+      | invalidSourceCoordinateForMoveEmpty3 | source coordinate is empty | No piece at source coordinate | uid:e51450f1-26a7-469e-b9ac-ce527a12ca31 |
+      | invalidSourceCoordinateForMoveOpponentsPiece1 | source coordinate has opponent's piece | Piece does not belong to current player | uid:5f9daec9-9d8b-4244-bdc5-1f8858176cd8 |
+      | invalidSourceCoordinateForMoveOpponentsPiece2 | source coordinate has opponent's piece | Piece does not belong to current player | uid:1f48aa3c-2c7d-4622-bc32-f1a78db83add |
+      | invalidSourceCoordinateForMoveOpponentsPiece3 | source coordinate has opponent's piece | Piece does not belong to current player | uid:fa4ab2e6-a439-4b1b-bf94-1fac52a48971 |
+      | invalidSourceCoordinateForMovePawnInCrownhead1 | there is a pawn in crownhead but move is not that | Pawn in crownhead must capture king to be promoted | uid:18cc89d2-37fc-4993-bf80-741e9e23a40a |
 
   Scenario Outline: Invalid Destination Coordinate for Move (3) (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
@@ -72,6 +84,20 @@ Feature: Turkish Checkers
 
     Examples:
       | file_name | piece_type | invalidity_reason | error_message | hiptest-uid |
+      | invalidDestinationCoordinateForMoveOutsideBorders1 | king | destination coordinate is outside of the board | Destination Valid? false | uid:f889468d-e792-4be1-8006-b4ce6de078e0 |
+      | invalidDestinationCoordinateForMoveOutsideBorders2 | king | destination coordinate is outside of the board | Destination Valid? false | uid:0ade8c36-9c46-4280-8109-b2b13bd76c49 |
+      | invalidDestinationCoordinateForMoveOccupied1 | king | destination coordinate is occupied | A piece at destination coordinate | uid:e9c18a40-7399-4b1f-9a62-35690a13bef9 |
+      | invalidDestinationCoordinateForMoveOccupied2 | king | destination coordinate is occupied | A piece at destination coordinate | uid:9407f348-5cc3-4453-bcb4-49291801c898 |
+      | invalidDestinationCoordinateForMoveUnallowedDirection1 | pawn | destination coordinate's direction is not allowed | Destination Valid? false | uid:17146409-eb11-4324-925c-0bcb28213cd0 |
+      | invalidDestinationCoordinateForMoveUnallowedDirection2 | pawn | destination coordinate's direction is not allowed | Destination Valid? false | uid:4261d164-9fad-4001-a6b5-09566e159ce8 |
+      | invalidDestinationCoordinateForMoveUnallowedDirection3 | king | destination coordinate's direction is not allowed | Destination Valid? false | uid:43df8a15-df39-4760-a181-4ff39fb86d7f |
+      | invalidDestinationCoordinateForMoveTooFarAway1 | pawn | destination coordinate is more than two squares away | Destination Valid? false | uid:d91b3f55-db25-4aee-b580-a5a128ee3d5f |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsNull1 | pawn | jumped piece is null | There must be one piece on jump path 0 | uid:4b8c794f-e571-4ba0-bb2a-12166839cb0b |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsOwnPiece1 | king | jumped piece is not opponent piece | Jumped Piece Must Be Opponent Piece | uid:3e645861-40cd-48af-b116-0c98a7d2c77f |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsFarAwayFromSource1 | pawn | jumped piece is too far away from source coordinate | Destination Valid? false | uid:87d1250e-f55b-4c37-9633-7438697145f6 |
+      | invalidDestinationCoordinateForMoveMultipleJumpedPieces1 | king | there are more than one pieces in jump path | There must be only one piece on jump path 2 | uid:d7fa1604-b076-4f91-9b48-928221536ed4 |
+      | invalidDestinationCoordinateForMoveNotBestSequence1 | king | move is not part of the best sequence | Not the best move | uid:64f91e06-50e2-4c5c-bc54-30c6ad6f8a19 |
+      | invalidDestinationCoordinateForMoveNotBestSequence2 | king | move is not part of the best sequence | Not the best move | uid:fa364131-36ad-47b5-a397-dac475f88e22 |
       | invalidDestinationCoordinateForMovePawnInCrownhead1 | pawn | the pawn in crownhead did not capture the vulnerable king | Must capture king to be promoted | uid:405bc021-759c-4c8e-9006-e536f278c02b |
 
   Scenario Outline: Crowning the Eligible Piece (2) (<hiptest-uid>)
@@ -84,53 +110,99 @@ Feature: Turkish Checkers
 
     Examples:
       | file_name | action | next_turn_player | explanation | hiptest-uid |
-      | crowningTheEligiblePiece1 | promoted | other | regular move, immediate crowning | uid:ed8885b8-0498-4639-a504-f669e66d7fb8 |
-      | crowningTheEligiblePiece2 | promoted | other | regular move, immediate crowning | uid:9c11af86-ad61-4301-8fe4-227ec735118f |
-      | crowningTheEligiblePiece3 | promoted | other | jump move, no adjacent vulnerable kings | uid:b137bf52-c730-4115-adc7-201dcb8765af |
-      | crowningTheEligiblePiece4 | promoted | other | jump move, no adjacent vulnerable kings | uid:d9abcc4f-41b0-4983-bcf8-e5635e503f62 |
-      | crowningTheEligiblePiece5 | not promoted | current | jump move, adjacent vulnerable kings, crowning is hold until kings are captured | uid:bb595147-4343-436f-8b4b-1f8918690e36 |
-      | crowningTheEligiblePiece5 | not promoted | current | jump move, adjacent vulnerable kings, crowning is hold until kings are captured | uid:d072be6b-8992-4dab-88c6-e9e012444a01 |
+      | crowningTheEligiblePiece1 | promoted | other | f: regular move, no adjacent pieces | uid:b2b20621-d73a-4763-8ad0-10d4255e9db3 |
+      | crowningTheEligiblePiece2 | promoted | other | f: regular move, adjacent vulnerable opponent king | uid:3957c669-6d6f-46e7-ab3c-fcb8f607f464 |
+      | crowningTheEligiblePiece3 | promoted | other | f: regular move, adjacent vulnerable own king | uid:65796a70-fa85-4166-8b10-f0ae767ae5d3 |
+      | crowningTheEligiblePiece4 | promoted | other | f: jump move, no adjacent pieces | uid:dc470c65-003a-4053-a546-fbf77f770157 |
+      | crowningTheEligiblePiece6 | promoted | other | f: jump move, adjacent vulnerable own king | uid:2a2f5669-7042-42be-8c07-7de34dc42413 |
+      | crowningTheEligiblePiece7 | promoted | other | f: jump move, adjacent protected opponent king | uid:0d68d34e-3dec-44ae-9173-4bccf18c5ba8 |
+      | crowningTheEligiblePiece8 | promoted | other | f: jump move, far away vulnerable opponent king | uid:7ea5a56e-e302-4d54-8ce0-803fa361f2f1 |
+      | crowningTheEligiblePiece9 | not promoted | current | f: jump move, adjacent vulnerable opponent king, crowning is hold until kings are captured | uid:c0e3cf46-ef2f-4a34-aaca-4991e5007d89 |
+      | crowningTheEligiblePiece10 | not promoted | current | f: jump move, adjacent vulnerable opponent kings (multiple), crowning is hold until kings are captured | uid:457800f3-1585-4433-893e-b4377bcbce2a |
+      | crowningTheEligiblePiece11 | promoted | other | f: no promote is 39, no capture is 39, crowning is a decisive move, game should not end in draw          | uid:ec1a7aeb-187a-420d-9190-0401238216a4 |
+      | crowningTheEligiblePiece12 | promoted | other | f: no promote is 45, no capture is 0, crowning is a decisive move, game should not end in draw          | uid:521162e9-d622-43cc-b282-507b4d56c2c9 |
+      | crowningTheEligiblePiece13 | promoted | other | f: no promote is 0, no capture is 45, crowning is a decisive move, game should not end in draw        | uid:4346a31b-1aa7-429d-b294-ad2c66e9204c |
+      | crowningTheEligiblePiece14 | not promoted | current | f: pawn in crownhead jumps over adjacent vulnerable king only to see another king | uid:740f3a60-3853-424d-90d1-7c450e4bc7c6 |
+      | crowningTheEligiblePiece15 | not promoted | current | s: pawn in crownhead jumps over adjacent vulnerable king only to see another king | uid:5aa094c9-f07a-44a8-a823-6603a554b7ee |
 
-  Scenario: Crowning The Eligible Piece - Capturing Kings in the Crownhead (uid:e673f9fd-2594-457a-a233-ac9109c3faa4)
+  Scenario Outline: Crowning The Eligible Piece - Capturing Kings in the Crownhead (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     And the player has a "pawn" piece in opponent's crownhead
     When the player jumps over all the vulnerable opponent kings in the crownhead
     Then the piece is "promoted" to a crowned piece
     And the next turn is given to the "other" player
 
-  Scenario: End of the Game (3) (uid:e8bde175-5804-416d-a9a4-c3ccfaf77a94)
+    Examples:
+      | file_name | explanation | hiptest-uid |
+      | crowningTheEligiblePieceCapturingKingsInCrownhead1 | f: pawn jumps one king, lands at a square where there is no adjacent piece, and becomes king | uid:431ec4af-f759-4d85-b66c-96128633764d |
+      | crowningTheEligiblePieceCapturingKingsInCrownhead2 | f: pawn jumps one king, lands at a square where there is an adjacent vulnerable own king, and becomes king | uid:01c3adb3-d0fb-4da8-9f73-26375b6dfb9b |
+      | crowningTheEligiblePieceCapturingKingsInCrownhead3 | s: pawn jumps two kings, lands at a square where there is no adjacent piece, and becomes king (finishing crowningTheEligiblePiece14) | uid:306b04f2-a86a-46f6-87e5-cfb4f05351ae |
+
+  Scenario Outline: End of the Game (3) (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
-    And only one piece of the opponent is present at the game board
     When the player jumps over the last piece of the opponent
     Then the opponent loses the game
     And the player wins the game
 
-  Scenario: End of the Game In Draw (2) (uid:4126edd3-ad00-41ab-880b-cd70ba4b2293)
+    Examples:
+      | file_name | hiptest-uid |
+      | endOfTheGame1 | uid:c7ad6fce-86db-4cde-a1f3-52c7b62828df |
+      | endOfTheGame2 | uid:0214bd7b-091a-4002-8dde-5fabd3eb9af8 |
+
+  Scenario Outline: End of the Game In Draw (2) (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     And in the previous turn the opponent has offered to end the game in a draw
     When the player "<offer_response>" the offer
     Then "<result>" happens
 
-  Scenario: End of the Game In Draw - Both Players Have One Piece (2) (uid:2d18acb1-9ae7-4d7d-92f2-983191881d8c)
+    Examples:
+      | file_name | offer_response | result | hiptest-uid |
+      | endOfTheGameInDraw1 | accepts | the game is ended as a draw | uid:988a1331-f357-4a60-a0ab-5966b2c440fe |
+      | endOfTheGameInDraw2 | rejects | the next turn is given to the other player | uid:318d42b7-c5f5-4fd0-865c-6554a25544aa |
+      | endOfTheGameInDraw3 | accepts | the game is ended as a draw | uid:8542bdfc-0796-42d9-99db-ae1991bf4046 |
+      | endOfTheGameInDraw4 | accepts | the game is ended as a draw | uid:a7cf2c7c-13e2-4480-a043-0cd0e34f462c |
+      | endOfTheGameInDraw5 | rejects | the next turn is given to the other player | uid:931db9ba-ad5f-4e48-a27c-c41d07029615 |
+
+  Scenario Outline: End of the Game In Draw - Both Players Have One Piece (2) (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     Given the player has only one piece on the game board
     When the player jumps over one or multiple pieces leaving the opponent with only one piece that is unable to perform a jump move
     Then the game is ended as a draw
 
-  Scenario: End of the Game In Draw - Forty Moves Without Crowning and Without Jumping (2) (uid:542ea6f5-dd2f-4f64-95a3-48bcea738ab4)
+    Examples:
+      | file_name | explanation | hiptest-uid |
+      | endOfTheGameInDrawBothPlayersHaveOnePiece1 | f: | uid:f461b233-1d9b-4194-8085-0d3b3905a6ce |
+      | endOfTheGameInDrawBothPlayersHaveOnePiece2 | s: | uid:71d79376-d038-4c13-9ff5-fd9a31df734d |
+
+  Scenario Outline: End of the Game In Draw - Forty Moves Without Crowning and Without Jumping (2) (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     And the number of consecutive indecisive moves is 39
     When the player makes a regular move without promoting
     Then the game is ended as a draw
 
-  Scenario: End of the Game In Draw - Same Board State Reached for the Third Time (uid:2bf06d8f-3433-4aa7-8dd1-4780cc5e8f72)
+    Examples:
+      | file_name | explanation | hiptest-uid |
+      | endOfTheGameInDrawFortyIndecisiveMoves1 | f: no promote is 39, no capture is 39, a regular move ends the game in draw | uid:cd42783c-ee11-41ac-ab3b-f8d61c3a267e |
+      | endOfTheGameInDrawFortyIndecisiveMoves2 | f: no promote is 45, no capture is 39, a regular move ends the game in draw | uid:916b2d0d-de90-4f2a-b851-bc1ba7ec1567 |
+      | endOfTheGameInDrawFortyIndecisiveMoves3 | f: no promote is 39, no capture is 45, a regular move ends the game in draw | uid:7fe9998d-c9f3-496c-b8f3-57471b7d1f92 |
+
+  Scenario Outline: End of the Game In Draw - Same Board State Reached for the Third Time (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     And there are some board states that have been reached two times
     When the player finishes his turn leaving the board in a previously reached state
     Then the game is ended as a draw
 
-  Scenario: End of the Game - Opponent Can't Make a Valid Move (3) (uid:4d14abc4-c2d4-4a0a-a1b6-82fddd5d776c)
+    Examples:
+      | file_name | hiptest-uid |
+      | endOfTheGameInDrawResultingBoardStateWillBeReachedForTheThirdTime1 | uid:6af2a3ef-3974-4bbf-b9cd-edf51038db45 |
+
+  Scenario Outline: End of the Game - Opponent Can't Make a Valid Move (3) (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     When the player makes a move leaving no valid destination coordinates for any of the opponent's pieces
     Then the opponent loses the game
     And the player wins the game
+
+    Examples:
+      | file_name | hiptest-uid |
+      | endOfTheGameOpponentCantMakeAValidMove1 | uid:16dc8d94-f096-4c6a-98e0-fec644fb3d0b |
+      | endOfTheGameOpponentCantMakeAValidMove2 | uid:e749a2b8-6b5d-4ea2-9dd9-55e7a5a51c7d |

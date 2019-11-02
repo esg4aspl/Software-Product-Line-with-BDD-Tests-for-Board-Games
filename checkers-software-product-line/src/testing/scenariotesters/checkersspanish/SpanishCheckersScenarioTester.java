@@ -25,29 +25,12 @@ public class SpanishCheckersScenarioTester extends AmericanCheckersScenarioTeste
 	}
 
 	@Override
-	protected void invalidDestinationCoordinate(String reason) {
-		//TODO edit this
-		if (reason.equals("destination coordinate is outside of the board")) {
-			assertEquals(DestinationCoordinateValidity.OUTSIDE_OF_THE_BOARD, destinationCoordinateValidityOfPlayerMove);
-		} else if (reason.equals("destination coordinate is not of valid square color")) {
-			assertEquals(DestinationCoordinateValidity.NOT_OF_VALID_SQUARE_COLOR, destinationCoordinateValidityOfPlayerMove);
-		} else if (reason.equals("destination coordinate is occupied")) {
-			//Accept "SAME_AS_SOURCE" error as "OCCUPIED" for now.
-			if (destinationCoordinateValidityOfPlayerMove != DestinationCoordinateValidity.SAME_AS_SOURCE)
-				assertEquals(DestinationCoordinateValidity.OCCUPIED, destinationCoordinateValidityOfPlayerMove);
-		} else if (reason.equals("destination coordinate's direction is not allowed")) {
-			//If piece is queen, then it can move in any direction. The test fails here. Game set-up (ini file) is not good.
-			assertFalse(pieceOfPlayerMove instanceof Queen);
-			assertEquals(DestinationCoordinateValidity.UNALLOWED_DIRECTION, destinationCoordinateValidityOfPlayerMove);
-		} else if (reason.equals("destination coordinate is more than two squares away")) {
-			assertEquals(DestinationCoordinateValidity.MORE_THAN_TWO_SQUARES_AWAY_FROM_SOURCE, destinationCoordinateValidityOfPlayerMove);
-		} else if (reason.equals("move is not a jump move even though there are possible jump moves")) {
-			assertEquals(DestinationCoordinateValidity.NOT_ONE_OF_POSSIBLE_JUMP_MOVES, destinationCoordinateValidityOfPlayerMove);
-		} else if (reason.equals("jumped piece is null")) {
-			assertEquals(DestinationCoordinateValidity.JUMPED_PIECE_IS_NULL, destinationCoordinateValidityOfPlayerMove);
-		} else if (reason.equals("jumped piece is not opponent piece")) {
-			assertEquals(DestinationCoordinateValidity.JUMPED_PIECE_IS_OWN, destinationCoordinateValidityOfPlayerMove);
-		} else if (reason.equals("jumped piece is too far away from source coordinate")) {
+	protected boolean invalidDestinationCoordinate(String reason) {
+		if (super.invalidDestinationCoordinate(reason)) {
+			return true;
+		}
+		
+		if (reason.equals("jumped piece is too far away from source coordinate")) {
 			assertEquals(DestinationCoordinateValidity.MORE_THAN_TWO_SQUARES_AWAY_FROM_SOURCE, destinationCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("destination coordinate is more than one square away from jumped piece")) {
 			assertEquals(DestinationCoordinateValidity.MORE_THAN_ONE_SQUARE_AWAY_FROM_JUMPED_PIECE, destinationCoordinateValidityOfPlayerMove);			
@@ -56,8 +39,10 @@ public class SpanishCheckersScenarioTester extends AmericanCheckersScenarioTeste
 		} else if (reason.equals("move is not part of the best sequence")) {
 			assertEquals(DestinationCoordinateValidity.NOT_THE_BEST_SEQUENCE, destinationCoordinateValidityOfPlayerMove);			
 		} else {
-			throw new PendingException();
+			return false;
 		}
+		
+		return true;
 	}
 
 	@Override

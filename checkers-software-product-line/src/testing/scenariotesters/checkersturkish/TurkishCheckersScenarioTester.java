@@ -9,31 +9,12 @@ import checkersturkish.TurkishKingMoveConstraints;
 import checkersturkish.TurkishKingMovePossibilities;
 import core.AbstractPiece;
 import cucumber.api.PendingException;
+import testing.helpers.DestinationCoordinateValidity;
+import testing.helpers.SourceCoordinateValidity;
 import testing.scenariotesters.IScenarioTester;
 import testing.scenariotesters.checkersamerican.AmericanCheckersScenarioTester;
 
 public class TurkishCheckersScenarioTester extends AmericanCheckersScenarioTester implements ITurkishScenarioTester {
-
-	
-	/*
-	 * TODO
-	 * Override methods:
-	 * invalid dest. coordinate
-	 * 
-	
-	*/
-	
-	
-	
-	/*
-	 * Notes: TurkishTestInfo will have a field named "reachedCrownheadWithAJumpMove" as boolean
-	 * Then the crowning step will act based on it
-	 */
-	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void theP1GameIsSetUp(String p1) {
@@ -81,26 +62,64 @@ public class TurkishCheckersScenarioTester extends AmericanCheckersScenarioTeste
 
 	@Override
 	public void thePlayerHasAP1PieceInOpponentsCrownhead(String p1) {
-		// TODO Auto-generated method stub
-		
+		assertTrue(((TurkishTesterReferee) referee).findPlayerPawnsInOpponentCrownhead(this.playerOfPlayerMove).size() > 0);
 	}
 
 	@Override
 	public void thePlayerJumpsOverAllTheVulnerableOpponentKingsInTheCrownhead() {
-		// TODO Auto-generated method stub
-		
+		//TODO What other implementation can be here (rather than believing in .ini file)?
+		referee.conductGame();
+		prepareValidities();
 	}
 
 	@Override
 	public void thereAreSomeBoardStatesThatHaveBeenReachedTwoTimes() {
-		// TODO Auto-generated method stub
-		
+		assertTrue(((TurkishCheckersTestInfo) info).isResultingBoardStateWillBeReachedForTheThirdTime());
 	}
 
 	@Override
 	public void thePlayerFinishesHisTurnLeavingTheBoardInAPreviouslyReachedState() {
-		// TODO Auto-generated method stub
+		//TODO What other implementation can be here (rather than believing in .ini file)?
+		referee.conductGame();
+		prepareValidities();
+	}
+
+	@Override
+	protected boolean invalidDestinationCoordinate(String reason) {
+		if (super.invalidDestinationCoordinate(reason)) {
+			return true;
+		}
 		
+		if (reason.equals("jumped piece is too far away from source coordinate")) {
+			assertEquals(DestinationCoordinateValidity.MORE_THAN_TWO_SQUARES_AWAY_FROM_SOURCE, destinationCoordinateValidityOfPlayerMove);
+		} else if (reason.equals("destination coordinate is more than one square away from jumped piece")) {
+			assertEquals(DestinationCoordinateValidity.MORE_THAN_ONE_SQUARE_AWAY_FROM_JUMPED_PIECE, destinationCoordinateValidityOfPlayerMove);			
+		} else if (reason.equals("there are more than one pieces in jump path")) {
+			assertEquals(DestinationCoordinateValidity.MULTIPLE_JUMPED_PIECES, destinationCoordinateValidityOfPlayerMove);			
+		} else if (reason.equals("move is not part of the best sequence")) {
+			assertEquals(DestinationCoordinateValidity.NOT_THE_BEST_SEQUENCE, destinationCoordinateValidityOfPlayerMove);			
+		} else if (reason.equals("the pawn in crownhead did not capture the vulnerable king")) {
+			assertEquals(DestinationCoordinateValidity.PAWN_IN_CROWNHEAD_ILLEGAL_MOVE, destinationCoordinateValidityOfPlayerMove);
+		} else {
+			return false;
+		}
+		
+		return true;
+	}
+
+	@Override
+	protected boolean invalidSourceCoordinate(String reason) {
+		if (super.invalidSourceCoordinate(reason)) {
+			return true;
+		}
+		
+		if (reason.equals("there is a pawn in crownhead but move is not that")) {
+			assertEquals(SourceCoordinateValidity.NOT_THE_PAWN_IN_CROWNHEAD, this.sourceCoordinateValidityOfPlayerMove);
+		} else {
+			return false;
+		}
+		
+		return true;
 	}
 
 	

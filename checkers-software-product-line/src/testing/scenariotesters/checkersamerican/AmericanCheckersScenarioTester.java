@@ -149,15 +149,20 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		if (p1.equals("source")) {
 			referee.conductGame();
 			prepareValidities();
-			invalidSourceCoordinate(p2);
+			boolean matched = invalidSourceCoordinate(p2);
+			if (!matched)
+				throw new PendingException();
 		} else if (p1.equals("destination")){
-			invalidDestinationCoordinate(p2);
+			boolean matched = invalidDestinationCoordinate(p2);
+			if (!matched)
+				throw new PendingException();
 		} else {
 			throw new PendingException();
 		}
 	}
-	
-	protected void invalidDestinationCoordinate(String reason) {
+
+	//Returns true if reason is matched.
+	protected boolean invalidDestinationCoordinate(String reason) {
 		if (reason.equals("destination coordinate is outside of the board")) {
 			assertEquals(DestinationCoordinateValidity.OUTSIDE_OF_THE_BOARD, destinationCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("destination coordinate is not of valid square color")) {
@@ -179,11 +184,12 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		} else if (reason.equals("jumped piece is not opponent piece")) {
 			assertEquals(DestinationCoordinateValidity.JUMPED_PIECE_IS_OWN, destinationCoordinateValidityOfPlayerMove);
 		} else {
-			throw new PendingException();
+			return false;
 		}
+		return true;
 	}	
 	
-	protected void invalidSourceCoordinate(String reason) {
+	protected boolean invalidSourceCoordinate(String reason) {
 		if (reason.equals("source coordinate is empty")) {
 			assertEquals(SourceCoordinateValidity.EMPTY, sourceCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("source coordinate has opponent's piece")) {
@@ -193,8 +199,10 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		} else if (reason.equals("source coordinate is outside of the board")) {
 			assertEquals(SourceCoordinateValidity.OUTSIDE_OF_THE_BOARD, sourceCoordinateValidityOfPlayerMove);
 		} else {
-			throw new PendingException();
+			return false;
 		}
+		
+		return true;
 	}
 
 	@Override
@@ -223,13 +231,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void onlyOnePieceOfTheOpponentIsPresentAtTheGameBoard() {
-		IPlayer otherPlayer = getOtherPlayer();
-		int otherPlayerPieceCount = 0;
-		for (AbstractPiece otherPlayerPiece : otherPlayer.getPieceList()) {
-			if (otherPlayerPiece.getCurrentZone() == Zone.ONBOARD)
-				otherPlayerPieceCount++;
-		}
-		assertEquals(1, otherPlayerPieceCount);
+		assertEquals(1, findOpponentPieceCount());
 	}
 
 	@Override
@@ -237,6 +239,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		referee.conductGame();
 		prepareValidities();
 		assertEquals(DestinationCoordinateValidity.VALID_JUMP, this.destinationCoordinateValidityOfPlayerMove);
+		assertEquals(0, findOpponentPieceCount());
 	}
 
 	@Override
@@ -346,17 +349,9 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		referee.conductGame();
 		prepareValidities();
 		assertEquals(DestinationCoordinateValidity.VALID_JUMP, destinationCoordinateValidityOfPlayerMove);
-		int opponentPieceCount = 0;
-		IPlayer opponent = getOtherPlayer();
-		AbstractPiece onePieceFound = null;
-		for (AbstractPiece p : opponent.getPieceList()) {
-			if (p.getCurrentZone() == Zone.ONBOARD) {
-				opponentPieceCount++;
-				onePieceFound = p;
-			}
-		}
-		assertEquals(1, opponentPieceCount);
-//		assertEquals(0, findPossibleJumpMoves(opponent).size());
+		assertEquals(1, findOpponentPieceCount());
+		//TODO: Implement the next line or not?
+		//assertEquals(0, findPossibleJumpMoves(opponent).size());
 	}
 	
 	@Override
@@ -373,7 +368,6 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		}
 	}
 	
-
 	@Override
 	public void thePieceIsMovedToTheDestinationCoordinate() {
 		//Check if destination coordinate now holds the moved piece.
@@ -406,7 +400,17 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		pieceOfPlayerMove = newPiece;
 	}
 
-
+	protected int findOpponentPieceCount() {
+		int opponentPieceCount = 0;
+		IPlayer opponent = getOtherPlayer();
+		for (AbstractPiece p : opponent.getPieceList()) {
+			if (p.getCurrentZone() == Zone.ONBOARD) {
+				opponentPieceCount++;
+			}
+		}
+		return opponentPieceCount;
+	}
+	
 	protected AbstractPiece getPieceAtCoordinate(ICoordinate coordinate) {
 		return referee.getCoordinatePieceMap().getPieceAtCoordinate(coordinate);
 	}

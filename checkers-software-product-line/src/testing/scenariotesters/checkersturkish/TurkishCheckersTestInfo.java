@@ -2,6 +2,7 @@ package testing.scenariotesters.checkersturkish;
 
 import java.util.List;
 
+import core.Direction;
 import core.ICoordinate;
 import testing.helpers.DestinationCoordinateValidity;
 import testing.scenariotesters.AbstractTesterReferee;
@@ -11,10 +12,12 @@ import testing.scenariotesters.checkersspanish.SpanishTesterReferee;
 public class TurkishCheckersTestInfo extends AmericanCheckersTestInfo {
 	
 	protected boolean reachedCrownheadWithJumpMove;
+	protected boolean resultingBoardStateWillBeReachedForTheThirdTime;
 
 	public TurkishCheckersTestInfo(AbstractTesterReferee referee, String file_path, String file_name) {
 		super(referee, file_path, file_name);
 		reachedCrownheadWithJumpMove = false;
+		resultingBoardStateWillBeReachedForTheThirdTime = findResultingBoardStateWillBeReachedForTheThirdTime();
 	}
 
 	@Override
@@ -37,11 +40,37 @@ public class TurkishCheckersTestInfo extends AmericanCheckersTestInfo {
 			jumpedCoordinate = occupiedJumpedCoordinates.get(0);
 			jumpedPiece = referee.getCoordinatePieceMap().getPieceAtCoordinate(jumpedCoordinate);
 		}
+		
+		if (destinationCoordinateValidity == DestinationCoordinateValidity.VALID_JUMP) {
+			if (pieceOfPlayerMove.getGoalDirection() == Direction.N && dest.getYCoordinate() == 7
+					|| pieceOfPlayerMove.getGoalDirection() == Direction.S && dest.getYCoordinate() == 0) {
+				reachedCrownheadWithJumpMove = true;
+			}
+		}
 	}
 
 	public boolean isReachedCrownheadWithJumpMove() {
 		return reachedCrownheadWithJumpMove;
 	}
+	
+		
+	public boolean isResultingBoardStateWillBeReachedForTheThirdTime() {
+		return resultingBoardStateWillBeReachedForTheThirdTime;
+	}
+
+	private boolean findResultingBoardStateWillBeReachedForTheThirdTime() {
+		if (!reader.hasExtras())
+			return false;
+		
+		for (String e : reader.getExtras()) {
+			if (e.equals("resultingBoardStateWillBeReachedForTheThirdTime"))
+				return true;
+		}
+		
+		return false;
+	}
+	
+	
 	
 	
 

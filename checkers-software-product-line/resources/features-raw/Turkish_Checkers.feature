@@ -107,14 +107,24 @@ Feature: Turkish Checkers
     And the piece is moved to the destination coordinate
     And the next turn is given to the "<next_turn_player>" player
 
+    #| crowningTheEligiblePiece5   | promoted | other | f: jump move, adjacent vulnerable opponent pawn |
+    #| crowningTheEligiblePiece5.1 | promoted | other | f: jump move, far away vulnerable opponent pawn |
     Examples: 
-      | file_name                 | action       | next_turn_player | explanation                                                                     |
-      | crowningTheEligiblePiece1 | promoted     | other            | regular move, immediate crowning                                                |
-      | crowningTheEligiblePiece2 | promoted     | other            | regular move, immediate crowning                                                |
-      | crowningTheEligiblePiece3 | promoted     | other            | jump move, no adjacent vulnerable kings                                         |
-      | crowningTheEligiblePiece4 | promoted     | other            | jump move, no adjacent vulnerable kings                                         |
-      | crowningTheEligiblePiece5 | not promoted | current          | jump move, adjacent vulnerable kings, crowning is hold until kings are captured |
-      | crowningTheEligiblePiece6 | not promoted | current          | jump move, adjacent vulnerable kings, crowning is hold until kings are captured |
+      | file_name                  | action       | next_turn_player | explanation                                                                                              |
+      | crowningTheEligiblePiece1  | promoted     | other            | f: regular move, no adjacent pieces                                                                      |
+      | crowningTheEligiblePiece2  | promoted     | other            | f: regular move, adjacent vulnerable opponent king                                                       |
+      | crowningTheEligiblePiece3  | promoted     | other            | f: regular move, adjacent vulnerable own king                                                            |
+      | crowningTheEligiblePiece4  | promoted     | other            | f: jump move, no adjacent pieces                                                                         |
+      | crowningTheEligiblePiece6  | promoted     | other            | f: jump move, adjacent vulnerable own king                                                               |
+      | crowningTheEligiblePiece7  | promoted     | other            | f: jump move, adjacent protected opponent king                                                           |
+      | crowningTheEligiblePiece8  | promoted     | other            | f: jump move, far away vulnerable opponent king                                                          |
+      | crowningTheEligiblePiece9  | not promoted | current          | f: jump move, adjacent vulnerable opponent king, crowning is hold until kings are captured               |
+      | crowningTheEligiblePiece10 | not promoted | current          | f: jump move, adjacent vulnerable opponent kings (multiple), crowning is hold until kings are captured   |
+      | crowningTheEligiblePiece11 | promoted     | other            | f: no promote is 39, no capture is 39, crowning is a decisive move, game should not end in draw          |
+      | crowningTheEligiblePiece12 | promoted     | other            | f: no promote is 45, no capture is 0, crowning is a decisive move, game should not end in draw           |
+      | crowningTheEligiblePiece13 | promoted     | other            | f: no promote is 0, no capture is 45, crowning is a decisive move, game should not end in draw           |
+      | crowningTheEligiblePiece14 | not promoted | current          | f: pawn in crownhead jumps over adjacent vulnerable king only to see another king                        |
+      | crowningTheEligiblePiece15 | not promoted | current          | s: pawn in crownhead jumps over adjacent vulnerable king only to see another king                        |
 
   #There is an opponent king threatened from the destination coordinate. It must be captured for the crowning to complete.
   #Only if the piece reached the crownhead with a jump move
@@ -125,12 +135,22 @@ Feature: Turkish Checkers
     Then the piece is "promoted" to a crowned piece
     And the next turn is given to the "other" player
 
+    Examples: 
+      | file_name                                          | explanation                                                                                                                          |
+      | crowningTheEligiblePieceCapturingKingsInCrownhead1 | f: pawn jumps one king, lands at a square where there is no adjacent piece, and becomes king                                         |
+      | crowningTheEligiblePieceCapturingKingsInCrownhead2 | f: pawn jumps one king, lands at a square where there is an adjacent vulnerable own king, and becomes king                           |
+      | crowningTheEligiblePieceCapturingKingsInCrownhead3 | s: pawn jumps two kings, lands at a square where there is no adjacent piece, and becomes king (finishing crowningTheEligiblePiece14) |
+
   Scenario Outline: End of the Game
     Given the game is played up to a certain point from file "<file_name>"
-    And only one piece of the opponent is present at the game board
     When the player jumps over the last piece of the opponent
     Then the opponent loses the game
     And the player wins the game
+
+    Examples: 
+      | file_name     |
+      | endOfTheGame1 |
+      | endOfTheGame2 |
 
   Scenario Outline: End of the Game In Draw
     Given the game is played up to a certain point from file "<file_name>"
@@ -138,11 +158,24 @@ Feature: Turkish Checkers
     When the player "<offer_response>" the offer
     Then "<result>" happens
 
+    Examples: 
+      | file_name           | offer_response | result                                     |
+      | endOfTheGameInDraw1 | accepts        | the game is ended as a draw                |
+      | endOfTheGameInDraw2 | rejects        | the next turn is given to the other player |
+      | endOfTheGameInDraw3 | accepts        | the game is ended as a draw                |
+      | endOfTheGameInDraw4 | accepts        | the game is ended as a draw                |
+      | endOfTheGameInDraw5 | rejects        | the next turn is given to the other player |
+
   Scenario Outline: End of the Game In Draw - Both Players Have One Piece
     Given the game is played up to a certain point from file "<file_name>"
     Given the player has only one piece on the game board
     When the player jumps over one or multiple pieces leaving the opponent with only one piece that is unable to perform a jump move
     Then the game is ended as a draw
+
+    Examples: 
+      | file_name                                  | explanation |
+      | endOfTheGameInDrawBothPlayersHaveOnePiece1 | f:          |
+      | endOfTheGameInDrawBothPlayersHaveOnePiece2 | s:          |
 
   Scenario Outline: End of the Game In Draw - Forty Moves Without Crowning and Without Jumping
     Given the game is played up to a certain point from file "<file_name>"
@@ -150,14 +183,29 @@ Feature: Turkish Checkers
     When the player makes a regular move without promoting
     Then the game is ended as a draw
 
+    Examples: 
+      | file_name                               | explanation                                                                 |
+      | endOfTheGameInDrawFortyIndecisiveMoves1 | f: no promote is 39, no capture is 39, a regular move ends the game in draw |
+      | endOfTheGameInDrawFortyIndecisiveMoves2 | f: no promote is 45, no capture is 39, a regular move ends the game in draw |
+      | endOfTheGameInDrawFortyIndecisiveMoves3 | f: no promote is 39, no capture is 45, a regular move ends the game in draw |
+
   Scenario Outline: End of the Game In Draw - Same Board State Reached for the Third Time
     Given the game is played up to a certain point from file "<file_name>"
     And there are some board states that have been reached two times
     When the player finishes his turn leaving the board in a previously reached state
     Then the game is ended as a draw
 
+    Examples: 
+      | file_name                                                          |
+      | endOfTheGameInDrawResultingBoardStateWillBeReachedForTheThirdTime1 |
+
   Scenario Outline: End of the Game - Opponent Can't Make a Valid Move
     Given the game is played up to a certain point from file "<file_name>"
     When the player makes a move leaving no valid destination coordinates for any of the opponent's pieces
     Then the opponent loses the game
     And the player wins the game
+
+    Examples: 
+      | file_name                               |
+      | endOfTheGameOpponentCantMakeAValidMove1 |
+      | endOfTheGameOpponentCantMakeAValidMove2 |
