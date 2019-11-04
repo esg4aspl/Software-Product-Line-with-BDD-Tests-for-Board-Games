@@ -432,8 +432,7 @@ public class SpanishTesterReferee extends AbstractTesterReferee {
 
 	public static void main(String[] args) {
 		String[] iniArr = {
-				"crowningTheEligiblePiece3",
-				"crowningTheEligiblePiece5"
+				"endOfTheGameInDrawFortyIndecisiveMoves2"
 		};
 		for (String iniName : iniArr ) {
 			AbstractTesterReferee ref = new SpanishTesterReferee(new SpanishGameConfiguration());

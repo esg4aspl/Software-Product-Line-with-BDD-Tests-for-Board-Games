@@ -73,7 +73,6 @@ public class SpanishCheckersScenarioTester extends AmericanCheckersScenarioTeste
 		if (p1.equals("pawn")) {
 			assertTrue(pieceOfPlayerMove instanceof Pawn);
 		} else if (p1.equals("queen")) {
-			breakpoint("invalidDestinationCoordinateForMoveNotBestSequence3");
 			assertTrue(pieceOfPlayerMove instanceof Queen);
 		}
 	}
