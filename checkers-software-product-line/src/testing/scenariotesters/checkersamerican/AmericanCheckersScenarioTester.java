@@ -254,16 +254,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void thePlayerHasOnlyOnePieceOnTheGameBoard() {
-		int playerPieceCount = 0;
-		AbstractPiece onePieceFound = null;
-		for (AbstractPiece p : playerOfPlayerMove.getPieceList()) {
-			if (p.getCurrentZone() == Zone.ONBOARD) {
-				onePieceFound = p;
-				playerPieceCount++;
-			}
-		}
-		assertEquals(1, playerPieceCount);
-		assertEquals(pieceOfPlayerMove, onePieceFound);
+		assertEquals(1, this.findPieceCount(playerOfPlayerMove));
 	}
 
 	@Override
@@ -401,14 +392,17 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	}
 
 	protected int findOpponentPieceCount() {
-		int opponentPieceCount = 0;
-		IPlayer opponent = getOtherPlayer();
-		for (AbstractPiece p : opponent.getPieceList()) {
+		return findPieceCount(getOtherPlayer());
+	}
+	
+	protected int findPieceCount(IPlayer player) {
+		int pieceCount = 0;
+		for (AbstractPiece p : player.getPieceList()) {
 			if (p.getCurrentZone() == Zone.ONBOARD) {
-				opponentPieceCount++;
+				pieceCount++;
 			}
 		}
-		return opponentPieceCount;
+		return pieceCount;
 	}
 	
 	protected AbstractPiece getPieceAtCoordinate(ICoordinate coordinate) {
