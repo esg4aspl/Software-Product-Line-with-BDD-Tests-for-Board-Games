@@ -139,6 +139,7 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 		// if piece become king then terminate the move
 		AbstractPiece temp = piece;
 		piece = becomeAndOrPutOperation(piece, destinationCoordinate);
+		recordMove(currentMoveCoordinate);
 		if (!temp.equals(piece)) {
 			info.register(TestResult.MOVE_END_CROWNED);
 			moveOpResult = new MoveOpResult(true, false);
@@ -179,6 +180,7 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 					coordinatePieceMap.removePieceFromCoordinate(piece, sourceCoordinate);
 					moveOpResult = moveInterimOperation(piece, currentMoveCoordinate, path);
 					piece = becomeAndOrPutOperation(piece, destinationCoordinate);
+					recordMove(currentMoveCoordinate);
 					if (!temp.equals(piece)) {
 						info.register(TestResult.MOVE_END_CROWNED);
 						moveOpResult = new MoveOpResult(true, false); 
@@ -344,6 +346,8 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 		// Check if coordinate has an opponent's piece
 		if (!piece.getPlayer().equals(player))
 			return SourceCoordinateValidity.OPPONENT_PIECE;
+		if (this.isSourceCoordinateDifferentThanLastJumpMoveDestinationCoordinate(sourceCoordinate))
+			return SourceCoordinateValidity.DIFFERENT_THAN_LAST_JUMP_MOVE_DESTINATION;
 
 		return SourceCoordinateValidity.VALID;
 	}

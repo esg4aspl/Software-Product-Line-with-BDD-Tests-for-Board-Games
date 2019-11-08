@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 import base.AmericanGameConfiguration;
 import base.Pawn;
@@ -19,16 +17,12 @@ import checkersamerican.King;
 import checkersamerican.KingMoveConstraints;
 import checkersamerican.KingMovePossibilities;
 import core.AbstractPiece;
-import core.Coordinate;
 import core.Direction;
 import core.ICoordinate;
 import core.IMoveCoordinate;
 import core.IPlayer;
-import core.MoveCoordinate;
 import core.Zone;
 import cucumber.api.PendingException;
-import cucumber.api.Scenario;
-import cucumber.api.java.Before;
 import testing.helpers.DestinationCoordinateValidity;
 import testing.helpers.SourceCoordinateValidity;
 import testing.helpers.TestResult;
@@ -209,7 +203,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	public void thePlayerPicksAnyDestinationCoordinate() {
 		//TODO: What can be the implementation for this?
 	}
-
+	
 	@Override
 	public void anErrorMessageIsShownSayingP1(String p1) {
 		assertTrue(referee.getInfo().getFinalInformers().size() > 0); //Because there is at least 1 error message and 1 message about the next move.

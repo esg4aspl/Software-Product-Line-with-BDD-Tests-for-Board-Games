@@ -49,11 +49,9 @@ import testing.scenariotesters.AbstractTesterReferee;
 public class SpanishTesterReferee extends AbstractTesterReferee {
 
 	protected AmericanCheckersBoardConsoleView consoleView;
-	protected List<IMoveCoordinate> priorMoves;
 	
 	public SpanishTesterReferee(IGameConfiguration gameConfiguration) {
 		super(gameConfiguration);
-		priorMoves = new ArrayList<IMoveCoordinate>();
 	}
 
 	//GAMEPLAY METHODS
@@ -125,7 +123,7 @@ public class SpanishTesterReferee extends AbstractTesterReferee {
 		coordinatePieceMap.removePieceFromCoordinate(piece, sourceCoordinate);
 		MoveOpResult moveOpResult = moveInterimOperation(piece, currentMoveCoordinate, path);
 		piece = becomeAndOrPutOperation(piece, destinationCoordinate);
-		priorMoves.add(currentMoveCoordinate);
+		recordMove(currentMoveCoordinate);
 		view.printMessage("CurrentPlayerTurnAgain? " + moveOpResult.isCurrentPlayerTurnAgain());
 		if (moveOpResult.isCurrentPlayerTurnAgain() && !automaticGameOn) 
 			conductCurrentPlayerTurnAgain(moveOpResult, piece);
@@ -187,7 +185,7 @@ public class SpanishTesterReferee extends AbstractTesterReferee {
 					coordinatePieceMap.removePieceFromCoordinate(piece, sourceCoordinate);
 					moveOpResult = moveInterimOperation(piece, currentMoveCoordinate, path);
 					piece = becomeAndOrPutOperation(piece, destinationCoordinate);
-					priorMoves.add(currentMoveCoordinate);
+					recordMove(currentMoveCoordinate);
 					if(!temp.equals(piece)) {
 						info.register(TestResult.MOVE_END_CROWNED);
 						moveOpResult = new MoveOpResult(true, false);
@@ -318,6 +316,8 @@ public class SpanishTesterReferee extends AbstractTesterReferee {
 		// Check if coordinate has an opponent's piece
 		if (!piece.getPlayer().equals(player))
 			return SourceCoordinateValidity.OPPONENT_PIECE;
+		if (this.isSourceCoordinateDifferentThanLastJumpMoveDestinationCoordinate(sourceCoordinate))
+			return SourceCoordinateValidity.DIFFERENT_THAN_LAST_JUMP_MOVE_DESTINATION;
 
 		return SourceCoordinateValidity.VALID;
 	}
@@ -419,20 +419,12 @@ public class SpanishTesterReferee extends AbstractTesterReferee {
 		
 		return false;
 	}
-
-	public List<IMoveCoordinate> getPriorMoves() {
-		return priorMoves;
-	}
-	
-	public void setPriorMoves(List<IMoveCoordinate> priorMoves) {
-		this.priorMoves = priorMoves;
-	}
 	
 	// MAIN METHOD
 
 	public static void main(String[] args) {
 		String[] iniArr = {
-				"endOfTheGameInDrawFortyIndecisiveMoves2"
+				"prio"
 		};
 		for (String iniName : iniArr ) {
 			AbstractTesterReferee ref = new SpanishTesterReferee(new SpanishGameConfiguration());

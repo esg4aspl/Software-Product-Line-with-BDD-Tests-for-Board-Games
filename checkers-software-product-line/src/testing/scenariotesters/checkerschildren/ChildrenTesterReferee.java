@@ -108,6 +108,7 @@ public class ChildrenTesterReferee extends AbstractTesterReferee {
 		coordinatePieceMap.removePieceFromCoordinate(piece, sourceCoordinate);
 		MoveOpResult moveOpResult = moveInterimOperation(piece, currentMoveCoordinate, path);
 		piece = becomeAndOrPutOperation(piece, destinationCoordinate);
+		recordMove(currentMoveCoordinate);
 		System.out.println("CurrentPlayerTurnAgain? " + moveOpResult.isCurrentPlayerTurnAgain());
 		if (moveOpResult.isCurrentPlayerTurnAgain() && !automaticGameOn) 
 			conductCurrentPlayerTurnAgain(moveOpResult, piece);
@@ -139,6 +140,7 @@ public class ChildrenTesterReferee extends AbstractTesterReferee {
 					coordinatePieceMap.removePieceFromCoordinate(piece, sourceCoordinate);
 					moveOpResult = moveInterimOperation(piece, currentMoveCoordinate, path);
 					piece = becomeAndOrPutOperation(piece, destinationCoordinate);
+					recordMove(currentMoveCoordinate);
 				}
 			}
 		}
@@ -249,6 +251,8 @@ public class ChildrenTesterReferee extends AbstractTesterReferee {
 		// Check if coordinate has an opponent's piece
 		if (!piece.getPlayer().equals(player))
 			return SourceCoordinateValidity.OPPONENT_PIECE;
+		if (this.isSourceCoordinateDifferentThanLastJumpMoveDestinationCoordinate(sourceCoordinate))
+			return SourceCoordinateValidity.DIFFERENT_THAN_LAST_JUMP_MOVE_DESTINATION;
 
 		return SourceCoordinateValidity.VALID;
 	}

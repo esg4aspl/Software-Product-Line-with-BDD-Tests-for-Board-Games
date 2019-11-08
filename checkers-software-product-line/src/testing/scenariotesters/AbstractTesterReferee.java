@@ -1,5 +1,8 @@
 package testing.scenariotesters;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import core.AbstractReferee;
 import core.ICoordinate;
 import core.IGameConfiguration;
@@ -11,6 +14,7 @@ import testing.helpers.SourceCoordinateValidity;
 public abstract class AbstractTesterReferee extends AbstractReferee {
 	
 	protected AbstractTestInfo info;
+	protected List<IMoveCoordinate> priorMoves;
 	
 	public abstract void setup(String fileName);
 	public abstract SourceCoordinateValidity checkSourceCoordinate(IPlayer player, ICoordinate sourceCoordinate);
@@ -18,6 +22,7 @@ public abstract class AbstractTesterReferee extends AbstractReferee {
 
 	public AbstractTesterReferee(IGameConfiguration gameConfiguration) {
 		super(gameConfiguration);
+		priorMoves = new ArrayList<IMoveCoordinate>();
 	}
 
 	protected IMoveCoordinate getNextMove() {
@@ -71,7 +76,16 @@ public abstract class AbstractTesterReferee extends AbstractReferee {
 		return playerList.getPlayer(nextPlayerID);
 	}
 
-
+	protected void recordMove(IMoveCoordinate move) {
+		priorMoves.add(move);
+	}
+	
+	protected IMoveCoordinate getLastRecordedMove() {
+		if (priorMoves.size() == 0) {
+			return null;
+		}
+		return priorMoves.get(priorMoves.size() - 1);
+	}
 	
 	//Overridden
 	@Override
@@ -85,6 +99,14 @@ public abstract class AbstractTesterReferee extends AbstractReferee {
 		return info;
 	}
 	
-	
+	//Utility Methods
+	protected boolean isSourceCoordinateDifferentThanLastJumpMoveDestinationCoordinate(ICoordinate sourceCoordinate) {
+		IMoveCoordinate lastMove = getLastRecordedMove();
+		if (lastMove == null) {
+			return false;
+		}
+		
+		return !(lastMove.getDestinationCoordinate().equals(sourceCoordinate));
+	}
 
 }

@@ -51,11 +51,9 @@ import testing.scenariotesters.checkersspanish.SpanishCheckersTestInfo;
 public class TurkishTesterReferee extends AbstractTesterReferee {
 	
 	protected AmericanCheckersBoardConsoleView consoleView;
-	protected List<IMoveCoordinate> priorMoves;
 
 	public TurkishTesterReferee(IGameConfiguration gameConfiguration) {
 		super(gameConfiguration);
-		priorMoves = new ArrayList<IMoveCoordinate>();
 	}
 
 	
@@ -139,7 +137,7 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 		
 		MoveOpResult moveOpResult = moveInterimOperation(piece, currentMoveCoordinate, path);
 		piece = becomeAndOrPutOperation(piece, destinationCoordinate);
-		priorMoves.add(currentMoveCoordinate);
+		recordMove(currentMoveCoordinate);
 		view.printMessage("CurrentPlayerTurnAgain? " + moveOpResult.isCurrentPlayerTurnAgain());
 		if (moveOpResult.isCurrentPlayerTurnAgain() && !automaticGameOn) 
 			conductCurrentPlayerTurnAgain(moveOpResult, piece);
@@ -199,7 +197,7 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 					coordinatePieceMap.removePieceFromCoordinate(piece, sourceCoordinate);
 					moveOpResult = moveInterimOperation(piece, currentMoveCoordinate, path);
 					piece = becomeAndOrPutOperation(piece, destinationCoordinate);
-					priorMoves.add(currentMoveCoordinate);
+					recordMove(currentMoveCoordinate);
 				}
 			}
 		}
@@ -312,6 +310,8 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 			return SourceCoordinateValidity.OPPONENT_PIECE;
 		if (isPieceAtSourceNotPawnInCrownhead(player, sourceCoordinate))
 			return SourceCoordinateValidity.NOT_THE_PAWN_IN_CROWNHEAD;
+		if (this.isSourceCoordinateDifferentThanLastJumpMoveDestinationCoordinate(sourceCoordinate))
+			return SourceCoordinateValidity.DIFFERENT_THAN_LAST_JUMP_MOVE_DESTINATION;
 
 		return SourceCoordinateValidity.VALID;
 	}
@@ -485,10 +485,6 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 			return true;
 		
 		return false;
-	}
-
-	public List<IMoveCoordinate> getPriorMoves() {
-		return priorMoves;
 	}
 	
 	//MAIN METHOD
