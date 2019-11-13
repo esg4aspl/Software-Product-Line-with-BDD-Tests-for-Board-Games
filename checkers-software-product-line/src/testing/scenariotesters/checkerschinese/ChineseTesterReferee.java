@@ -7,6 +7,7 @@ import java.util.Random;
 
 import base.ChineseCheckersBoard;
 import base.ChineseCheckersBoardConsoleView;
+import base.Pawn;
 import base.Player;
 import base.PlayerList;
 import base.StartCoordinates;
@@ -17,6 +18,7 @@ import checkerschinese.Referee;
 import checkerschinese.StartCoordinateFactory;
 import core.AbstractPiece;
 import core.AbstractReferee;
+import core.Coordinate;
 import core.Direction;
 import core.ICoordinate;
 import core.IGameConfiguration;
@@ -25,6 +27,7 @@ import core.IPieceMoveConstraints;
 import core.IPieceMovePossibilities;
 import core.IPlayer;
 import core.IPlayerList;
+import core.MoveCoordinate;
 import core.MoveOpResult;
 import rules.RuleDestinationCoordinateMustBeValidForCurrentPiece;
 import rules.RuleEndOfGamePiecesOfPlayerOnFinishCoordinates;
@@ -61,39 +64,96 @@ public class ChineseTesterReferee extends AbstractTesterReferee {
 		setupPiecesOnBoard(info.getReader().getCoordinatePieceDuos());
 		switch (info.getReader().getCurrentTurnPlayerIconColor()) {
 			case "tag": currentPlayer = playerList.getPlayer(0); currentPlayerID = 0; break;
-			case "dol": currentPlayer = playerList.getPlayer(1); currentPlayerID = 0; break;
-			case "per": currentPlayer = playerList.getPlayer(2); currentPlayerID = 0; break;
-			case "que": currentPlayer = playerList.getPlayer(3); currentPlayerID = 0; break;
-			case "eq": currentPlayer = playerList.getPlayer(4); currentPlayerID = 0; break;
-			case "at": currentPlayer = playerList.getPlayer(5); currentPlayerID = 0; break;
+			case "dol": currentPlayer = playerList.getPlayer(1); currentPlayerID = 1; break;
+			case "per": currentPlayer = playerList.getPlayer(2); currentPlayerID = 2; break;
+			case "que": currentPlayer = playerList.getPlayer(3); currentPlayerID = 3; break;
+			case "eq": currentPlayer = playerList.getPlayer(4); currentPlayerID = 4; break;
+			case "at": currentPlayer = playerList.getPlayer(5); currentPlayerID = 5; break;
 			default: System.out.println("No such player."); System.exit(0);
 		}
+
 	}
 
 	@Override
 	public SourceCoordinateValidity checkSourceCoordinate(IPlayer player, ICoordinate sourceCoordinate) {
-		// TODO Auto-generated method stub
-		return null;
+		AbstractPiece piece = getCoordinatePieceMap().getPieceAtCoordinate(sourceCoordinate);
+		// Check if the coordinate is of valid square color.
+		if (!getBoard().isPlayableCoordinate(sourceCoordinate))
+			return SourceCoordinateValidity.NOT_OF_VALID_SQUARE_COLOR;
+		// Check if coordinate is empty
+		if (piece == null)
+			return SourceCoordinateValidity.EMPTY;
+		// Check if coordinate has an opponent's piece
+		if (!piece.getPlayer().equals(player))
+			return SourceCoordinateValidity.OPPONENT_PIECE;
+		if (this.isSourceCoordinateDifferentThanLastJumpMoveDestinationCoordinate(sourceCoordinate))
+			return SourceCoordinateValidity.DIFFERENT_THAN_LAST_JUMP_MOVE_DESTINATION;
+
+		return SourceCoordinateValidity.VALID;
 	}
 
 	@Override
 	public DestinationCoordinateValidity checkDestinationCoordinate(IPlayer player, ICoordinate sourceCoordinate,
 			ICoordinate destinationCoordinate) {
-		// TODO Auto-generated method stub
-		return null;
+
+		SourceCoordinateValidity sourceCoordinateValidity = checkSourceCoordinate(player, sourceCoordinate);
+		// If source coordinate is not set up or valid, destination coordinate can't be
+		// truly valid.
+		if (sourceCoordinateValidity == null || sourceCoordinateValidity != SourceCoordinateValidity.VALID)
+			return DestinationCoordinateValidity.SOURCE_COORDINATE_PROBLEM;
+		// Set up the destination coordinate.
+		int xOfSource = sourceCoordinate.getXCoordinate();
+		int yOfSource = sourceCoordinate.getYCoordinate();
+		int xOfDestination = destinationCoordinate.getXCoordinate();
+		int yOfDestination = destinationCoordinate.getYCoordinate();
+		int xDiff = xOfDestination - xOfSource;
+		int yDiff = yOfDestination - yOfSource;
+		// Check if the coordinate is on board.
+		if (xOfDestination < 0 || 24 < xOfDestination || yOfDestination < 0 || 16 < yOfDestination)
+			return DestinationCoordinateValidity.OUTSIDE_OF_THE_BOARD;
+		// Check if coordinate is the same as source.
+		if (destinationCoordinate.equals(sourceCoordinate))
+			return DestinationCoordinateValidity.SAME_AS_SOURCE;
+		// Check if the coordinate is of valid square color.
+		if (!getBoard().isPlayableCoordinate(destinationCoordinate))
+			return DestinationCoordinateValidity.NOT_OF_VALID_SQUARE_COLOR;
+		// Check if destination coordinate is more than two squares away.
+		if (Math.abs(xDiff) > 2 || Math.abs(yDiff) > 2)
+			return DestinationCoordinateValidity.MORE_THAN_TWO_SQUARES_AWAY_FROM_SOURCE;
+		// Check if destination coordinate is occupied.
+		if (this.getCoordinatePieceMap().getPieceAtCoordinate(destinationCoordinate) != null)
+			return DestinationCoordinateValidity.OCCUPIED;
+		// Check if destination coordinate is not allowed.
+		if (Math.abs(xDiff) != Math.abs(yDiff))
+			return DestinationCoordinateValidity.UNALLOWED_DIRECTION;
+		// If there are no problems up to this point, return valid if move is a regular
+		// move.
+		if (Math.abs(xDiff) == 1 && Math.abs(yDiff) == 1)
+			return DestinationCoordinateValidity.VALID_REGULAR;
+		// Set up jumped piece.
+		ICoordinate jumpedCoordinate = new Coordinate(xOfSource + xDiff / 2, yOfSource + yDiff / 2);
+		AbstractPiece jumpedPiece = getCoordinatePieceMap().getPieceAtCoordinate(jumpedCoordinate);
+		// Check if jumped piece is null.
+		if (jumpedPiece == null)
+			return DestinationCoordinateValidity.JUMPED_PIECE_IS_NULL;
+		// If everything is okay up to this point, double-check that the xDiff and yDiff
+		// are 2 and return valid jump move.
+		if (Math.abs(xDiff) == 2 && Math.abs(yDiff) == 2) {
+			return DestinationCoordinateValidity.VALID_JUMP;
+		}
+
+		return DestinationCoordinateValidity.UNKNOWN_ERROR;
 	}
 
 	private void setupPiecesOnBoard(List<ICoordinatePieceDuo> coordinatePieceDuos) {
 		icons = new String[]{"#","$","%","?","=","@"}; //tag, dol, per, que, eq, at
 		directions = createDirections(numberOfPlayers);
-		StartCoordinateFactory startCoordinateFactory = new StartCoordinateFactory();
 		IPlayer player = null;
 		String icon = null;
 		Direction direction = null;
 		int pieceId = 0;
 		
 		AbstractPiece men;
-		StartCoordinates startCoordinates = startCoordinateFactory.getStartCoordinates(numberOfPlayers,numberOfPiecesPerPlayer);
 		IPieceMovePossibilities menMovePossibilities = new ChinesePawnMovePossibilities();
 		IPieceMoveConstraints menMoveConstraints =  new ChinesePawnMoveConstraints();
 
@@ -123,8 +183,6 @@ public class ChineseTesterReferee extends AbstractTesterReferee {
 	}
 	
 	//GAMEPLAY METHODS
-	
-	//TODO: Alter these
 
 	@Override
 	public void conductGame() {
@@ -213,7 +271,7 @@ public class ChineseTesterReferee extends AbstractTesterReferee {
 				info.register(TestResult.MOVE_END_NO_MORE_JUMP_POSSIBILITY);
 				break;
 			}
-
+			info.register(TestResult.ANOTHER_MOVE_JUMP_POSSIBILITY);
 			board.getCBO().printCoordinateList(secondJumpList, "Second Jump List");
 			currentMoveCoordinate = getNextMove();
 			if (currentMoveCoordinate == null) { abort(); return true; }
@@ -257,10 +315,13 @@ public class ChineseTesterReferee extends AbstractTesterReferee {
 	//MAIN METHOD
 	
 	public static void main(String[] args) {
-		IGameConfiguration gameConfiguration = new ChineseTestGameConfiguration(3);
+		IGameConfiguration gameConfiguration = new ChineseTestGameConfiguration(2);
 		ChineseTesterReferee referee = new ChineseTesterReferee(gameConfiguration);
-		referee.setup("cti");
+		referee.setup("validJumpMove2");
 		referee.conductGame();
+		System.out.println(referee.getInfo().getSourceCoordinateValidity());
+		System.out.println(referee.getInfo().getDestinationCoordinateValidity());
+		
 	}
 	
 	

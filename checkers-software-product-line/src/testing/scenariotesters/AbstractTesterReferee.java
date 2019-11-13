@@ -30,6 +30,7 @@ public abstract class AbstractTesterReferee extends AbstractReferee {
 	}
 
 	protected void start() {
+		if (info == null) { return; }
 		view.printMessage("Testing: " + info.getReader().getSectionName());
 		view.printMessage("Player turn: " + info.getReader().getCurrentTurnPlayerIconColor());
 		view.printMessage("Player move: " + info.getPlayerMove().toString());

@@ -8,7 +8,8 @@ public enum TestResult {
 	MOVE_END_NO_MORE_JUMP_POSSIBILITY("Player will NOT be asked for another destination coordinate (previous move was a jump move) because there are no more possibilities for a jump move."),
 	MOVE_END_CROWNED("Player will NOT be asked for another destination coordinate (previous move was a jump move) because the piece has become king."),
 	GAME_END_AS_DRAW("Game ended as a draw."),
-	GAME_END_AS_WIN("Game ended as a win.");
+	GAME_END_AS_WIN("Game ended as a win."),
+	ASKED_TO_CONTINUE("The player can continue jumping, he will be asked if he wants to do so.");
 	
 	private String message;
 	
