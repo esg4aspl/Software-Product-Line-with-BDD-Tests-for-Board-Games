@@ -122,6 +122,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 			output("Informers: " + referee.getInfo().getInformers().toString());
 		}
 		assertFalse(referee.getInfo().isGameEnded());
+		breakpoint("crowningTheEligiblePiece14");
 		if (p1.equals("other")) {
 			assertFalse(referee.getInfo().isPlayerWasGoingToMakeAnotherMove());
 			assertFalse(referee.getCurrentPlayer().equals(playerOfPlayerMove));

@@ -490,8 +490,7 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 	//MAIN METHOD
 	public static void main(String[] args) {
 		String[] iniArr = {
-				"validJumpMove16",
-				"validJumpMove17"
+				"crowningTheEligiblePieceCapturingKingsInCrownhead2"
 		};
 		for (String iniName : iniArr ) {
 			AbstractTesterReferee ref = new TurkishTesterReferee(new TurkishGameConfiguration());

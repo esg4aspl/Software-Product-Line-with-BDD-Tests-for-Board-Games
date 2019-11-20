@@ -317,7 +317,7 @@ public class ChineseTesterReferee extends AbstractTesterReferee {
 	
 	public static void main(String[] args) {
 		String[] moveArr = {
-				"invalidDestinationCoordinateForMoveUnallowedDirection1"};
+				"endOfTheGame2Accept"};
 		for (String s : moveArr) {
 			IGameConfiguration gameConfiguration = new ChineseTestGameConfiguration(2);
 			ChineseTesterReferee referee = new ChineseTesterReferee(gameConfiguration);

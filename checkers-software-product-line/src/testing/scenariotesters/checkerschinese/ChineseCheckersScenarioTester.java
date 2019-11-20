@@ -95,8 +95,9 @@ public class ChineseCheckersScenarioTester extends AmericanCheckersScenarioTeste
 	
 	@Override
 	public void theOpponentLosesTheGame() {
-		//There is no such functionality in the game yet.
-		assertTrue(false);
+		//There is no such functionality to make one player lose and not be able to continue playing yet.
+		throw new PendingException("There is no such functionality to make one player lose and not be able to continue playing yet.");
+		//assertTrue(false);
 	}
 
 	@Override
