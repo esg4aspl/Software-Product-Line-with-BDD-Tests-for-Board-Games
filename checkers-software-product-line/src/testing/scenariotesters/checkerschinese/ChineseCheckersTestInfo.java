@@ -6,8 +6,9 @@ import testing.helpers.DestinationCoordinateValidity;
 import testing.helpers.TestResult;
 import testing.scenariotesters.AbstractTestInfo;
 import testing.scenariotesters.AbstractTesterReferee;
+import testing.scenariotesters.checkersamerican.AmericanCheckersTestInfo;
 
-public class ChineseCheckersTestInfo extends AbstractTestInfo {
+public class ChineseCheckersTestInfo extends AmericanCheckersTestInfo {
 
 	protected boolean playerIsAskedToContinue;
 	protected boolean playerAnswerToContinuationOfJumpMove;

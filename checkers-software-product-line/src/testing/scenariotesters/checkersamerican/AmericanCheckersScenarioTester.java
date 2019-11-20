@@ -31,7 +31,7 @@ import testing.scenariotesters.IScenarioTester;
 
 public class AmericanCheckersScenarioTester implements IScenarioTester {
 
-	PrintWriter outputter;
+	protected PrintWriter outputter;
 	
 	protected AbstractTesterReferee referee;
 	protected AmericanCheckersTestInfo info;
@@ -243,6 +243,13 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void thePlayerWinsTheGame() {
+		if (info.isGameEnded()) {
+			output("game ended");
+		} else {
+			output("game not ended");
+		}
+		assertTrue(info.isGameEnded());
+		assertFalse(info.isTestAborted());
 		assertEquals(playerOfPlayerMove, referee.getInfo().getWinner());
 	}
 

@@ -78,7 +78,11 @@ public class ChineseTesterReferee extends AbstractTesterReferee {
 	public SourceCoordinateValidity checkSourceCoordinate(IPlayer player, ICoordinate sourceCoordinate) {
 		AbstractPiece piece = getCoordinatePieceMap().getPieceAtCoordinate(sourceCoordinate);
 		// Check if the coordinate is of valid square color.
-		if (!getBoard().isPlayableCoordinate(sourceCoordinate))
+		if (sourceCoordinate.getXCoordinate() < 0 || 
+				sourceCoordinate.getXCoordinate() > 24 ||
+				sourceCoordinate.getYCoordinate() < 0 ||
+				sourceCoordinate.getYCoordinate() > 16 ||
+				!getBoard().isPlayableCoordinate(sourceCoordinate))
 			return SourceCoordinateValidity.NOT_OF_VALID_SQUARE_COLOR;
 		// Check if coordinate is empty
 		if (piece == null)
@@ -108,24 +112,21 @@ public class ChineseTesterReferee extends AbstractTesterReferee {
 		int yOfDestination = destinationCoordinate.getYCoordinate();
 		int xDiff = xOfDestination - xOfSource;
 		int yDiff = yOfDestination - yOfSource;
-		// Check if the coordinate is on board.
-		if (xOfDestination < 0 || 24 < xOfDestination || yOfDestination < 0 || 16 < yOfDestination)
-			return DestinationCoordinateValidity.OUTSIDE_OF_THE_BOARD;
 		// Check if coordinate is the same as source.
 		if (destinationCoordinate.equals(sourceCoordinate))
 			return DestinationCoordinateValidity.SAME_AS_SOURCE;
 		// Check if the coordinate is of valid square color.
-		if (!getBoard().isPlayableCoordinate(destinationCoordinate))
+		if (xOfDestination < 0 || 24 < xOfDestination || yOfDestination < 0 || 16 < yOfDestination || !getBoard().isPlayableCoordinate(destinationCoordinate))
 			return DestinationCoordinateValidity.NOT_OF_VALID_SQUARE_COLOR;
+		// Check if destination coordinate is not allowed.
+		if (Math.abs(xDiff) != Math.abs(yDiff))
+			return DestinationCoordinateValidity.UNALLOWED_DIRECTION;
 		// Check if destination coordinate is more than two squares away.
 		if (Math.abs(xDiff) > 2 || Math.abs(yDiff) > 2)
 			return DestinationCoordinateValidity.MORE_THAN_TWO_SQUARES_AWAY_FROM_SOURCE;
 		// Check if destination coordinate is occupied.
 		if (this.getCoordinatePieceMap().getPieceAtCoordinate(destinationCoordinate) != null)
 			return DestinationCoordinateValidity.OCCUPIED;
-		// Check if destination coordinate is not allowed.
-		if (Math.abs(xDiff) != Math.abs(yDiff))
-			return DestinationCoordinateValidity.UNALLOWED_DIRECTION;
 		// If there are no problems up to this point, return valid if move is a regular
 		// move.
 		if (Math.abs(xDiff) == 1 && Math.abs(yDiff) == 1)
@@ -315,12 +316,16 @@ public class ChineseTesterReferee extends AbstractTesterReferee {
 	//MAIN METHOD
 	
 	public static void main(String[] args) {
-		IGameConfiguration gameConfiguration = new ChineseTestGameConfiguration(2);
-		ChineseTesterReferee referee = new ChineseTesterReferee(gameConfiguration);
-		referee.setup("validJumpMove2");
-		referee.conductGame();
-		System.out.println(referee.getInfo().getSourceCoordinateValidity());
-		System.out.println(referee.getInfo().getDestinationCoordinateValidity());
+		String[] moveArr = {
+				"invalidDestinationCoordinateForMoveUnallowedDirection1"};
+		for (String s : moveArr) {
+			IGameConfiguration gameConfiguration = new ChineseTestGameConfiguration(2);
+			ChineseTesterReferee referee = new ChineseTesterReferee(gameConfiguration);
+			referee.setup(s);
+			referee.conductGame();
+			System.out.println(referee.getInfo().getSourceCoordinateValidity());
+			System.out.println(referee.getInfo().getDestinationCoordinateValidity());
+		}
 		
 	}
 	

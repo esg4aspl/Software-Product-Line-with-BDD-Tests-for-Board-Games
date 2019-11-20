@@ -166,4 +166,44 @@ public class StepDefinitions {
     public void thePlayerFinishesHisTurnLeavingTheBoardInAPreviouslyReachedState() {
         actionwords.thePlayerFinishesHisTurnLeavingTheBoardInAPreviouslyReachedState();
     }
+
+    @Given("^the \"(.*)\" game is set up for \"(.*)\" players$")
+    public void theP1GameIsSetUpForP2Players(String p1, String p2) {
+        actionwords.theP1GameIsSetUpForP2Players(p1, p2);
+    }
+
+    @Given("^the player has made jump moves in the current turn$")
+    public void thePlayerHasMadeJumpMovesInTheCurrentTurn() {
+        actionwords.thePlayerHasMadeJumpMovesInTheCurrentTurn();
+    }
+
+    @Given("^the player can continue doing jump moves$")
+    public void thePlayerCanContinueDoingJumpMoves() {
+        actionwords.thePlayerCanContinueDoingJumpMoves();
+    }
+
+    @Given("^the player has been asked to continue or not$")
+    public void thePlayerHasBeenAskedToContinueOrNot() {
+        actionwords.thePlayerHasBeenAskedToContinueOrNot();
+    }
+
+    @When("^the player chooses to \"(.*)\"$")
+    public void thePlayerChoosesToP1(String p1) {
+        actionwords.thePlayerChoosesToP1(p1);
+    }
+
+    @Given("^the player has at least one of his pieces in the goal triangle$")
+    public void thePlayerHasAtLeastOneOfHisPiecesInTheGoalTriangle() {
+        actionwords.thePlayerHasAtLeastOneOfHisPiecesInTheGoalTriangle();
+    }
+
+    @Given("^there is only one square is available at the goal triangle$")
+    public void thereIsOnlyOneSquareIsAvailableAtTheGoalTriangle() {
+        actionwords.thereIsOnlyOneSquareIsAvailableAtTheGoalTriangle();
+    }
+
+    @When("^the player jumps moves one of his pieces to the last available square in goal triangle$")
+    public void thePlayerJumpsMovesOneOfHisPiecesToTheLastAvailableSquareInGoalTriangle() {
+        actionwords.thePlayerJumpsMovesOneOfHisPiecesToTheLastAvailableSquareInGoalTriangle();
+    }
 }

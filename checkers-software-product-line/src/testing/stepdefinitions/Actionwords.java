@@ -4,6 +4,8 @@ import cucumber.api.PendingException;
 import testing.scenariotesters.IScenarioTester;
 import testing.scenariotesters.checkersamerican.AmericanCheckersScenarioTester;
 import testing.scenariotesters.checkerschildren.ChildrenCheckersScenarioTester;
+import testing.scenariotesters.checkerschinese.ChineseCheckersScenarioTester;
+import testing.scenariotesters.checkerschinese.IChineseScenarioTester;
 import testing.scenariotesters.checkersspanish.SpanishCheckersScenarioTester;
 import testing.scenariotesters.checkersturkish.ITurkishScenarioTester;
 import testing.scenariotesters.checkersturkish.TurkishCheckersScenarioTester;
@@ -27,6 +29,11 @@ public class Actionwords {
     	scenarioTester.theP1GameIsSetUp(p1);
     }
 
+	public void theP1GameIsSetUpForP2Players(String p1, String p2) {
+		scenarioTester = new ChineseCheckersScenarioTester();
+		((IChineseScenarioTester) scenarioTester).theP1GameIsSetUpForP2Players(p1, p2);
+	}
+    
     public void thePlayersStartTheGame() {
     	scenarioTester.thePlayersStartTheGame();
     }
@@ -150,6 +157,34 @@ public class Actionwords {
 
 	public void thePlayerFinishesHisTurnLeavingTheBoardInAPreviouslyReachedState() {
 		((ITurkishScenarioTester) scenarioTester).thePlayerFinishesHisTurnLeavingTheBoardInAPreviouslyReachedState();
+	}
+
+	public void thePlayerHasMadeJumpMovesInTheCurrentTurn() {
+		((IChineseScenarioTester) scenarioTester).thePlayerHasMadeJumpMovesInTheCurrentTurn();
+	}
+
+	public void thePlayerCanContinueDoingJumpMoves() {
+		((IChineseScenarioTester) scenarioTester).thePlayerCanContinueDoingJumpMoves();
+	}
+
+	public void thePlayerHasBeenAskedToContinueOrNot() {
+		((IChineseScenarioTester) scenarioTester).thePlayerHasBeenAskedToContinueOrNot();
+	}
+
+	public void thePlayerChoosesToP1(String p1) {
+		((IChineseScenarioTester) scenarioTester).thePlayerChoosesToP1(p1);
+	}
+
+	public void thePlayerHasAtLeastOneOfHisPiecesInTheGoalTriangle() {
+		((IChineseScenarioTester) scenarioTester).thePlayerHasAtLeastOneOfHisPiecesInTheGoalTriangle();
+	}
+
+	public void thereIsOnlyOneSquareIsAvailableAtTheGoalTriangle() {
+		((IChineseScenarioTester) scenarioTester).thereIsOnlyOneSquareIsAvailableAtTheGoalTriangle();
+	}
+
+	public void thePlayerJumpsMovesOneOfHisPiecesToTheLastAvailableSquareInGoalTriangle() {
+		((IChineseScenarioTester) scenarioTester).thePlayerJumpsMovesOneOfHisPiecesToTheLastAvailableSquareInGoalTriangle();
 	}
 
 
