@@ -227,13 +227,6 @@ public class SpanishTesterReferee extends AbstractTesterReferee {
 		consoleView = new AmericanCheckersBoardConsoleView(this);
 		
 	}
-	
-	@Override
-	protected void start() {
-		super.start();
-		System.out.println("Best sequence: " + info.getReader().getBestSequence());
-		System.out.println("Prior move sequence: " + info.getReader().getPriorMoveSequence());
-	}
 
 	private void setupPiecesOnBoard(List<ICoordinatePieceDuo> coordinatePieceDuos) {
 		AbstractPiece men;
@@ -356,6 +349,9 @@ public class SpanishTesterReferee extends AbstractTesterReferee {
 		//Check if move is part of the best sequence.
 		if (!isMovePartOfTheBestSequence(new MoveCoordinate(sourceCoordinate, destinationCoordinate)))
 			return DestinationCoordinateValidity.NOT_THE_BEST_SEQUENCE;
+		//Check if opposite of last jump move.
+		if (this.isMoveOppositeDirectionOfLastJumpMove(sourceCoordinate, destinationCoordinate))
+			return DestinationCoordinateValidity.OPPOSITE_DIRECTION_OF_LAST_JUMP_MOVE;
 		//If there are no problems up to this point, return valid if move is a regular move.
 		if (piece instanceof Pawn && Math.abs(xDiff) == 1 && Math.abs(yDiff) == 1)
 			return DestinationCoordinateValidity.VALID_REGULAR;
@@ -424,7 +420,7 @@ public class SpanishTesterReferee extends AbstractTesterReferee {
 
 	public static void main(String[] args) {
 		String[] iniArr = {
-				"prio"
+				"invalidDestinationCoordinateForMoveSourceCoordinateIsDifferentThanLastMovesDestinationCoordinate1"
 		};
 		for (String iniName : iniArr ) {
 			AbstractTesterReferee ref = new SpanishTesterReferee(new SpanishGameConfiguration());

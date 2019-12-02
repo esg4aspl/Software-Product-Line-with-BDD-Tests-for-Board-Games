@@ -127,6 +127,9 @@ public class ChineseTesterReferee extends AbstractTesterReferee {
 		// Check if destination coordinate is occupied.
 		if (this.getCoordinatePieceMap().getPieceAtCoordinate(destinationCoordinate) != null)
 			return DestinationCoordinateValidity.OCCUPIED;
+		//Check if opposite of last jump move.
+		if (this.isMoveOppositeDirectionOfLastJumpMove(sourceCoordinate, destinationCoordinate))
+			return DestinationCoordinateValidity.OPPOSITE_DIRECTION_OF_LAST_JUMP_MOVE;
 		// If there are no problems up to this point, return valid if move is a regular
 		// move.
 		if (Math.abs(xDiff) == 1 && Math.abs(yDiff) == 1)
@@ -317,7 +320,7 @@ public class ChineseTesterReferee extends AbstractTesterReferee {
 	
 	public static void main(String[] args) {
 		String[] moveArr = {
-				"endOfTheGame2Accept"};
+				"invalidDestinationCoordinateForMoveSourceCoordinateIsDifferentThanLastMovesDestinationCoordinate1"};
 		for (String s : moveArr) {
 			IGameConfiguration gameConfiguration = new ChineseTestGameConfiguration(2);
 			ChineseTesterReferee referee = new ChineseTesterReferee(gameConfiguration);

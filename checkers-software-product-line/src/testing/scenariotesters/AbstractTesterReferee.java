@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import core.AbstractReferee;
+import core.Direction;
 import core.ICoordinate;
 import core.IGameConfiguration;
 import core.IMoveCoordinate;
@@ -36,6 +37,8 @@ public abstract class AbstractTesterReferee extends AbstractReferee {
 		view.printMessage("Player move: " + info.getPlayerMove().toString());
 		view.printMessage("No promote count: " + info.getNoPromoteMoveCount());
 		view.printMessage("No capture count: " + info.getNoCaptureMoveCount());
+		System.out.println("Best sequence: " + info.getReader().getBestSequence());
+		System.out.println("Prior move sequence: " + info.getReader().getPriorMoveSequence());
 //		view.printMessage("B: Pawn of 'black' player");
 //		view.printMessage("A: King of 'black' player");
 //		view.printMessage("W: Pawn of 'white' player");
@@ -110,4 +113,45 @@ public abstract class AbstractTesterReferee extends AbstractReferee {
 		return !(lastMove.getDestinationCoordinate().equals(sourceCoordinate));
 	}
 
+	protected boolean isMoveOppositeDirectionOfLastJumpMove(ICoordinate sourceCoordinate, ICoordinate destinationCoordinate) {
+		IMoveCoordinate lastMove = this.getLastRecordedMove();
+		if (lastMove == null)
+			return false;
+		
+		Direction lastMoveDirection = findDirection(lastMove.getSourceCoordinate(), lastMove.getDestinationCoordinate());
+		Direction currentMoveDirection = findDirection(sourceCoordinate, destinationCoordinate);
+		return lastMoveDirection.getOppositeDirection().equals(currentMoveDirection);
+	}
+	
+	protected Direction findDirection(ICoordinate sourceCoordinate, ICoordinate destinationCoordinate) {
+		int srcX = sourceCoordinate.getXCoordinate(); int srcY = sourceCoordinate.getYCoordinate();
+		int destX = destinationCoordinate.getXCoordinate(); int destY = destinationCoordinate.getYCoordinate();
+		
+		if (destY > srcY) {
+			if (destX > srcX) {
+				return Direction.NE;
+			} else if (destX < srcX) {
+				return Direction.NW;
+			} else {
+				return Direction.N;
+			}
+		} else if (destY < srcY) {
+			if (destX > srcX) {
+				return Direction.SE;
+			} else if (destX < srcX) {
+				return Direction.SW;
+			} else {
+				return Direction.S;
+			}
+		} else {
+			if (destX > srcX) {
+				return Direction.E;
+			} else if (destX < srcX) {
+				return Direction.W;
+			} else {
+				return null;
+			}
+		}
+	}
+	
 }

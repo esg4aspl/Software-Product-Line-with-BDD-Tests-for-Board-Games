@@ -388,6 +388,9 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 		Direction moveDirection = yOfDestination > yOfSource ? Direction.N : Direction.S;
 		if (piece instanceof Pawn && moveDirection != piece.getGoalDirection())
 			return DestinationCoordinateValidity.UNALLOWED_DIRECTION;
+		//Check if opposite of last jump move.
+		if (this.isMoveOppositeDirectionOfLastJumpMove(sourceCoordinate, destinationCoordinate))
+			return DestinationCoordinateValidity.OPPOSITE_DIRECTION_OF_LAST_JUMP_MOVE;
 		// Check if move is not one of possible jump moves.
 		if (!isMoveOneOfPossibleJumpMoves(new MoveCoordinate(sourceCoordinate, destinationCoordinate)))
 			return DestinationCoordinateValidity.NOT_ONE_OF_POSSIBLE_JUMP_MOVES;
@@ -418,9 +421,7 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 	public static void main(String[] args) {
 
 			String[] moveArr = {
-					"endOfTheGameInDrawFortyIndecisiveMoves1",
-					"endOfTheGameInDrawFortyIndecisiveMoves2",
-					"endOfTheGameInDrawFortyIndecisiveMoves3",
+					"invalidDestinationCoordinateForMoveSourceCoordinateIsDifferentThanLastMovesDestinationCoordinate1",
 					};
 
 			for (String moveID : moveArr) {
@@ -428,6 +429,8 @@ public class AmericanTesterReferee extends AbstractTesterReferee {
 				AmericanTesterReferee referee = new AmericanTesterReferee(new AmericanGameConfiguration());
 				referee.setup(moveID);
 				referee.conductGame();
+				System.out.println(referee.getInfo().getSourceCoordinateValidity());
+				System.out.println(referee.getInfo().getDestinationCoordinateValidity());
 			}
 
 		}

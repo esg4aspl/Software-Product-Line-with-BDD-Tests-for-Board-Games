@@ -187,5 +187,13 @@ public class Actionwords {
 		((IChineseScenarioTester) scenarioTester).thePlayerJumpsMovesOneOfHisPiecesToTheLastAvailableSquareInGoalTriangle();
 	}
 
+	public void thePieceIsNotMoved() {
+		scenarioTester.thePieceIsNotMoved();	
+	}
+
+	public void thePlayerOffersToEndTheGameInDraw() {
+		this.scenarioTester.thePlayerOffersToEndTheGameInDraw();
+	}
+
 
 }

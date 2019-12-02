@@ -13,16 +13,16 @@ Feature: American Checkers
     When the player picks a valid source coordinate that has a "<piece_type>" piece in it
     And the player picks a valid destination coordinate that is "one" squares away from the source coordinate
     Then the piece is moved to the destination coordinate
-    And the next turn is given to the "other" player
+    And the next turn is given to the "next ingame" player
 
     Examples:
-      | file_name | piece_type | hiptest-uid |
-      | validRegularMove1 | king | uid:14cb1355-0af3-49d3-b7a6-51133fd74364 |
-      | validRegularMove2 | pawn | uid:af9ca253-73e3-4a31-8f9e-f5a6e9605902 |
-      | validRegularMove3 | pawn | uid:dd894aea-97d9-4ac9-900f-0065aa470adb |
-      | validRegularMove4 | pawn | uid:e89c658b-f914-45a1-a7c4-b126a9a64453 |
-      | validRegularMove5 | pawn | uid:716ab29f-e9b7-40fc-a460-d28392f4273f |
-      | validRegularMove6 | pawn | uid:3e4a537c-f12a-4b13-9fa1-f88bbc21628c |
+      | file_name | piece_type | explanation | hiptest-uid |
+      | validRegularMove1 | king | f: king moves backwards | uid:14cb1355-0af3-49d3-b7a6-51133fd74364 |
+      | validRegularMove2 | pawn | f: regular move | uid:af9ca253-73e3-4a31-8f9e-f5a6e9605902 |
+      | validRegularMove3 | pawn | f: regular move | uid:dd894aea-97d9-4ac9-900f-0065aa470adb |
+      | validRegularMove4 | pawn | f: opponent is not blocked, his king can jump backward, game should not end | uid:e89c658b-f914-45a1-a7c4-b126a9a64453 |
+      | validRegularMove5 | pawn | f: opponent is not blocked, his pawn can jump forward, game should not end | uid:716ab29f-e9b7-40fc-a460-d28392f4273f |
+      | validRegularMove6 | pawn | f: opponent is not blocked, his pawn can jump forward, game should not end | uid:3e4a537c-f12a-4b13-9fa1-f88bbc21628c |
 
   Scenario Outline: Valid Jump Move (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
@@ -33,30 +33,31 @@ Feature: American Checkers
     And the next turn is given to the "<next_turn_player>" player
 
     Examples:
-      | file_name | next_turn_player | piece_type | hiptest-uid |
-      | validJumpMove1 | other | pawn | uid:20888809-bc01-42bf-8820-527bff4ebddd |
-      | validJumpMove2 | other | king | uid:6fbd1fa8-e5ff-49bd-8cb4-3b3281934785 |
-      | validJumpMove3 | other | pawn | uid:4316cef3-a33b-443c-9cce-10109f4217f0 |
-      | validJumpMove4 | current | king | uid:aea16597-291b-4fdb-aea2-0a9f32b409cc |
-      | validJumpMove5 | current | pawn | uid:e5e21b57-c813-425a-be74-574d4dfbc7e7 |
-      | validJumpMove6 | other | pawn | uid:2df0d6f4-8aba-43b2-9efc-43dbec1bab7c |
-      | validJumpMove7 | current | king | uid:091da101-a9c9-4fe8-80ce-7dab53ee08c6 |
-      | validJumpMove8 | other | king | uid:729aa3e6-c3ad-437d-867b-5b6bc250f876 |
-      | validJumpMove9 | other | king | uid:6df2d7d1-407a-4ab0-93e4-ca365123303c |
-      | validJumpMove10 | other | pawn | uid:cdb9857d-906b-4382-b440-436f63e2e6ae |
-      | validJumpMove11 | other | pawn | uid:903b026f-2290-4959-b574-e56187d7a760 |
-      | validJumpMove12 | other | pawn | uid:609b3028-54a3-441e-93f0-d883863d6411 |
-      | validJumpMove13 | other | pawn | uid:06c5b80f-dccb-47bd-a060-d3e54318aa3d |
-      | validJumpMove14 | other | pawn | uid:ede75e02-e9a6-40dd-898b-c5aa977afdb4 |
-      | validJumpMove15 | other | king | uid:ce2e0608-ddcf-4e30-b113-1e0c63de6f8e |
-      | validJumpMove16 | current | king | uid:2c806a48-51fb-4a0c-bd1b-cb5d7c1a528a |
-      | validJumpMove17 | other | pawn | uid:4e584853-01d8-49f0-8c38-b775f9a0e9f8 |
+      | file_name | next_turn_player | piece_type | explanation | hiptest-uid |
+      | validJumpMove1 | next ingame | pawn | f: end of jump possibilities, own piece is not jumpable | uid:8ddc1261-e4d3-4271-a0a2-3f3ee64f09f9 |
+      | validJumpMove2 | next ingame | king | f: end of jump possibilities, own piece is not jumpable | uid:4c140919-67a2-45af-9224-b3632e1f7ce6 |
+      | validJumpMove3 | next ingame | pawn | f: end of jump possibilities, no adjacent piece | uid:c3473a4f-8550-4faa-94d0-a808f14fa1cd |
+      | validJumpMove4 | current | king | f: another jump possibility | uid:aea16597-291b-4fdb-aea2-0a9f32b409cc |
+      | validJumpMove5 | current | pawn | f: another jump possibility | uid:e5e21b57-c813-425a-be74-574d4dfbc7e7 |
+      | validJumpMove6 | next ingame | pawn | f: end of jump possibilities, opponent is not jumpable because destination would be out of borders | uid:3a001bfc-347c-4ff5-91e4-637573269602 |
+      | validJumpMove7 | current | king | f: another jump possibility | uid:091da101-a9c9-4fe8-80ce-7dab53ee08c6 |
+      | validJumpMove8 | next ingame | king | f: end of jump possibilities, own piece is not jumpable | uid:122ef044-60df-44ba-b565-0c03777b69f1 |
+      | validJumpMove9 | next ingame | king | f: this valid jump move proves the case in validRegularMove4 | uid:21a792a7-7066-4902-b901-b24ca17c6324 |
+      | validJumpMove10 | next ingame | pawn | f: this valid jump move proves the case in validRegularMove6 | uid:e4c83f05-50c9-456a-b2c5-21e1cccc488a |
+      | validJumpMove11 | next ingame | pawn | f: no promote is 39, no capture is 0, a jump move is a decisive move, game should not end in draw | uid:4aef03fc-bc89-456a-a5ff-3117f9887f16 |
+      | validJumpMove12 | next ingame | pawn | f: no promote is 0, no capture is 39, this jump move should clear that, game should not end in draw | uid:f790531d-45e6-4450-9935-5e9e88beb23a |
+      | validJumpMove13 | next ingame | pawn | f: no promote is 45, no capture is 0, a jump move is a decisive move, game should not end in draw  (checked at 45 to see if rule class can keep correct count above 40) | uid:f5672c2b-b604-4c56-a670-be5870bfb920 |
+      | validJumpMove14 | next ingame | pawn | f: no promote is 0, no capture is 45, this jump move should clear that, game should not end in draw | uid:41cc520d-72c2-4581-b1be-a5cffdc54df2 |
+      | validJumpMove15 | next ingame | king | f: end of jump possiblities, opponent is not jumpable because possible destination is occupied | uid:236b6121-2ce3-404d-b1ce-29f7e4072c02 |
+      | validJumpMove16 | current | king | f: another jump possibility, even though the destination is in crownhead, the piece is already king, it can continue jumping | uid:2c806a48-51fb-4a0c-bd1b-cb5d7c1a528a |
+      | validJumpMove17 | next ingame | pawn | f: both players are left with one piece, but one of them is vulnerable to the other, game should not end ind draw | uid:96e7973b-31eb-496e-8e79-3f17ac3a9898 |
 
   Scenario Outline: Invalid Source Coordinate for Move (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks an invalid "source" coordinate because "<invalidity_reason>"
     And the player picks any destination coordinate
-    Then an error message is shown saying "<error_message>"
+    Then the piece is not moved
+    And an error message is shown saying "<error_message>"
     And the player is asked for another "source" coordinate
 
     Examples:
@@ -71,12 +72,14 @@ Feature: American Checkers
       | invalidSourceCoordinateForMoveOpponentsPiece1 | source coordinate has opponent's piece | Piece does not belong to current player | uid:ee334b2b-ec6e-4c77-a55b-35260eeb8045 |
       | invalidSourceCoordinateForMoveOpponentsPiece2 | source coordinate has opponent's piece | Piece does not belong to current player | uid:f7a73b79-f95e-4715-9abf-093d525f98cb |
       | invalidSourceCoordinateForMoveOpponentsPiece3 | source coordinate has opponent's piece | Piece does not belong to current player | uid:5f61ddb9-3f5e-4f34-b0a4-123e3c30aef9 |
+      | invalidSourceCoordinateForMoveDifferentThanLastMovesDestinationCoordinate1 | source coordinate of move is different than last jump move’s destination | Destination valid? false | uid:3e71679c-a808-44dd-841b-30a7c5216bb3 |
 
   Scenario Outline: Invalid Destination Coordinate for Move (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks a valid source coordinate that has a "<piece_type>" piece in it
     And the player picks an invalid "destination" coordinate because "<invalidity_reason>"
-    Then an error message is shown saying "<error_message>"
+    Then the piece is not moved
+    And an error message is shown saying "<error_message>"
     And the player is asked for another "source" coordinate
 
     Examples:
@@ -98,6 +101,7 @@ Feature: American Checkers
       | invalidDestinationCoordinateForMoveNotOneOfTheJumpMoves3 | pawn | move is not a jump move even though there are possible jump moves | If any opponent's pieces can be captured then it must be captured first!!!! | uid:aaa6e732-0f3c-401f-b4f0-09af2a4f6559 |
       | invalidDestinationCoordinateForMoveJumpedPieceIsNull1 | pawn | jumped piece is null | There must be one piece on jump path 0 | uid:fa89591d-1911-4c4d-abaf-4ab4e8d583ce |
       | invalidDestinationCoordinateForMoveJumpedPieceIsOwnPiece1 | pawn | jumped piece is not opponent piece | Jumped Piece Must Be Opponent Piece | uid:875b4902-ab32-4b9b-bede-d656722a0708 |
+      | invalidDestinationCoordinateForMoveOppositeDirectionOfLastMove1 | king | move direction is opposite of last jump move's direction | If any opponent's pieces can be captured then it must be captured first!!!! | uid:45a56a43-91b4-437a-a3f9-885c162d0d6d |
 
   Scenario Outline: Crowning the Eligible Piece (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
@@ -105,18 +109,18 @@ Feature: American Checkers
     And the player picks a valid destination coordinate in opponent's crownhead
     Then the piece is "promoted" to a crowned piece
     And the piece is moved to the destination coordinate
-    And the next turn is given to the "other" player
+    And the next turn is given to the "next ingame" player
 
     Examples:
-      | file_name | hiptest-uid |
-      | crowningTheEligiblePiece1 | uid:49be234c-e7a2-4dcc-8666-709c7fa5c7b9 |
-      | crowningTheEligiblePiece2 | uid:718addf2-52c2-4897-8e3a-95dda58bb60d |
-      | crowningTheEligiblePiece3 | uid:5efcaa48-92f3-4f6c-a99f-d712a4505ea0 |
-      | crowningTheEligiblePiece4 | uid:eafd3c78-e036-48a6-8ca7-ac52b4689fa6 |
-      | crowningTheEligiblePiece5 | uid:0f9fe1b9-038b-45dc-b4e1-9cce778db199 |
-      | crowningTheEligiblePiece6 | uid:8449ff16-b30d-4bbe-9365-78648e3fe5b5 |
-      | crowningTheEligiblePiece7 | uid:a63dbeb8-bc55-4733-b4f0-aaff44cdf4ac |
-      | crowningTheEligiblePiece8 | uid:a83fc15b-f398-4b3f-9ef8-6d26a8983a0a |
+      | file_name | explanation | hiptest-uid |
+      | crowningTheEligiblePiece1 | f: | uid:49be234c-e7a2-4dcc-8666-709c7fa5c7b9 |
+      | crowningTheEligiblePiece2 | f: | uid:718addf2-52c2-4897-8e3a-95dda58bb60d |
+      | crowningTheEligiblePiece3 | f: there are possibilities for a jump move but piece is crowned, so the next turn should be given to the opponent | uid:5efcaa48-92f3-4f6c-a99f-d712a4505ea0 |
+      | crowningTheEligiblePiece4 | f: | uid:eafd3c78-e036-48a6-8ca7-ac52b4689fa6 |
+      | crowningTheEligiblePiece5 | f: there are possibilities for a jump move but piece is crowned, so the next turn should be given to the opponent | uid:0f9fe1b9-038b-45dc-b4e1-9cce778db199 |
+      | crowningTheEligiblePiece6 | f: no promote is 39, no capture is 39, crowning is a decisive move, game should not end in draw | uid:8449ff16-b30d-4bbe-9365-78648e3fe5b5 |
+      | crowningTheEligiblePiece7 | f: no promote is 45, no capture is 0, crowning is a decisive move, game should not end in draw | uid:a63dbeb8-bc55-4733-b4f0-aaff44cdf4ac |
+      | crowningTheEligiblePiece8 | f: no promote is 0, no capture is 45, crowning is a decisive move, game should not end in draw | uid:a83fc15b-f398-4b3f-9ef8-6d26a8983a0a |
 
   Scenario Outline: End of the Game (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
@@ -139,10 +143,10 @@ Feature: American Checkers
     Examples:
       | file_name | offer_response | result | hiptest-uid |
       | endOfTheGameInDraw1 | accepts | the game is ended as a draw | uid:a94e962e-29d6-4f74-8b74-26371952511c |
-      | endOfTheGameInDraw2 | rejects | the next turn is given to the other player | uid:b818109a-e741-410e-9f3f-312c4aada157 |
+      | endOfTheGameInDraw2 | rejects | the next turn is given to the next ingame player | uid:8d535049-50ac-4ed0-b955-3ada16ce14ba |
       | endOfTheGameInDraw3 | accepts | the game is ended as a draw | uid:1a8029ee-6e8c-455d-8179-0d248eb8e244 |
       | endOfTheGameInDraw4 | accepts | the game is ended as a draw | uid:74c6a712-c2f8-4d28-8289-890b9d1c5f54 |
-      | endOfTheGameInDraw5 | rejects | the next turn is given to the other player | uid:cb582ac8-ff70-466d-be46-e0cc04900680 |
+      | endOfTheGameInDraw5 | rejects | the next turn is given to the next ingame player | uid:68081633-f81f-4bda-b26d-cc0b44d9e72f |
 
   Scenario Outline: End of the Game In Draw - Both Players Have One Piece (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
@@ -173,7 +177,16 @@ Feature: American Checkers
     Then the game is ended as a draw
 
     Examples:
+      | file_name | explanation | hiptest-uid |
+      | endOfTheGameInDrawFortyIndecisiveMoves1 | f: no promote is 39, no capture is 39, a regular move ends the game in draw | uid:3547cbe0-2d1e-4aab-a4ca-a0709dc7178e |
+      | endOfTheGameInDrawFortyIndecisiveMoves2 | f: no promote is 45, no capture is 39, a regular move ends the game in draw | uid:e99a98fe-cc85-4b94-9d39-c49a2ece5594 |
+      | endOfTheGameInDrawFortyIndecisiveMoves3 | f: no promote is 39, no capture is 45, a regular move ends the game in draw | uid:827c249b-656b-4d4b-a81d-c022ace785ef |
+
+  Scenario Outline: Offer Draw Move (<hiptest-uid>)
+    Given the game is played up to a certain point from file "<file_name>"
+    When the player offers to end the game in draw
+    Then the next turn is given to the "next ingame" player
+
+    Examples:
       | file_name | hiptest-uid |
-      | endOfTheGameInDrawFortyIndecisiveMoves1 | uid:3547cbe0-2d1e-4aab-a4ca-a0709dc7178e |
-      | endOfTheGameInDrawFortyIndecisiveMoves2 | uid:e99a98fe-cc85-4b94-9d39-c49a2ece5594 |
-      | endOfTheGameInDrawFortyIndecisiveMoves3 | uid:827c249b-656b-4d4b-a81d-c022ace785ef |
+      | offerDrawMove1 | uid:ec4473f5-1294-4d42-bf30-469399b2f560 |

@@ -106,9 +106,7 @@ public class ChineseCheckersScenarioTester extends AmericanCheckersScenarioTeste
 			return true;
 		}
 		
-		if (reason.equals("piece can not leave goal triangle")) {
-			//TODO Fill here
-		} else {
+		if (!reason.equals("piece can not leave goal triangle")) {
 			return false;
 		}
 		

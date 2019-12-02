@@ -13,7 +13,7 @@ Feature: Children Checkers
     When the player picks a valid source coordinate that has a "<piece_type>" piece in it
     And the player picks a valid destination coordinate that is "one" squares away from the source coordinate
     Then the piece is moved to the destination coordinate
-    And the next turn is given to the "other" player
+    And the next turn is given to the "next ingame" player
 
     Examples:
       | file_name | piece_type | hiptest-uid |
@@ -34,28 +34,29 @@ Feature: Children Checkers
 
     Examples:
       | file_name | next_turn_player | piece_type | hiptest-uid |
-      | validJumpMove1 | other | pawn | uid:11bf630a-1690-44b6-8966-03a18abda5c8 |
-      | validJumpMove2 | other | pawn | uid:c3a7c28d-bcb6-45df-8ae0-31e55508459d |
-      | validJumpMove3 | other | pawn | uid:fdd171fc-495e-44d1-aff1-76628500287f |
+      | validJumpMove1 | next ingame | pawn | uid:c4358e31-87be-4b56-8bb9-66640c765a29 |
+      | validJumpMove2 | next ingame | pawn | uid:a3e58cb6-076d-43e8-a0d5-5218c3d153ce |
+      | validJumpMove3 | next ingame | pawn | uid:0d535887-cc41-44a1-92a9-95664db913c7 |
       | validJumpMove4 | current | pawn | uid:56f59af9-2e29-49d1-9342-bbd820114284 |
       | validJumpMove5 | current | pawn | uid:69b3f0a4-b9af-41e8-bc2a-56d707bc7c29 |
-      | validJumpMove6 | other | pawn | uid:99631be0-4bd4-420f-ac3e-49e2139ebcd0 |
+      | validJumpMove6 | next ingame | pawn | uid:28736316-cd27-4718-8579-ef44c5531286 |
       | validJumpMove7 | current | pawn | uid:ede45d4d-d926-4f6b-9a8b-48a287c3c968 |
-      | validJumpMove8 | other | pawn | uid:592050b4-b125-4ddd-b48a-b4127efe06ac |
-      | validJumpMove9 | other | pawn | uid:f771e9bb-9240-484f-9cc6-bc1766ea4f3e |
-      | validJumpMove10 | other | pawn | uid:6b1be1f2-387a-426b-9f69-6ec9d6f40d7b |
-      | validJumpMove11 | other | pawn | uid:87155ed7-b84a-449b-9609-0265a8c46f59 |
-      | validJumpMove12 | other | pawn | uid:c6575d25-5354-4544-8c81-1096ce37877a |
-      | validJumpMove13 | other | pawn | uid:3a700df8-deb4-406e-ae4c-ae538c21c14f |
-      | validJumpMove14 | other | pawn | uid:2be630d1-45e9-4d64-863d-a62f5f956767 |
-      | validJumpMove15 | other | pawn | uid:3f5ecf61-18a9-403b-88ca-a75c236c9a38 |
-      | validJumpMove17 | other | pawn | uid:d42da3c2-47d3-4c10-81da-74e62741520d |
+      | validJumpMove8 | next ingame | pawn | uid:4ea2c56b-1ae5-4f68-a316-3c4170cd986d |
+      | validJumpMove9 | next ingame | pawn | uid:393e99fa-372f-47cc-a1c6-c3d9c87e8b1f |
+      | validJumpMove10 | next ingame | pawn | uid:879056f7-51cd-4026-9cb2-dc87b378256e |
+      | validJumpMove11 | next ingame | pawn | uid:a0111f95-b406-43da-b6e9-bcc95042c9e4 |
+      | validJumpMove12 | next ingame | pawn | uid:ad47071a-1d52-47bc-a208-56d4f92ac2a2 |
+      | validJumpMove13 | next ingame | pawn | uid:906600bf-75d7-467c-a65f-bd0488c03953 |
+      | validJumpMove14 | next ingame | pawn | uid:77227075-d8d9-4109-9aa0-dba8d61ed93c |
+      | validJumpMove15 | next ingame | pawn | uid:70e692c4-91f6-4bbd-bbd2-aef309002666 |
+      | validJumpMove17 | next ingame | pawn | uid:7c40eacf-0b3f-4c53-a309-f96f621d8c98 |
 
   Scenario Outline: Invalid Source Coordinate for Move (1) (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks an invalid "source" coordinate because "<invalidity_reason>"
     And the player picks any destination coordinate
-    Then an error message is shown saying "<error_message>"
+    Then the piece is not moved
+    And an error message is shown saying "<error_message>"
     And the player is asked for another "source" coordinate
 
     Examples:
@@ -70,12 +71,14 @@ Feature: Children Checkers
       | invalidSourceCoordinateForMoveOpponentsPiece1 | source coordinate has opponent's piece | Piece does not belong to current player | uid:f06406c1-cf7d-4d4e-a962-50e98e24b21c |
       | invalidSourceCoordinateForMoveOpponentsPiece2 | source coordinate has opponent's piece | Piece does not belong to current player | uid:cd04fdaa-c983-4b48-ac84-f53d497b4ce8 |
       | invalidSourceCoordinateForMoveOpponentsPiece3 | source coordinate has opponent's piece | Piece does not belong to current player | uid:0d505419-078f-439f-98c6-67b1fd89da55 |
+      | invalidSourceCoordinateForMoveDifferentThanLastMovesDestinationCoordinate1 | source coordinate of move is different than last jump move’s destination | Destination valid? false | uid:30f64022-5974-43d6-9358-87abcd3405e6 |
 
   Scenario Outline: Invalid Destination Coordinate for Move (1) (<hiptest-uid>)
     Given the game is played up to a certain point from file "<file_name>"
     When the player picks a valid source coordinate that has a "<piece_type>" piece in it
     And the player picks an invalid "destination" coordinate because "<invalidity_reason>"
-    Then an error message is shown saying "<error_message>"
+    Then the piece is not moved
+    And an error message is shown saying "<error_message>"
     And the player is asked for another "source" coordinate
 
     Examples:

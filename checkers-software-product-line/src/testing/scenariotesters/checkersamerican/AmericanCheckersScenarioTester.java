@@ -123,7 +123,7 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		}
 		assertFalse(referee.getInfo().isGameEnded());
 		breakpoint("crowningTheEligiblePiece14");
-		if (p1.equals("other")) {
+		if (p1.equals("next ingame")) {
 			assertFalse(referee.getInfo().isPlayerWasGoingToMakeAnotherMove());
 			assertFalse(referee.getCurrentPlayer().equals(playerOfPlayerMove));
 		} else if (p1.equals("current")) {
@@ -178,6 +178,8 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 			assertEquals(DestinationCoordinateValidity.JUMPED_PIECE_IS_NULL, destinationCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("jumped piece is not opponent piece")) {
 			assertEquals(DestinationCoordinateValidity.JUMPED_PIECE_IS_OWN, destinationCoordinateValidityOfPlayerMove);
+		} else if (reason.equals("move direction is opposite of last jump move's direction")) {
+			assertEquals(DestinationCoordinateValidity.OPPOSITE_DIRECTION_OF_LAST_JUMP_MOVE, destinationCoordinateValidityOfPlayerMove);
 		} else {
 			return false;
 		}
@@ -193,6 +195,8 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 			assertEquals(SourceCoordinateValidity.NOT_OF_VALID_SQUARE_COLOR, sourceCoordinateValidityOfPlayerMove);
 		} else if (reason.equals("source coordinate is outside of the board")) {
 			assertEquals(SourceCoordinateValidity.OUTSIDE_OF_THE_BOARD, sourceCoordinateValidityOfPlayerMove);
+		} else if (reason.equals("source coordinate of move is different than last jump move’s destination")) {
+			assertEquals(SourceCoordinateValidity.DIFFERENT_THAN_LAST_JUMP_MOVE_DESTINATION, sourceCoordinateValidityOfPlayerMove);
 		} else {
 			return false;
 		}
@@ -329,12 +333,16 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void p1Happens(String p1) {
-		if (p1.equals("the game is ended as a draw"))
+		if (p1.equals("the game is ended as a draw")) {
 			this.theGameIsEndedAsADraw();
-		else if (p1.equals("the next turn is given to the other player"))
+		} else if (p1.equals("the next turn is given to the next ingame player")) {
 			this.theNextTurnIsGivenToTheP1Player("other");
-		else
+		} else if (p1.equals("the next turn is given to the offerer player")) {
+			//TODO This waits for an implementation in development.
 			throw new PendingException();
+		} else {
+			throw new PendingException();
+		}
 	}
 
 	@Override
@@ -431,6 +439,19 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		
 		if (sectionName.equals("any"))
 			System.out.println("Mandatory breakpoint");
+	}
+
+	@Override
+	public void thePieceIsNotMoved() {
+		assertEquals(pieceOfPlayerMove, referee.getCoordinatePieceMap().getPieceAtCoordinate(sourceCoordinateOfPlayerMove));
+	}
+
+	
+	@Override
+	public void thePlayerOffersToEndTheGameInDraw() {
+		referee.conductGame();
+		prepareValidities();
+		assertTrue(referee.getInfo().isDrawOffered());
 	}
 
 	

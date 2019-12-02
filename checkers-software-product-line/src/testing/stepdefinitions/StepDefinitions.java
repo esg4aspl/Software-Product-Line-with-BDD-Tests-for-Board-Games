@@ -206,4 +206,14 @@ public class StepDefinitions {
     public void thePlayerJumpsMovesOneOfHisPiecesToTheLastAvailableSquareInGoalTriangle() {
         actionwords.thePlayerJumpsMovesOneOfHisPiecesToTheLastAvailableSquareInGoalTriangle();
     }
+
+    @Then("^the piece is not moved$")
+    public void thePieceIsNotMoved() {
+        actionwords.thePieceIsNotMoved();
+    }
+
+    @When("^the player offers to end the game in draw$")
+    public void thePlayerOffersToEndTheGameInDraw() {
+        actionwords.thePlayerOffersToEndTheGameInDraw();
+    }
 }

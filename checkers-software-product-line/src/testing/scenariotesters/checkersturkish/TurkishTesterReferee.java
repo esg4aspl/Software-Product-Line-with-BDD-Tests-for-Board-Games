@@ -289,8 +289,6 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 	@Override
 	protected void start() {
 		super.start();
-		System.out.println("Best sequence: " + info.getReader().getBestSequence());
-		System.out.println("Prior move sequence: " + info.getReader().getPriorMoveSequence());
 		System.out.println("Resulting Board State Will Be Reached For The Third Time: " + ((TurkishCheckersTestInfo)info).isResultingBoardStateWillBeReachedForTheThirdTime());
 	}
 	
@@ -353,6 +351,9 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 		//Check if move is part of the best sequence.
 		if (!isMovePartOfTheBestSequence(new MoveCoordinate(sourceCoordinate, destinationCoordinate)))
 			return DestinationCoordinateValidity.NOT_THE_BEST_SEQUENCE;
+		//Check if opposite of last jump move.
+		if (this.isMoveOppositeDirectionOfLastJumpMove(sourceCoordinate, destinationCoordinate))
+			return DestinationCoordinateValidity.OPPOSITE_DIRECTION_OF_LAST_JUMP_MOVE;
 		//If there are no problems up to this point, return valid if move is a regular move.
 		if (piece instanceof Pawn && (Math.abs(xDiff) == 1 || Math.abs(yDiff) == 1))
 			return DestinationCoordinateValidity.VALID_REGULAR;
@@ -490,7 +491,7 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 	//MAIN METHOD
 	public static void main(String[] args) {
 		String[] iniArr = {
-				"crowningTheEligiblePieceCapturingKingsInCrownhead2"
+				"invalidDestinationCoordinateForMoveSourceCoordinateIsDifferentThanLastMovesDestinationCoordinate1"
 		};
 		for (String iniName : iniArr ) {
 			AbstractTesterReferee ref = new TurkishTesterReferee(new TurkishGameConfiguration());

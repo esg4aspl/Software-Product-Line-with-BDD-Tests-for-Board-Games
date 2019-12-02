@@ -22,6 +22,7 @@ public interface IScenarioTester {
 	public void theNextTurnIsGivenToTheP1Player(String p1);
 	
 	//After Invalid Move
+	public void thePieceIsNotMoved();
 	public void anErrorMessageIsShownSayingP1(String p1);
 	public void thePlayerIsAskedForAnotherP1Coordinate(String p1);
 
@@ -41,6 +42,7 @@ public interface IScenarioTester {
 	public void thePlayerMakesAMoveLeavingNoValidDestinationCoordinatesForAnyOfTheOpponentsPieces();
 	
 	//American Checkers Agreed Draw
+	public void thePlayerOffersToEndTheGameInDraw();
 	public void inThePreviousTurnTheOpponentHasOfferedToEndTheGameInADraw();
 	public void thePlayerP1TheOffer(String p1);
 	public void p1Happens(String p1);

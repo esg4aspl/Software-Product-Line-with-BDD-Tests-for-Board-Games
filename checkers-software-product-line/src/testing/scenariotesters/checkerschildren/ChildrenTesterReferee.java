@@ -292,6 +292,9 @@ public class ChildrenTesterReferee extends AbstractTesterReferee {
 		Direction moveDirection = yOfDestination > yOfSource ? Direction.N : Direction.S;
 		if (piece instanceof Pawn && moveDirection != piece.getGoalDirection())
 			return DestinationCoordinateValidity.UNALLOWED_DIRECTION;
+		//Check if opposite of last jump move.
+		if (this.isMoveOppositeDirectionOfLastJumpMove(sourceCoordinate, destinationCoordinate))
+			return DestinationCoordinateValidity.OPPOSITE_DIRECTION_OF_LAST_JUMP_MOVE;
 		// If there are no problems up to this point, return valid if move is a regular
 		// move.
 		if (Math.abs(xDiff) == 1 && Math.abs(yDiff) == 1)
@@ -422,12 +425,7 @@ public class ChildrenTesterReferee extends AbstractTesterReferee {
 
 	public static void main(String[] args) {
 		String[] moveArr = {
-				"validRegularMove1",
-				"validRegularMove2",
-				"validRegularMove3",
-				"validRegularMove4",
-				"validRegularMove5",
-				"validRegularMove6",
+				"invalidDestinationCoordinateForMoveSourceCoordinateIsDifferentThanLastMovesDestinationCoordinate1"
 			};
 		
 //		String[] moveArr = {
@@ -445,6 +443,8 @@ public class ChildrenTesterReferee extends AbstractTesterReferee {
 			AbstractTesterReferee referee = new ChildrenTesterReferee(new AmericanGameConfiguration());
 			referee.setup(moveID);
 			referee.conductGame();
+			System.out.println(referee.getInfo().getSourceCoordinateValidity());
+			System.out.println(referee.getInfo().getDestinationCoordinateValidity());
 		}
 	}
 
