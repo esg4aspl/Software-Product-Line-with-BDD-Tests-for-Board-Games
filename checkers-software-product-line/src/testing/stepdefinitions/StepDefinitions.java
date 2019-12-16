@@ -216,4 +216,44 @@ public class StepDefinitions {
     public void thePlayerOffersToEndTheGameInDraw() {
         actionwords.thePlayerOffersToEndTheGameInDraw();
     }
+
+    @When("^the player picks a valid destination coordinate that has no pieces in it$")
+    public void thePlayerPicksAValidDestinationCoordinateThatHasNoPiecesInIt() {
+        actionwords.thePlayerPicksAValidDestinationCoordinateThatHasNoPiecesInIt();
+    }
+
+    @When("^the player picks a valid destination coordinate that has a capturable opponent piece in it$")
+    public void thePlayerPicksAValidDestinationCoordinateThatHasACapturableOpponentPieceInIt() {
+        actionwords.thePlayerPicksAValidDestinationCoordinateThatHasACapturableOpponentPieceInIt();
+    }
+
+    @Then("^the opponent piece is removed from the board$")
+    public void theOpponentPieceIsRemovedFromTheBoard() {
+        actionwords.theOpponentPieceIsRemovedFromTheBoard();
+    }
+
+    @When("^the player makes a move that threatens the opponent's king's current position$")
+    public void thePlayerMakesAMoveThatThreatensTheOpponentsKingsCurrentPosition() {
+        actionwords.thePlayerMakesAMoveThatThreatensTheOpponentsKingsCurrentPosition();
+    }
+
+    @When("^the player makes a move that not checks the opponent king but leaves it with no valid move to make$")
+    public void thePlayerMakesAMoveThatNotChecksTheOpponentKingButLeavesItWithNoValidMoveToMake() {
+        actionwords.thePlayerMakesAMoveThatNotChecksTheOpponentKingButLeavesItWithNoValidMoveToMake();
+    }
+
+    @Given("^the number of consecutive indecisive moves is 99$")
+    public void theNumberOfConsecutiveIndecisiveMovesIs99() {
+        actionwords.theNumberOfConsecutiveIndecisiveMovesIs99();
+    }
+
+    @When("^the player moves a non-pawn piece without capturing an opponent piece$")
+    public void thePlayerMovesANonpawnPieceWithoutCapturingAnOpponentPiece() {
+        actionwords.thePlayerMovesANonpawnPieceWithoutCapturingAnOpponentPiece();
+    }
+
+    @Given("^the opponent's king can not be protected if it is checked$")
+    public void theOpponentsKingCanNotBeProtectedIfItIsChecked() {
+        actionwords.theOpponentsKingCanNotBeProtectedIfItIsChecked();
+    }
 }

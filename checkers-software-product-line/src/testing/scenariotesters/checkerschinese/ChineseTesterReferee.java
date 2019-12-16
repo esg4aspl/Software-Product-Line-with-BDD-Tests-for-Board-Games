@@ -156,7 +156,12 @@ public class ChineseTesterReferee extends AbstractTesterReferee {
 		String icon = null;
 		Direction direction = null;
 		int pieceId = 0;
-		
+		int p0Counter = 0;
+		int p1Counter = 0;
+		int p2Counter = 0;
+		int p3Counter = 0;
+		int p4Counter = 0;
+		int p5Counter = 0;
 		AbstractPiece men;
 		IPieceMovePossibilities menMovePossibilities = new ChinesePawnMovePossibilities();
 		IPieceMoveConstraints menMoveConstraints =  new ChinesePawnMoveConstraints();
@@ -168,15 +173,14 @@ public class ChineseTesterReferee extends AbstractTesterReferee {
 			}
 			String iconName = coordinatePieceDuo.getIconColor();
 			switch (iconName) {
-				case "tag": player = playerList.getPlayer(0); icon = icons[0]; direction = directions[0]; pieceId = 1000 + player.getNumberOfPieces() + 1; break;
-				case "dol": player = playerList.getPlayer(1); icon = icons[1]; direction = directions[1]; pieceId = 2000 + player.getNumberOfPieces() + 1; break;
-				case "per": player = playerList.getPlayer(2); icon = icons[2]; direction = directions[2]; pieceId = 3000 + player.getNumberOfPieces() + 1; break;
-				case "que": player = playerList.getPlayer(3); icon = icons[3]; direction = directions[3]; pieceId = 4000 + player.getNumberOfPieces() + 1; break;
-				case "eq": player = playerList.getPlayer(4); icon = icons[4]; direction = directions[4]; pieceId = 5000 + player.getNumberOfPieces() + 1; break;
-				case "at": player = playerList.getPlayer(5); icon = icons[5]; direction = directions[5]; pieceId = 6000 + player.getNumberOfPieces() + 1; break;
+				case "tag": player = playerList.getPlayer(0); icon = icons[0]; p0Counter+=5; direction = directions[0]; pieceId = 1000 + p0Counter; break;
+				case "dol": player = playerList.getPlayer(1); icon = icons[1]; p1Counter+=5; direction = directions[1]; pieceId = 2000 + p1Counter; break;
+				case "per": player = playerList.getPlayer(2); icon = icons[2]; p2Counter+=5; direction = directions[2]; pieceId = 3000 + p2Counter; break;
+				case "que": player = playerList.getPlayer(3); icon = icons[3]; p3Counter+=5; direction = directions[3]; pieceId = 4000 + p3Counter; break;
+				case "eq": player = playerList.getPlayer(4); icon = icons[4]; p4Counter+=5; direction = directions[4]; pieceId = 5000 + p4Counter; break;
+				case "at": player = playerList.getPlayer(5); icon = icons[5]; p5Counter+=5; direction = directions[5]; pieceId = 6000 + p5Counter; break;
 				default: System.out.println("No such player."); System.exit(0);
 			}
-			
 			men = new ChinesePawn(pieceId, icon, player, direction, menMovePossibilities, menMoveConstraints);
 			player.addPiece(men);
 			coordinatePieceMap.putPieceToCoordinate(men, coordinatePieceDuo.getCoordinate());
@@ -320,9 +324,9 @@ public class ChineseTesterReferee extends AbstractTesterReferee {
 	
 	public static void main(String[] args) {
 		String[] moveArr = {
-				"invalidDestinationCoordinateForMoveSourceCoordinateIsDifferentThanLastMovesDestinationCoordinate1"};
+				"endOfTheGame6"};
 		for (String s : moveArr) {
-			IGameConfiguration gameConfiguration = new ChineseTestGameConfiguration(2);
+			IGameConfiguration gameConfiguration = new ChineseTestGameConfiguration(6);
 			ChineseTesterReferee referee = new ChineseTesterReferee(gameConfiguration);
 			referee.setup(s);
 			referee.conductGame();

@@ -248,7 +248,9 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 		String icon;
 		Direction direction;
 		int playerId;
-		int counter = 0;
+		int pieceId;
+		int p0Counter = 0;
+		int p1Counter = 0;
 		for (ICoordinatePieceDuo coordinatePieceDuo : coordinatePieceDuos) {
 			// TODO: Check if the coordinate is empty
 			if (!board.isPlayableCoordinate(coordinatePieceDuo.getCoordinate())) {
@@ -258,11 +260,15 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 			String iconName = coordinatePieceDuo.getIconColor();
 			if (iconName.equals("black")) {
 				playerId = 0;
+				p0Counter += 5;
+				pieceId = p0Counter + 1000;
 				player = playerList.getPlayer(playerId);
 				icon = "B";
 				direction = Direction.N;
 			} else {
 				playerId = 1;
+				p1Counter += 5;
+				pieceId = p1Counter + 2000;
 				player = playerList.getPlayer(playerId);
 				icon = "W";
 				direction = Direction.S;
@@ -272,7 +278,7 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 			// First create the piece as a pawn regardless of its real identity:
 			menMovePossibilities = new TurkishPawnPossibilities();
 			menMoveConstraints = new TurkishPawnConstraints();
-			men = new Pawn(1000 + counter, icon, player, direction, menMovePossibilities, menMoveConstraints);
+			men = new Pawn(pieceId, icon, player, direction, menMovePossibilities, menMoveConstraints);
 			player.addPiece(men);
 
 			// If the piece was a king piece, then transform it:
@@ -281,7 +287,6 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 			}
 
 			coordinatePieceMap.putPieceToCoordinate(men, coordinatePieceDuo.getCoordinate());
-			counter++;
 		}
 
 	}

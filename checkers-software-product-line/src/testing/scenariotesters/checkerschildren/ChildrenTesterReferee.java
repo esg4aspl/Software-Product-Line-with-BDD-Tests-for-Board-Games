@@ -183,7 +183,9 @@ public class ChildrenTesterReferee extends AbstractTesterReferee {
 		String icon;
 		Direction direction;
 		int playerId;
-		int counter = 0;
+		int pieceId;
+		int p0Counter = 0;
+		int p1Counter = 0;
 		for (ICoordinatePieceDuo coordinatePieceDuo : coordinatePieceDuos) {
 			// TODO: Check if the coordinate is empty
 			if (!board.isPlayableCoordinate(coordinatePieceDuo.getCoordinate())) {
@@ -196,11 +198,15 @@ public class ChildrenTesterReferee extends AbstractTesterReferee {
 
 			if (iconName.equals("black")) {
 				playerId = 0;
+				p0Counter += 5;
+				pieceId = p0Counter + 1000;
 				player = playerList.getPlayer(playerId);
 				icon = "B";
 				direction = Direction.N;
 			} else {
 				playerId = 1;
+				p1Counter += 5;
+				pieceId = p1Counter + 2000;
 				player = playerList.getPlayer(playerId);
 				icon = "W";
 				direction = Direction.S;
@@ -210,11 +216,9 @@ public class ChildrenTesterReferee extends AbstractTesterReferee {
 			// First create the piece as a pawn regardless of its real identity:
 			menMovePossibilities = new PawnMovePossibilities();
 			menMoveConstraints = new PawnMoveConstraints();
-			men = new Pawn(1000 + counter, icon, player, direction, menMovePossibilities, menMoveConstraints);
+			men = new Pawn(pieceId, icon, player, direction, menMovePossibilities, menMoveConstraints);
 			player.addPiece(men);
-
 			coordinatePieceMap.putPieceToCoordinate(men, coordinatePieceDuo.getCoordinate());
-			counter++;
 		}
 
 	}
@@ -425,7 +429,7 @@ public class ChildrenTesterReferee extends AbstractTesterReferee {
 
 	public static void main(String[] args) {
 		String[] moveArr = {
-				"invalidDestinationCoordinateForMoveSourceCoordinateIsDifferentThanLastMovesDestinationCoordinate1"
+				"validJumpMove5"
 			};
 		
 //		String[] moveArr = {

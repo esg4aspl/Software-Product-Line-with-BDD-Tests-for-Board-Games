@@ -167,25 +167,3 @@ Feature: American Checkers
       | endOfTheGameInDrawBothPlayersHaveOnePiece1 |
       | endOfTheGameInDrawBothPlayersHaveOnePiece2 |
 
-  Scenario Outline: End of the Game In Draw - Forty Moves Without Crowning and Without Jumping
-    Given the game is played up to a certain point from file "<file_name>"
-    And the number of consecutive indecisive moves is 39
-    When the player makes a regular move without promoting
-    Then the game is ended as a draw
-
-    Examples: 
-      | file_name                               | explanation                                                                 |
-      | endOfTheGameInDrawFortyIndecisiveMoves1 | f: no promote is 39, no capture is 39, a regular move ends the game in draw |
-      | endOfTheGameInDrawFortyIndecisiveMoves2 | f: no promote is 45, no capture is 39, a regular move ends the game in draw |
-      | endOfTheGameInDrawFortyIndecisiveMoves3 | f: no promote is 39, no capture is 45, a regular move ends the game in draw |
-
-  Scenario Outline: End of the Game - Opponent Can't Make a Valid Move
-    Given the game is played up to a certain point from file "<file_name>"
-    When the player makes a move leaving no valid destination coordinates for any of the opponent's pieces
-    Then the opponent loses the game
-    And the player wins the game
-
-    Examples: 
-      | file_name                               |
-      | endOfTheGameOpponentCantMakeAValidMove1 |
-      | endOfTheGameOpponentCantMakeAValidMove2 |

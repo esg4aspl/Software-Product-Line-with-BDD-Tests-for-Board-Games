@@ -110,6 +110,7 @@ Feature: Spanish Checkers
       | invalidDestinationCoordinateForMoveNotBestSequence2                     | queen      | move is not part of the best sequence                                 | Not the best move                                                           |
       | invalidDestinationCoordinateForMoveNotBestSequence3                     | queen      | move is not part of the best sequence                                 | Not the best move                                                           |
       | invalidDestinationCoordinateForMoveOppositeDirectionOfLastMove1         | queen      | move direction is opposite of last jump move's direction              | If any opponent's pieces can be captured then it must be captured first!!!! |
+      | invalidDestinationCoordinateForMoveNotBestSequence4                     | pawn       | move is not part of the best sequence                                 | Not the best move                                                           |
 
   Scenario Outline: Crowning the Eligible Piece
     Given the game is played up to a certain point from file "<file_name>"

@@ -9,6 +9,7 @@ import testing.scenariotesters.checkerschinese.IChineseScenarioTester;
 import testing.scenariotesters.checkersspanish.SpanishCheckersScenarioTester;
 import testing.scenariotesters.checkersturkish.ITurkishScenarioTester;
 import testing.scenariotesters.checkersturkish.TurkishCheckersScenarioTester;
+import testing.scenariotesters.chess.ChessScenarioTester;
 
 public class Actionwords {
 	
@@ -23,6 +24,8 @@ public class Actionwords {
     		scenarioTester = new SpanishCheckersScenarioTester();
     	} else if (p1.equals("Turkish Checkers")) {
     		scenarioTester = new TurkishCheckersScenarioTester();
+    	} else if (p1.equals("Chess")) {
+    		scenarioTester = new ChessScenarioTester();
     	} else {
     		throw new PendingException("No Such Game");
     	}
@@ -193,6 +196,59 @@ public class Actionwords {
 
 	public void thePlayerOffersToEndTheGameInDraw() {
 		this.scenarioTester.thePlayerOffersToEndTheGameInDraw();
+	}
+	
+	
+	
+
+	public void thePlayerPicksAValidDestinationCoordinateThatHasNoPiecesInIt() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void thePlayerPicksAValidDestinationCoordinateThatHasACapturableOpponentPieceInIt() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void theOpponentPieceIsRemovedFromTheBoard() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void theOpponentsKingHasNoValidMoveToMake() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void thePlayerMakesAMoveThatThreatensTheOpponentsKingsCurrentPosition() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void theOpponentsOnlyPlayerOnTheBoardIsHisKing() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void thePlayerMakesAMoveThatNotChecksTheOpponentKingButLeavesItWithNoValidMoveToMake() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void theNumberOfConsecutiveIndecisiveMovesIs99() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void thePlayerMovesANonpawnPieceWithoutCapturingAnOpponentPiece() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void theOpponentsKingCanNotBeProtectedIfItIsChecked() {
+		// TODO Auto-generated method stub
+		
 	}
 
 
