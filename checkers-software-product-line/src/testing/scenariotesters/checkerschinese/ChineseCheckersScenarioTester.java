@@ -82,18 +82,6 @@ public class ChineseCheckersScenarioTester extends AmericanCheckersScenarioTeste
 	}
 	
 	@Override
-	public void thePlayerPicksAValidSourceCoordinateThatHasAP1PieceInIt(String p1) {
-		referee.conductGame();
-		prepareValidities();
-		assertEquals(SourceCoordinateValidity.VALID, sourceCoordinateValidityOfPlayerMove);
-		if (p1.equals("pawn")) {
-			assertTrue(pieceOfPlayerMove instanceof ChinesePawn);
-		} else {
-			throw new PendingException();
-		}
-	}
-	
-	@Override
 	public void theOpponentLosesTheGame() {
 		//There is no such functionality to make one player lose and not be able to continue playing yet.
 		throw new PendingException("There is no such functionality to make one player lose and not be able to continue playing yet.");

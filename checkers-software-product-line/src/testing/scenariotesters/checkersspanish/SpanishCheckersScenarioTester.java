@@ -66,18 +66,6 @@ public class SpanishCheckersScenarioTester extends AmericanCheckersScenarioTeste
 	}
 
 	@Override
-	public void thePlayerPicksAValidSourceCoordinateThatHasAP1PieceInIt(String p1) {
-		referee.conductGame();
-		prepareValidities();
-		assertEquals(SourceCoordinateValidity.VALID, sourceCoordinateValidityOfPlayerMove);
-		if (p1.equals("pawn")) {
-			assertTrue(pieceOfPlayerMove instanceof Pawn);
-		} else if (p1.equals("queen")) {
-			assertTrue(pieceOfPlayerMove instanceof Queen);
-		}
-	}
-	
-	@Override
 	public void theGameIsPlayedUpToACertainPointFromFileP1(String p1) {
 		referee.setup(p1);
 		info = (SpanishCheckersTestInfo) referee.getInfo();

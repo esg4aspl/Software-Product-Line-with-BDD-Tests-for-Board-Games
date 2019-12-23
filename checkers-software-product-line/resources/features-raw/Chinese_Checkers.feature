@@ -2,10 +2,9 @@ Feature: Chinese Checkers
 
   #TODO Test Start of the Game
   Scenario Outline: Valid Regular Move
-    Given the "Chinese Checkers" game is set up for "<number_of_players>" players
+  	Given the "Chinese Checkers" game is set up for "<number_of_players>" players
     And the game is played up to a certain point from file "<file_name>"
-    When the player picks a valid source coordinate that has a "pawn" piece in it
-    And the player picks a valid destination coordinate that is "one" squares away from the source coordinate
+    When the player makes a "valid regular" move
     Then the piece is moved to the destination coordinate
     And the next turn is given to the "next ingame" player
 
@@ -16,10 +15,9 @@ Feature: Chinese Checkers
       | validRegularMove3 |                 2 | f: opponent is not blocked, his pawn can jump, game should not end             |
 
   Scenario Outline: Valid Jump Move
-    Given the "Chinese Checkers" game is set up for "<number_of_players>" players
+  	Given the "Chinese Checkers" game is set up for "<number_of_players>" players
     And the game is played up to a certain point from file "<file_name>"
-    When the player picks a valid source coordinate that has a "pawn" piece in it
-    And the player picks a valid destination coordinate that is "two" squares away from the source coordinate
+    When the player makes a "valid capture" move
     Then the piece is moved to the destination coordinate
     And the next turn is given to the "<next_turn_player>" player
 
@@ -35,8 +33,8 @@ Feature: Chinese Checkers
   Scenario Outline: Player Chooses to Continue or Not
     Given the "Chinese Checkers" game is set up for "<number_of_players>" players
     And the game is played up to a certain point from file "<file_name>"
-    And the player has made jump moves in the current turn
-    And the player can continue doing jump moves
+    #the player has made jump moves in the current turn
+    #the player can continue doing jump moves
     And the player has been asked to continue or not
     When the player chooses to "<decision>"
     Then the next turn is given to the "<next_turn_player>" player
@@ -46,60 +44,47 @@ Feature: Chinese Checkers
       | playerChoosesToContinueOrNot1 |                 2 | continue  | current          |
       | playerChoosesToContinueOrNot2 |                 2 | stop      | next ingame      |
 
-  Scenario Outline: Invalid Source Coordinate for Move
-    Given the "Chinese Checkers" game is set up for "<number_of_players>" players
+  Scenario Outline: Invalid Move
+  	Given the "Chinese Checkers" game is set up for "<number_of_players>" players
     And the game is played up to a certain point from file "<file_name>"
-    When the player picks an invalid "source" coordinate because "<invalidity_reason>"
-    And the player picks any destination coordinate
+    When the player makes a "invalid" move
     Then the piece is not moved
     And an error message is shown saying "<error_message>"
-    And the player is asked for another "source" coordinate
+    And the player is asked for another move
 
     Examples: 
-      | file_name                                                                  | number_of_players | invalidity_reason                                                        | error_message                           |
-      | invalidSourceCoordinateForMoveOutsideBorders1                              |                 2 | source coordinate is not of valid square color                           | No piece at source coordinate           |
-      | invalidSourceCoordinateForMoveOutsideBorders2                              |                 2 | source coordinate is not of valid square color                           | No piece at source coordinate           |
-      | invalidSourceCoordinateForMoveUnplayableColor1                             |                 2 | source coordinate is not of valid square color                           | No piece at source coordinate           |
-      | invalidSourceCoordinateForMoveUnplayableColor2                             |                 2 | source coordinate is not of valid square color                           | No piece at source coordinate           |
-      | invalidSourceCoordinateForMoveEmpty1                                       |                 2 | source coordinate is empty                                               | No piece at source coordinate           |
-      | invalidSourceCoordinateForMoveEmpty2                                       |                 2 | source coordinate is empty                                               | No piece at source coordinate           |
-      | invalidSourceCoordinateForMoveEmpty3                                       |                 2 | source coordinate is empty                                               | No piece at source coordinate           |
-      | invalidSourceCoordinateForMoveOpponentsPiece1                              |                 2 | source coordinate has opponent's piece                                   | Piece does not belong to current player |
-      | invalidSourceCoordinateForMoveOpponentsPiece2                              |                 2 | source coordinate has opponent's piece                                   | Piece does not belong to current player |
-      | invalidSourceCoordinateForMoveOpponentsPiece3                              |                 2 | source coordinate has opponent's piece                                   | Piece does not belong to current player |
-      | invalidSourceCoordinateForMoveDifferentThanLastMovesDestinationCoordinate1 |                 2 | source coordinate of move is different than last jump move’s destination | Destination valid? false                |
-
-  Scenario Outline: Invalid Destination Coordinate for Move
-    Given the "Chinese Checkers" game is set up for "<number_of_players>" players
-    And the game is played up to a certain point from file "<file_name>"
-    When the player picks a valid source coordinate that has a "pawn" piece in it
-    And the player picks an invalid "destination" coordinate because "<invalidity_reason>"
-    Then the piece is not moved
-    And an error message is shown saying "<error_message>"
-    And the player is asked for another "source" coordinate
-
-    Examples: 
-      | file_name                                                                                         | number_of_players | invalidity_reason                                                        | error_message                               |
-      | invalidDestinationCoordinateForMoveOutsideBorders1                                                |                 2 | destination coordinate is not of valid square color                      | Destination Valid? false                    |
-      | invalidDestinationCoordinateForMoveOutsideBorders2                                                |                 2 | destination coordinate is not of valid square color                      | Destination Valid? false                    |
-      | invalidDestinationCoordinateForMoveUnplayableColor1                                               |                 2 | destination coordinate is not of valid square color                      | Destination Valid? false                    |
-      | invalidDestinationCoordinateForMoveUnplayableColor2                                               |                 2 | destination coordinate is not of valid square color                      | Destination Valid? false                    |
-      | invalidDestinationCoordinateForMoveOccupied1                                                      |                 2 | destination coordinate is occupied                                       | A piece at destination coordinate           |
-      | invalidDestinationCoordinateForMoveOccupied2                                                      |                 2 | destination coordinate is occupied                                       | A piece at destination coordinate           |
-      | invalidDestinationCoordinateForMoveOccupied3                                                      |                 2 | destination coordinate is occupied                                       | A piece at destination coordinate           |
-      | invalidDestinationCoordinateForMoveUnallowedDirection1                                            |                 2 | destination coordinate's direction is not allowed                        | Destination Valid? false                    |
-      | invalidDestinationCoordinateForMoveUnallowedDirection2                                            |                 2 | destination coordinate's direction is not allowed                        | Destination Valid? false                    |
-      | invalidDestinationCoordinateForMoveTooFarAway1                                                    |                 2 | destination coordinate is more than two squares away                     | Destination Valid? false                    |
-      | invalidDestinationCoordinateForMoveTooFarAway2                                                    |                 2 | destination coordinate is more than two squares away                     | Destination Valid? false                    |
-      | invalidDestinationCoordinateForMoveJumpedPieceIsNull1                                             |                 2 | jumped piece is null                                                     | There must be only one piece on jump path 0 |
-      | invalidDestinationCoordinateForMoveCantLeaveGoalTriangle1                                         |                 2 | piece can not leave goal triangle                                        | Piece can not leave goal triangle           |
-      | invalidDestinationCoordinateForMoveOppositeDirectionOfLastMove1                                   |                 2 | move direction is opposite of last jump move's direction                 | Not one of possible jump moves              |
+      | file_name                                                                  | number_of_players | invalidity_reason                                                        | error_message                               |
+      | invalidSourceCoordinateForMoveOutsideBorders1                              |                 2 | source coordinate is not of valid square color                           | No piece at source coordinate               |
+      | invalidSourceCoordinateForMoveOutsideBorders2                              |                 2 | source coordinate is not of valid square color                           | No piece at source coordinate               |
+      | invalidSourceCoordinateForMoveUnplayableColor1                             |                 2 | source coordinate is not of valid square color                           | No piece at source coordinate               |
+      | invalidSourceCoordinateForMoveUnplayableColor2                             |                 2 | source coordinate is not of valid square color                           | No piece at source coordinate               |
+      | invalidSourceCoordinateForMoveEmpty1                                       |                 2 | source coordinate is empty                                               | No piece at source coordinate               |
+      | invalidSourceCoordinateForMoveEmpty2                                       |                 2 | source coordinate is empty                                               | No piece at source coordinate               |
+      | invalidSourceCoordinateForMoveEmpty3                                       |                 2 | source coordinate is empty                                               | No piece at source coordinate               |
+      | invalidSourceCoordinateForMoveOpponentsPiece1                              |                 2 | source coordinate has opponent's piece                                   | Piece does not belong to current player     |
+      | invalidSourceCoordinateForMoveOpponentsPiece2                              |                 2 | source coordinate has opponent's piece                                   | Piece does not belong to current player     |
+      | invalidSourceCoordinateForMoveOpponentsPiece3                              |                 2 | source coordinate has opponent's piece                                   | Piece does not belong to current player     |
+      | invalidSourceCoordinateForMoveDifferentThanLastMovesDestinationCoordinate1 |                 2 | source coordinate of move is different than last jump move’s destination | Destination valid? false                    |
+      | invalidDestinationCoordinateForMoveOutsideBorders1                         |                 2 | destination coordinate is not of valid square color                      | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveOutsideBorders2                         |                 2 | destination coordinate is not of valid square color                      | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveUnplayableColor1                        |                 2 | destination coordinate is not of valid square color                      | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveUnplayableColor2                        |                 2 | destination coordinate is not of valid square color                      | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveOccupied1                               |                 2 | destination coordinate is occupied                                       | A piece at destination coordinate           |
+      | invalidDestinationCoordinateForMoveOccupied2                               |                 2 | destination coordinate is occupied                                       | A piece at destination coordinate           |
+      | invalidDestinationCoordinateForMoveOccupied3                               |                 2 | destination coordinate is occupied                                       | A piece at destination coordinate           |
+      | invalidDestinationCoordinateForMoveUnallowedDirection1                     |                 2 | destination coordinate's direction is not allowed                        | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveUnallowedDirection2                     |                 2 | destination coordinate's direction is not allowed                        | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveTooFarAway1                             |                 2 | destination coordinate is more than two squares away                     | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveTooFarAway2                             |                 2 | destination coordinate is more than two squares away                     | Destination Valid? false                    |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsNull1                      |                 2 | jumped piece is null                                                     | There must be only one piece on jump path 0 |
+      | invalidDestinationCoordinateForMoveCantLeaveGoalTriangle1                  |                 2 | piece can not leave goal triangle                                        | Piece can not leave goal triangle           |
+      | invalidDestinationCoordinateForMoveOppositeDirectionOfLastMove1            |                 2 | move direction is opposite of last jump move's direction                 | Not one of possible jump moves              |
 
   Scenario Outline: End of the Game
     Given the "Chinese Checkers" game is set up for "<number_of_players>" players
     And the game is played up to a certain point from file "<file_name>"
-    And the player has at least one of his pieces in the goal triangle
-    And there is only one square is available at the goal triangle
+    #the player has at least one of his pieces in the goal triangle
+    #there is only one square available at the goal triangle
     When the player jumps moves one of his pieces to the last available square in goal triangle
     Then the player wins the game
 

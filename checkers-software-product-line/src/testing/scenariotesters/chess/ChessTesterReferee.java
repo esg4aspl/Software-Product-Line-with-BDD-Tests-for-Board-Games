@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import base.GUI;
 import base.Pawn;
 import base.Player;
 import base.PlayerList;
@@ -13,7 +12,6 @@ import chess.Bishop;
 import chess.BishopMoveConstraints;
 import chess.BishopMovePossibilities;
 import chess.ChessBoard;
-import chess.ChessBoardConsoleView;
 import chess.ChessGameConfiguration;
 import chess.ChessStartCoordinates;
 import chess.King;
@@ -30,12 +28,10 @@ import chess.PawnMovePossibilities;
 import chess.Queen;
 import chess.QueenMoveConstraints;
 import chess.QueenMovePossibilities;
-import chess.Referee;
 import chess.Rook;
 import chess.RookMoveConstraints;
 import chess.RookMovePossibilities;
 import core.AbstractPiece;
-import core.AbstractReferee;
 import core.Direction;
 import core.ICoordinate;
 import core.IGameConfiguration;
@@ -44,7 +40,6 @@ import core.IPieceMoveConstraints;
 import core.IPieceMovePossibilities;
 import core.IPlayer;
 import core.IPlayerList;
-import core.IView;
 import core.MoveOpResult;
 import rules.RuleDestinationCoordinateMustBeValidForCurrentPiece;
 import rules.RuleEndOfGameChess;
@@ -61,7 +56,6 @@ import testing.helpers.ICoordinatePieceDuo;
 import testing.helpers.SourceCoordinateValidity;
 import testing.helpers.TestResult;
 import testing.scenariotesters.AbstractTesterReferee;
-import testing.scenariotesters.checkersamerican.AmericanCheckersTestInfo;
 
 public class ChessTesterReferee extends AbstractTesterReferee {
 
@@ -127,6 +121,7 @@ public class ChessTesterReferee extends AbstractTesterReferee {
 			
 			switch(duo.getPieceType()) {
 				case "pawn": men = new Pawn(pieceId, "P"+playerId, player, direction, menMovePossibilities, menMoveConstraints); break;
+				case "limitedpawn": men = new LimitedPawn(pieceId, "P"+playerId, player, direction, new LimitedPawnMovePossibilities(), new LimitedPawnMoveConstraints()); break;
 				case "rook": men = new Rook(pieceId, "R"+playerId, player, direction, rookMovePossibilities, rookMoveConstraints); break;
 				case "knight": men = new Knight(pieceId, "k"+playerId, player, direction, knightMovePossibilities, knightMoveConstraints); break;
 				case "bishop": men = new Bishop(pieceId, "B"+playerId, player, direction, bishopMovePossibilities, bishopMoveConstraints); break;
@@ -289,7 +284,8 @@ public class ChessTesterReferee extends AbstractTesterReferee {
 	//MAIN METHOD
 	
 	public static void main(String[] args) {
-		String[] iniArr = {"validCaptureMove1"};
+		String[] iniArr = {"validCaptureMove1"
+				};
 		for (String ini : iniArr) {
 			IGameConfiguration gameConfiguration = new ChessGameConfiguration();
 			AbstractTesterReferee referee = new ChessTesterReferee(gameConfiguration);

@@ -9,8 +9,7 @@ Feature: Children Checkers
 
   Scenario Outline: Valid Regular Move
     Given the game is played up to a certain point from file "<file_name>"
-    When the player picks a valid source coordinate that has a "<piece_type>" piece in it
-    And the player picks a valid destination coordinate that is "one" squares away from the source coordinate
+    When the player makes a "valid regular" move
     Then the piece is moved to the destination coordinate
     And the next turn is given to the "next ingame" player
 
@@ -25,10 +24,9 @@ Feature: Children Checkers
 
   Scenario Outline: Valid Jump Move
     Given the game is played up to a certain point from file "<file_name>"
-    When the player picks a valid source coordinate that has a "<piece_type>" piece in it
-    And the player picks a valid destination coordinate that is "two" squares away from the source coordinate
+    When the player makes a "valid capture" move
     Then the piece is moved to the destination coordinate
-    And the opponent piece in between the source and destination coordinates are removed from the board
+    And the captured opponent piece is removed from the board
     And the next turn is given to the "<next_turn_player>" player
 
     Examples: 
@@ -50,13 +48,12 @@ Feature: Children Checkers
       | validJumpMove15 | next ingame      | pawn       |
       | validJumpMove17 | next ingame      | pawn       |
 
-  Scenario Outline: Invalid Source Coordinate for Move
+  Scenario Outline: Invalid Move
     Given the game is played up to a certain point from file "<file_name>"
-    When the player picks an invalid "source" coordinate because "<invalidity_reason>"
-    And the player picks any destination coordinate
+    When the player makes a "invalid" move
     Then the piece is not moved
     And an error message is shown saying "<error_message>"
-    And the player is asked for another "source" coordinate
+    And the player is asked for another move
 
     Examples: 
       | file_name                                                                  | invalidity_reason                                                        | error_message                           |
@@ -71,35 +68,24 @@ Feature: Children Checkers
       | invalidSourceCoordinateForMoveOpponentsPiece2                              | source coordinate has opponent's piece                                   | Piece does not belong to current player |
       | invalidSourceCoordinateForMoveOpponentsPiece3                              | source coordinate has opponent's piece                                   | Piece does not belong to current player |
       | invalidSourceCoordinateForMoveDifferentThanLastMovesDestinationCoordinate1 | source coordinate of move is different than last jump move’s destination | Destination valid? false                |
-
-  Scenario Outline: Invalid Destination Coordinate for Move
-    Given the game is played up to a certain point from file "<file_name>"
-    When the player picks a valid source coordinate that has a "<piece_type>" piece in it
-    And the player picks an invalid "destination" coordinate because "<invalidity_reason>"
-    Then the piece is not moved
-    And an error message is shown saying "<error_message>"
-    And the player is asked for another "source" coordinate
-
-    Examples: 
-      | file_name                                                 | piece_type | invalidity_reason                                    | error_message                          |
-      | invalidDestinationCoordinateForMoveOutsideBorders1        | pawn       | destination coordinate is outside of the board       | Destination Valid? false               |
-      | invalidDestinationCoordinateForMoveOutsideBorders2        | pawn       | destination coordinate is outside of the board       | Destination Valid? false               |
-      | invalidDestinationCoordinateForMoveUnplayableColor1       | pawn       | destination coordinate is not of valid square color  | Destination Valid? false               |
-      | invalidDestinationCoordinateForMoveUnplayableColor2       | pawn       | destination coordinate is not of valid square color  | Destination Valid? false               |
-      | invalidDestinationCoordinateForMoveOccupied1              | pawn       | destination coordinate is occupied                   | A piece at destination coordinate      |
-      | invalidDestinationCoordinateForMoveOccupied2              | pawn       | destination coordinate is occupied                   | A piece at destination coordinate      |
-      | invalidDestinationCoordinateForMoveOccupied3              | pawn       | destination coordinate is occupied                   | A piece at destination coordinate      |
-      | invalidDestinationCoordinateForMoveUnallowedDirection1    | pawn       | destination coordinate's direction is not allowed    | Destination Valid? false               |
-      | invalidDestinationCoordinateForMoveUnallowedDirection2    | pawn       | destination coordinate's direction is not allowed    | Destination Valid? false               |
-      | invalidDestinationCoordinateForMoveUnallowedDirection3    | pawn       | destination coordinate's direction is not allowed    | Destination Valid? false               |
-      | invalidDestinationCoordinateForMoveTooFarAway1            | pawn       | destination coordinate is more than two squares away | Destination Valid? false               |
-      | invalidDestinationCoordinateForMoveTooFarAway2            | pawn       | destination coordinate is more than two squares away | Destination Valid? false               |
-      | invalidDestinationCoordinateForMoveJumpedPieceIsNull1     | pawn       | jumped piece is null                                 | There must be one piece on jump path 0 |
-      | invalidDestinationCoordinateForMoveJumpedPieceIsOwnPiece1 | pawn       | jumped piece is not opponent piece                   | Jumped Piece Must Be Opponent Piece    |
+      | invalidDestinationCoordinateForMoveOutsideBorders1                         | destination coordinate is outside of the board                           | Destination Valid? false                |
+      | invalidDestinationCoordinateForMoveOutsideBorders2                         | destination coordinate is outside of the board                           | Destination Valid? false                |
+      | invalidDestinationCoordinateForMoveUnplayableColor1                        | destination coordinate is not of valid square color                      | Destination Valid? false                |
+      | invalidDestinationCoordinateForMoveUnplayableColor2                        | destination coordinate is not of valid square color                      | Destination Valid? false                |
+      | invalidDestinationCoordinateForMoveOccupied1                               | destination coordinate is occupied                                       | A piece at destination coordinate       |
+      | invalidDestinationCoordinateForMoveOccupied2                               | destination coordinate is occupied                                       | A piece at destination coordinate       |
+      | invalidDestinationCoordinateForMoveOccupied3                               | destination coordinate is occupied                                       | A piece at destination coordinate       |
+      | invalidDestinationCoordinateForMoveUnallowedDirection1                     | destination coordinate's direction is not allowed                        | Destination Valid? false                |
+      | invalidDestinationCoordinateForMoveUnallowedDirection2                     | destination coordinate's direction is not allowed                        | Destination Valid? false                |
+      | invalidDestinationCoordinateForMoveUnallowedDirection3                     | destination coordinate's direction is not allowed                        | Destination Valid? false                |
+      | invalidDestinationCoordinateForMoveTooFarAway1                             | destination coordinate is more than two squares away                     | Destination Valid? false                |
+      | invalidDestinationCoordinateForMoveTooFarAway2                             | destination coordinate is more than two squares away                     | Destination Valid? false                |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsNull1                      | jumped piece is null                                                     | There must be one piece on jump path 0  |
+      | invalidDestinationCoordinateForMoveJumpedPieceIsOwnPiece1                  | jumped piece is not opponent piece                                       | Jumped Piece Must Be Opponent Piece     |
 
   Scenario Outline: End of the Game
     Given the game is played up to a certain point from file "<file_name>"
-    And only one piece of the opponent is present at the game board
+    #only one piece of the opponent is present at the game board
     When the player jumps over the last piece of the opponent
     Then the opponent loses the game
     And the player wins the game
@@ -111,8 +97,7 @@ Feature: Children Checkers
 
   Scenario Outline: End of the Game - Reaching the Crownhead
     Given the game is played up to a certain point from file "<file_name>"
-    When the player picks a valid source coordinate that has a "<piece_type>" piece in it
-    And the player picks a valid destination coordinate in opponent's crownhead
+    When the player makes a move to opponent's crownhead with a pawn
     Then the opponent loses the game
     And the player wins the game
 

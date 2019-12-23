@@ -10,6 +10,7 @@ import testing.scenariotesters.checkersspanish.SpanishCheckersScenarioTester;
 import testing.scenariotesters.checkersturkish.ITurkishScenarioTester;
 import testing.scenariotesters.checkersturkish.TurkishCheckersScenarioTester;
 import testing.scenariotesters.chess.ChessScenarioTester;
+import testing.scenariotesters.chess.IChessScenarioTester;
 
 public class Actionwords {
 	
@@ -53,32 +54,8 @@ public class Actionwords {
     	scenarioTester.theNextTurnIsGivenToTheP1Player(p1);
     }
 
-    public void thePlayerPicksAValidDestinationCoordinateThatIsP1SquaresAwayFromTheSourceCoordinate(String p1) {
-    	scenarioTester.thePlayerPicksAValidDestinationCoordinateThatIsP1SquaresAwayFromTheSourceCoordinate(p1);
-    }
-
-    public void theOpponentPieceInBetweenTheSourceAndDestinationCoordinatesAreRemovedFromTheBoard() {
-    	scenarioTester.theOpponentPieceInBetweenTheSourceAndDestinationCoordinatesAreRemovedFromTheBoard();
-    }
-
-    public void thePlayerPicksAnInvalidP1CoordinateBecauseP2(String p1, String p2) {
-    	scenarioTester.thePlayerPicksAnInvalidP1CoordinateBecauseP2(p1, p2);
-    }
-
-    public void thePlayerPicksAnyDestinationCoordinate() {
-    	scenarioTester.thePlayerPicksAnyDestinationCoordinate();
-    }
-
     public void anErrorMessageIsShownSayingP1(String p1) {
     	scenarioTester.anErrorMessageIsShownSayingP1(p1);
-    }
-
-    public void thePlayerIsAskedForAnotherP1Coordinate(String p1) {
-    	scenarioTester.thePlayerIsAskedForAnotherP1Coordinate(p1);
-    }
-
-    public void onlyOnePieceOfTheOpponentIsPresentAtTheGameBoard() {
-    	scenarioTester.onlyOnePieceOfTheOpponentIsPresentAtTheGameBoard();
     }
 
     public void thePlayerJumpsOverTheLastPieceOfTheOpponent() {
@@ -92,22 +69,9 @@ public class Actionwords {
     public void thePlayerWinsTheGame() {
     	scenarioTester.thePlayerWinsTheGame();
     }
-
-    public void thePlayerHasOnlyOnePieceOnTheGameBoard() {
-    	scenarioTester.thePlayerHasOnlyOnePieceOnTheGameBoard();
-    }
-
+    
 	public void thePlayerMakesAMoveLeavingNoValidDestinationCoordinatesForAnyOfTheOpponentsPieces() {
 		scenarioTester.thePlayerMakesAMoveLeavingNoValidDestinationCoordinatesForAnyOfTheOpponentsPieces();
-	}
-
-	public void thePlayerPicksAValidDestinationCoordinateInOpponentsCrownhead() {
-		scenarioTester.thePlayerPicksAValidDestinationCoordinateInOpponentsCrownhead();
-	}
-
-
-	public void theNumberOfConsecutiveIndecisiveMovesIs39() {
-		scenarioTester.theNumberOfConsecutiveIndecisiveMovesIs39();
 	}
 
 	public void thePlayerMakesARegularMoveWithoutPromoting() {
@@ -134,10 +98,6 @@ public class Actionwords {
 		scenarioTester.thePlayerJumpsOverOneOrMultiplePiecesLeavingTheOpponentWithOnlyOnePieceThatIsUnableToPerformAJumpMove();
 	}
 
-	public void thePlayerPicksAValidSourceCoordinateThatHasAP1PieceInIt(String p1) {
-		scenarioTester.thePlayerPicksAValidSourceCoordinateThatHasAP1PieceInIt(p1);
-	}
-
 	public void thePieceIsMovedToTheDestinationCoordinate() {
 		scenarioTester.thePieceIsMovedToTheDestinationCoordinate();
 	}
@@ -159,7 +119,13 @@ public class Actionwords {
 	}
 
 	public void thePlayerFinishesHisTurnLeavingTheBoardInAPreviouslyReachedState() {
-		((ITurkishScenarioTester) scenarioTester).thePlayerFinishesHisTurnLeavingTheBoardInAPreviouslyReachedState();
+		if (scenarioTester instanceof ITurkishScenarioTester) {
+			((ITurkishScenarioTester) scenarioTester).thePlayerFinishesHisTurnLeavingTheBoardInAPreviouslyReachedState();
+		} else if (scenarioTester instanceof IChessScenarioTester) {
+			((IChessScenarioTester) scenarioTester).thePlayerFinishesHisTurnLeavingTheBoardInAPreviouslyReachedState();
+		} else {
+			throw new PendingException();
+		}
 	}
 
 	public void thePlayerHasMadeJumpMovesInTheCurrentTurn() {
@@ -198,58 +164,52 @@ public class Actionwords {
 		this.scenarioTester.thePlayerOffersToEndTheGameInDraw();
 	}
 	
-	
-	
-
-	public void thePlayerPicksAValidDestinationCoordinateThatHasNoPiecesInIt() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void thePlayerPicksAValidDestinationCoordinateThatHasACapturableOpponentPieceInIt() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	public void theOpponentPieceIsRemovedFromTheBoard() {
-		// TODO Auto-generated method stub
-		
+		((IChessScenarioTester) scenarioTester).theOpponentPieceIsRemovedFromTheBoard();
 	}
 
-	public void theOpponentsKingHasNoValidMoveToMake() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	public void thePlayerMakesAMoveThatThreatensTheOpponentsKingsCurrentPosition() {
-		// TODO Auto-generated method stub
-		
+		((IChessScenarioTester) scenarioTester).thePlayerMakesAMoveThatThreatensTheOpponentsKingsCurrentPosition();
 	}
 
-	public void theOpponentsOnlyPlayerOnTheBoardIsHisKing() {
-		// TODO Auto-generated method stub
-		
+
+	public void thePlayerMovesANonpawnPieceWithoutCapturingAnOpponentPiece() {
+		((IChessScenarioTester) scenarioTester).thePlayerMovesANonpawnPieceWithoutCapturingAnOpponentPiece();
 	}
 
+
+	public void theRookIsMovedToTheAdjacentCoordinateThatIsTowardsTheCenter() {
+		((IChessScenarioTester) scenarioTester).theRookIsMovedToTheAdjacentCoordinateThatIsTowardsTheCenter();
+	}
+
+	public void thePlayerMakesAP1Move(String p1) {
+		scenarioTester.thePlayerMakesAP1Move(p1);
+	}
+
+	public void theCapturedOpponentPieceIsRemovedFromTheBoard() {
+		scenarioTester.theCapturedOpponentPieceIsRemovedFromTheBoard();
+	}
+
+	public void thePlayerIsAskedForAnotherMove() {
+		scenarioTester.thePlayerIsAskedForAnotherMove();
+	}
+
+	public void thePlayerMakesAMoveToOpponentsCrownheadWithAPawn() {
+		scenarioTester.thePlayerMakesAMoveToOpponentsCrownheadWithAPawn();
+	}
+
+	public void theEnPassantOpponentPieceIsRemovedFromTheBoard() {
+		((IChessScenarioTester) scenarioTester).theEnPassantOpponentPieceIsRemovedFromTheBoard();
+	}
+
+	
 	public void thePlayerMakesAMoveThatNotChecksTheOpponentKingButLeavesItWithNoValidMoveToMake() {
 		// TODO Auto-generated method stub
 		
 	}
-
-	public void theNumberOfConsecutiveIndecisiveMovesIs99() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void thePlayerMovesANonpawnPieceWithoutCapturingAnOpponentPiece() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void theOpponentsKingCanNotBeProtectedIfItIsChecked() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 
 }
