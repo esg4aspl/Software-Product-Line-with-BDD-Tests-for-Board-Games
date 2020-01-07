@@ -4,18 +4,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import base.Pawn;
-import chess.Bishop;
 import chess.ChessGameConfiguration;
-import chess.King;
-import chess.Knight;
+import chess.LimitedPawn;
 import chess.Queen;
 import chess.QueenMoveConstraints;
 import chess.QueenMovePossibilities;
 import chess.Rook;
 import core.AbstractPiece;
+import core.Coordinate;
 import core.Zone;
 import cucumber.api.PendingException;
-import testing.helpers.SourceCoordinateValidity;
 import testing.scenariotesters.checkersamerican.AmericanCheckersScenarioTester;
 
 public class ChessScenarioTester extends AmericanCheckersScenarioTester implements IChessScenarioTester {
@@ -23,12 +21,6 @@ public class ChessScenarioTester extends AmericanCheckersScenarioTester implemen
 	@Override
 	public void theP1GameIsSetUp(String p1) {
 		referee = new ChessTesterReferee(new ChessGameConfiguration());
-	}
-
-	@Override
-	public void theOpponentPieceIsRemovedFromTheBoard() {
-		assertEquals(Zone.ONSIDE, jumpedPieceOfPlayerMove.getCurrentZone());
-		assertEquals(null, jumpedPieceOfPlayerMove.getCurrentCoordinate());
 	}
 
 	@Override
@@ -62,7 +54,12 @@ public class ChessScenarioTester extends AmericanCheckersScenarioTester implemen
 
 	@Override
 	public void theRookIsMovedToTheAdjacentCoordinateThatIsTowardsTheCenter() {
-		// TODO Auto-generated method stub
+		int yCoordinate = playerOfPlayerMove.getId() == 0 ? 0 : 7;
+		int xCoordinate = destinationCoordinateOfPlayerMove.getXCoordinate() == 2 ? 3 : 5;
+		Coordinate rookCoordinate = new Coordinate(xCoordinate, yCoordinate);
+		AbstractPiece pieceAtRookCoordinate = referee.getCoordinatePieceMap().getPieceAtCoordinate(rookCoordinate);
+		assertTrue(pieceAtRookCoordinate instanceof Rook);
+		assertEquals(playerOfPlayerMove, pieceAtRookCoordinate.getPlayer());
 	}
 
 	@Override
@@ -72,13 +69,6 @@ public class ChessScenarioTester extends AmericanCheckersScenarioTester implemen
 	}
 
 	@Override
-	public void theEnPassantOpponentPieceIsRemovedFromTheBoard() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
-	@Override
 	public void thePlayerMakesAMoveThatNotChecksTheOpponentKingButLeavesItWithNoValidMoveToMake() {
 		referee.conductGame();
 		prepareValidities();
@@ -86,10 +76,16 @@ public class ChessScenarioTester extends AmericanCheckersScenarioTester implemen
 
 	@Override
 	public void theCapturedOpponentPieceIsRemovedFromTheBoard() {
-		//TODO Edit for en passant
-		assertEquals(pieceOfPlayerMove, getPieceAtCoordinate(jumpedCoordinateOfPlayerMove));
-		assertEquals(Zone.ONSIDE, jumpedPieceOfPlayerMove.getCurrentZone());
-		assertEquals(null, jumpedPieceOfPlayerMove.getCurrentCoordinate());
+		if ( (pieceOfPlayerMove instanceof Pawn || pieceOfPlayerMove instanceof LimitedPawn) && !destinationCoordinateOfPlayerMove.equals(jumpedCoordinateOfPlayerMove) ) {
+			//En passant
+			assertEquals(null, getPieceAtCoordinate(jumpedCoordinateOfPlayerMove));
+			assertEquals(Zone.ONSIDE, jumpedPieceOfPlayerMove.getCurrentZone());
+			assertEquals(null, jumpedPieceOfPlayerMove.getCurrentCoordinate());
+		} else {
+			assertEquals(pieceOfPlayerMove, getPieceAtCoordinate(jumpedCoordinateOfPlayerMove));
+			assertEquals(Zone.ONSIDE, jumpedPieceOfPlayerMove.getCurrentZone());
+			assertEquals(null, jumpedPieceOfPlayerMove.getCurrentCoordinate());
+		}
 	}
 
 	

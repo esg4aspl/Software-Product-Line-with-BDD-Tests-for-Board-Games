@@ -12,12 +12,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import base.AmericanGameConfiguration;
-import base.Pawn;
 import checkersamerican.King;
 import checkersamerican.KingMoveConstraints;
 import checkersamerican.KingMovePossibilities;
 import core.AbstractPiece;
-import core.Direction;
 import core.ICoordinate;
 import core.IMoveCoordinate;
 import core.IPlayer;
@@ -54,7 +52,6 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 			outputter = new PrintWriter(new FileWriter("./src/testing/scenariotesters/checkersamerican/ScenarioTesterOutput.txt", true));
 			outputter.println("\nNew Test Run - " + DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss").format(LocalDateTime.now()));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -218,16 +215,6 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		assertTrue(referee.getInfo().isDraw());
 	}
 
-
-
-	@Override
-	public void thePlayerMakesARegularMoveWithoutPromoting() {
-		referee.conductGame();
-		prepareValidities();
-		assertEquals(DestinationCoordinateValidity.VALID_REGULAR, destinationCoordinateValidityOfPlayerMove);
-		assertEquals(pieceOfPlayerMove, referee.getCoordinatePieceMap().getPieceAtCoordinate(destinationCoordinateOfPlayerMove));
-	}
-	
 	@Override
 	public void inThePreviousTurnTheOpponentHasOfferedToEndTheGameInADraw() {
 		assertTrue(referee.getInfo().isDrawOffered());
@@ -265,11 +252,8 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 		prepareValidities();
 		assertEquals(DestinationCoordinateValidity.VALID_JUMP, destinationCoordinateValidityOfPlayerMove);
 		assertEquals(1, findOpponentPieceCount());
-		//TODO: Implement the next line or not?
-		//assertEquals(0, findPossibleJumpMoves(opponent).size());
 	}
 	
-
 	@Override
 	public void thePieceIsMovedToTheDestinationCoordinate() {
 		//Check if destination coordinate now holds the moved piece.
@@ -282,12 +266,11 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 
 	@Override
 	public void thePieceIsP1ToACrownedPiece(String p1) {
-		//TODO: Implement "not promoted" case
-		
-		if (!p1.equals("promoted"))
-			throw new PendingException();
-		
 		AbstractPiece newPiece = getPieceAtCoordinate(destinationCoordinateOfPlayerMove);
+		
+		if (p1.equals("not promoted"))
+			assertEquals(pieceOfPlayerMove, newPiece);
+		
 		assertTrue(newPiece != null);
 		assertEquals(pieceOfPlayerMove.getId()+2, newPiece.getId());
 		if (pieceOfPlayerMove.getIcon().equals("W"))
@@ -346,7 +329,6 @@ public class AmericanCheckersScenarioTester implements IScenarioTester {
 	public void thePieceIsNotMoved() {
 		assertEquals(pieceOfPlayerMove, referee.getCoordinatePieceMap().getPieceAtCoordinate(sourceCoordinateOfPlayerMove));
 	}
-
 	
 	@Override
 	public void thePlayerOffersToEndTheGameInDraw() {

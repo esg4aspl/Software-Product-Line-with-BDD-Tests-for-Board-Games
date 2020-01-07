@@ -2123,3 +2123,551 @@ Testing: invalidDestinationCoordinateForMoveCantLeaveGoalTriangle1
 
 New Test Run - 2019/12/23 18:56:38
 Testing: invalidDestinationCoordinateForMoveOppositeDirectionOfLastMove1
+
+New Test Run - 2020/01/07 04:59:20
+Testing: validRegularMove1
+
+New Test Run - 2020/01/07 04:59:20
+Testing: validRegularMove2
+
+New Test Run - 2020/01/07 04:59:20
+Testing: validRegularMove3
+
+New Test Run - 2020/01/07 04:59:20
+Testing: validJumpMove1
+
+New Test Run - 2020/01/07 04:59:20
+Testing: validJumpMove2
+
+New Test Run - 2020/01/07 04:59:20
+Testing: validJumpMove3
+
+New Test Run - 2020/01/07 04:59:20
+Testing: validJumpMove4
+
+New Test Run - 2020/01/07 04:59:20
+Testing: validJumpMove5
+
+New Test Run - 2020/01/07 04:59:20
+Testing: validJumpMove6
+
+New Test Run - 2020/01/07 04:59:20
+Testing: endOfTheGame2
+game ended
+
+New Test Run - 2020/01/07 04:59:20
+Testing: endOfTheGame2Accept
+game not ended
+
+New Test Run - 2020/01/07 04:59:20
+Testing: endOfTheGame3
+game ended
+
+New Test Run - 2020/01/07 04:59:20
+Testing: endOfTheGame3Accept
+game not ended
+
+New Test Run - 2020/01/07 04:59:20
+Testing: endOfTheGame4
+game ended
+
+New Test Run - 2020/01/07 04:59:20
+Testing: endOfTheGame4Accept
+game not ended
+
+New Test Run - 2020/01/07 04:59:20
+Testing: endOfTheGame6
+game ended
+
+New Test Run - 2020/01/07 04:59:20
+Testing: endOfTheGame6Accept
+game not ended
+
+New Test Run - 2020/01/07 04:59:20
+Testing: endOfTheGameOpponentCantMakeAValidMove1
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidSourceCoordinateForMoveOutsideBorders1
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidSourceCoordinateForMoveOutsideBorders2
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidSourceCoordinateForMoveUnplayableColor1
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidSourceCoordinateForMoveUnplayableColor2
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidSourceCoordinateForMoveEmpty1
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidSourceCoordinateForMoveEmpty2
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidSourceCoordinateForMoveEmpty3
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidSourceCoordinateForMoveOpponentsPiece1
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidSourceCoordinateForMoveOpponentsPiece2
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidSourceCoordinateForMoveOpponentsPiece3
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidSourceCoordinateForMoveDifferentThanLastMovesDestinationCoordinate1
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidDestinationCoordinateForMoveOutsideBorders1
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidDestinationCoordinateForMoveOutsideBorders2
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidDestinationCoordinateForMoveUnplayableColor1
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidDestinationCoordinateForMoveUnplayableColor2
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidDestinationCoordinateForMoveOccupied1
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidDestinationCoordinateForMoveOccupied2
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidDestinationCoordinateForMoveOccupied3
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidDestinationCoordinateForMoveUnallowedDirection1
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidDestinationCoordinateForMoveUnallowedDirection2
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidDestinationCoordinateForMoveTooFarAway1
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidDestinationCoordinateForMoveTooFarAway2
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidDestinationCoordinateForMoveJumpedPieceIsNull1
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidDestinationCoordinateForMoveCantLeaveGoalTriangle1
+
+New Test Run - 2020/01/07 04:59:20
+Testing: invalidDestinationCoordinateForMoveOppositeDirectionOfLastMove1
+
+New Test Run - 2020/01/07 04:59:49
+Testing: validRegularMove1
+
+New Test Run - 2020/01/07 04:59:49
+Testing: validRegularMove2
+
+New Test Run - 2020/01/07 04:59:49
+Testing: validRegularMove3
+
+New Test Run - 2020/01/07 04:59:49
+Testing: validJumpMove1
+
+New Test Run - 2020/01/07 04:59:49
+Testing: validJumpMove2
+
+New Test Run - 2020/01/07 04:59:49
+Testing: validJumpMove3
+
+New Test Run - 2020/01/07 04:59:49
+Testing: validJumpMove4
+
+New Test Run - 2020/01/07 04:59:49
+Testing: validJumpMove5
+
+New Test Run - 2020/01/07 04:59:49
+Testing: validJumpMove6
+
+New Test Run - 2020/01/07 04:59:49
+Testing: endOfTheGame2
+game ended
+
+New Test Run - 2020/01/07 04:59:49
+Testing: endOfTheGame2Accept
+game not ended
+
+New Test Run - 2020/01/07 04:59:49
+Testing: endOfTheGame3
+game ended
+
+New Test Run - 2020/01/07 04:59:49
+Testing: endOfTheGame3Accept
+game not ended
+
+New Test Run - 2020/01/07 04:59:49
+Testing: endOfTheGame4
+game ended
+
+New Test Run - 2020/01/07 04:59:49
+Testing: endOfTheGame4Accept
+game not ended
+
+New Test Run - 2020/01/07 04:59:49
+Testing: endOfTheGame6
+game ended
+
+New Test Run - 2020/01/07 04:59:49
+Testing: endOfTheGame6Accept
+game not ended
+
+New Test Run - 2020/01/07 04:59:49
+Testing: endOfTheGameOpponentCantMakeAValidMove1
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidSourceCoordinateForMoveOutsideBorders1
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidSourceCoordinateForMoveOutsideBorders2
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidSourceCoordinateForMoveUnplayableColor1
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidSourceCoordinateForMoveUnplayableColor2
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidSourceCoordinateForMoveEmpty1
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidSourceCoordinateForMoveEmpty2
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidSourceCoordinateForMoveEmpty3
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidSourceCoordinateForMoveOpponentsPiece1
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidSourceCoordinateForMoveOpponentsPiece2
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidSourceCoordinateForMoveOpponentsPiece3
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidSourceCoordinateForMoveDifferentThanLastMovesDestinationCoordinate1
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidDestinationCoordinateForMoveOutsideBorders1
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidDestinationCoordinateForMoveOutsideBorders2
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidDestinationCoordinateForMoveUnplayableColor1
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidDestinationCoordinateForMoveUnplayableColor2
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidDestinationCoordinateForMoveOccupied1
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidDestinationCoordinateForMoveOccupied2
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidDestinationCoordinateForMoveOccupied3
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidDestinationCoordinateForMoveUnallowedDirection1
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidDestinationCoordinateForMoveUnallowedDirection2
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidDestinationCoordinateForMoveTooFarAway1
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidDestinationCoordinateForMoveTooFarAway2
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidDestinationCoordinateForMoveJumpedPieceIsNull1
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidDestinationCoordinateForMoveCantLeaveGoalTriangle1
+
+New Test Run - 2020/01/07 04:59:49
+Testing: invalidDestinationCoordinateForMoveOppositeDirectionOfLastMove1
+
+New Test Run - 2020/01/07 05:01:01
+Testing: validRegularMove1
+
+New Test Run - 2020/01/07 05:01:02
+Testing: validRegularMove2
+
+New Test Run - 2020/01/07 05:01:02
+Testing: validRegularMove3
+
+New Test Run - 2020/01/07 05:01:02
+Testing: validJumpMove1
+
+New Test Run - 2020/01/07 05:01:02
+Testing: validJumpMove2
+
+New Test Run - 2020/01/07 05:01:02
+Testing: validJumpMove3
+
+New Test Run - 2020/01/07 05:01:02
+Testing: validJumpMove4
+
+New Test Run - 2020/01/07 05:01:02
+Testing: validJumpMove5
+
+New Test Run - 2020/01/07 05:01:02
+Testing: validJumpMove6
+
+New Test Run - 2020/01/07 05:01:02
+Testing: endOfTheGame2
+game ended
+
+New Test Run - 2020/01/07 05:01:02
+Testing: endOfTheGame2Accept
+game not ended
+
+New Test Run - 2020/01/07 05:01:02
+Testing: endOfTheGame3
+game ended
+
+New Test Run - 2020/01/07 05:01:02
+Testing: endOfTheGame3Accept
+game not ended
+
+New Test Run - 2020/01/07 05:01:02
+Testing: endOfTheGame4
+game ended
+
+New Test Run - 2020/01/07 05:01:02
+Testing: endOfTheGame4Accept
+game not ended
+
+New Test Run - 2020/01/07 05:01:02
+Testing: endOfTheGame6
+game ended
+
+New Test Run - 2020/01/07 05:01:02
+Testing: endOfTheGame6Accept
+game not ended
+
+New Test Run - 2020/01/07 05:01:02
+Testing: endOfTheGameOpponentCantMakeAValidMove1
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidSourceCoordinateForMoveOutsideBorders1
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidSourceCoordinateForMoveOutsideBorders2
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidSourceCoordinateForMoveUnplayableColor1
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidSourceCoordinateForMoveUnplayableColor2
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidSourceCoordinateForMoveEmpty1
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidSourceCoordinateForMoveEmpty2
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidSourceCoordinateForMoveEmpty3
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidSourceCoordinateForMoveOpponentsPiece1
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidSourceCoordinateForMoveOpponentsPiece2
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidSourceCoordinateForMoveOpponentsPiece3
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidSourceCoordinateForMoveDifferentThanLastMovesDestinationCoordinate1
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidDestinationCoordinateForMoveOutsideBorders1
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidDestinationCoordinateForMoveOutsideBorders2
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidDestinationCoordinateForMoveUnplayableColor1
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidDestinationCoordinateForMoveUnplayableColor2
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidDestinationCoordinateForMoveOccupied1
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidDestinationCoordinateForMoveOccupied2
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidDestinationCoordinateForMoveOccupied3
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidDestinationCoordinateForMoveUnallowedDirection1
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidDestinationCoordinateForMoveUnallowedDirection2
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidDestinationCoordinateForMoveTooFarAway1
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidDestinationCoordinateForMoveTooFarAway2
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidDestinationCoordinateForMoveJumpedPieceIsNull1
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidDestinationCoordinateForMoveCantLeaveGoalTriangle1
+
+New Test Run - 2020/01/07 05:01:02
+Testing: invalidDestinationCoordinateForMoveOppositeDirectionOfLastMove1
+
+New Test Run - 2020/01/07 05:02:16
+Testing: validRegularMove1
+
+New Test Run - 2020/01/07 05:02:16
+Testing: validRegularMove2
+
+New Test Run - 2020/01/07 05:02:16
+Testing: validRegularMove3
+
+New Test Run - 2020/01/07 05:02:16
+Testing: validJumpMove1
+
+New Test Run - 2020/01/07 05:02:16
+Testing: validJumpMove2
+
+New Test Run - 2020/01/07 05:02:16
+Testing: validJumpMove3
+
+New Test Run - 2020/01/07 05:02:16
+Testing: validJumpMove4
+
+New Test Run - 2020/01/07 05:02:16
+Testing: validJumpMove5
+
+New Test Run - 2020/01/07 05:02:16
+Testing: validJumpMove6
+
+New Test Run - 2020/01/07 05:02:16
+Testing: endOfTheGame2
+game ended
+
+New Test Run - 2020/01/07 05:02:16
+Testing: endOfTheGame2Accept
+game not ended
+
+New Test Run - 2020/01/07 05:02:16
+Testing: endOfTheGame3
+game ended
+
+New Test Run - 2020/01/07 05:02:16
+Testing: endOfTheGame3Accept
+game not ended
+
+New Test Run - 2020/01/07 05:02:16
+Testing: endOfTheGame4
+game ended
+
+New Test Run - 2020/01/07 05:02:16
+Testing: endOfTheGame4Accept
+game not ended
+
+New Test Run - 2020/01/07 05:02:16
+Testing: endOfTheGame6
+game ended
+
+New Test Run - 2020/01/07 05:02:16
+Testing: endOfTheGame6Accept
+game not ended
+
+New Test Run - 2020/01/07 05:02:16
+Testing: endOfTheGameOpponentCantMakeAValidMove1
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidSourceCoordinateForMoveOutsideBorders1
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidSourceCoordinateForMoveOutsideBorders2
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidSourceCoordinateForMoveUnplayableColor1
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidSourceCoordinateForMoveUnplayableColor2
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidSourceCoordinateForMoveEmpty1
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidSourceCoordinateForMoveEmpty2
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidSourceCoordinateForMoveEmpty3
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidSourceCoordinateForMoveOpponentsPiece1
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidSourceCoordinateForMoveOpponentsPiece2
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidSourceCoordinateForMoveOpponentsPiece3
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidSourceCoordinateForMoveDifferentThanLastMovesDestinationCoordinate1
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidDestinationCoordinateForMoveOutsideBorders1
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidDestinationCoordinateForMoveOutsideBorders2
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidDestinationCoordinateForMoveUnplayableColor1
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidDestinationCoordinateForMoveUnplayableColor2
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidDestinationCoordinateForMoveOccupied1
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidDestinationCoordinateForMoveOccupied2
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidDestinationCoordinateForMoveOccupied3
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidDestinationCoordinateForMoveUnallowedDirection1
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidDestinationCoordinateForMoveUnallowedDirection2
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidDestinationCoordinateForMoveTooFarAway1
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidDestinationCoordinateForMoveTooFarAway2
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidDestinationCoordinateForMoveJumpedPieceIsNull1
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidDestinationCoordinateForMoveCantLeaveGoalTriangle1
+
+New Test Run - 2020/01/07 05:02:16
+Testing: invalidDestinationCoordinateForMoveOppositeDirectionOfLastMove1

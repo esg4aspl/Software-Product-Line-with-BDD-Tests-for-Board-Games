@@ -74,10 +74,6 @@ public class Actionwords {
 		scenarioTester.thePlayerMakesAMoveLeavingNoValidDestinationCoordinatesForAnyOfTheOpponentsPieces();
 	}
 
-	public void thePlayerMakesARegularMoveWithoutPromoting() {
-		scenarioTester.thePlayerMakesARegularMoveWithoutPromoting();
-	}
-
 	public void theGameIsEndedAsADraw() {
 		scenarioTester.theGameIsEndedAsADraw();
 	}
@@ -106,16 +102,8 @@ public class Actionwords {
 		scenarioTester.thePieceIsP1ToACrownedPiece(p1);
 	}
 
-	public void thePlayerHasAP1PieceInOpponentsCrownhead(String p1) {
-		((ITurkishScenarioTester) scenarioTester).thePlayerHasAP1PieceInOpponentsCrownhead(p1);
-	}
-
 	public void thePlayerJumpsOverAllTheVulnerableOpponentKingsInTheCrownhead() {
 		((ITurkishScenarioTester) scenarioTester).thePlayerJumpsOverAllTheVulnerableOpponentKingsInTheCrownhead();
-	}
-
-	public void thereAreSomeBoardStatesThatHaveBeenReachedTwoTimes() {
-		((ITurkishScenarioTester) scenarioTester).thereAreSomeBoardStatesThatHaveBeenReachedTwoTimes();
 	}
 
 	public void thePlayerFinishesHisTurnLeavingTheBoardInAPreviouslyReachedState() {
@@ -128,28 +116,12 @@ public class Actionwords {
 		}
 	}
 
-	public void thePlayerHasMadeJumpMovesInTheCurrentTurn() {
-		((IChineseScenarioTester) scenarioTester).thePlayerHasMadeJumpMovesInTheCurrentTurn();
-	}
-
-	public void thePlayerCanContinueDoingJumpMoves() {
-		((IChineseScenarioTester) scenarioTester).thePlayerCanContinueDoingJumpMoves();
-	}
-
 	public void thePlayerHasBeenAskedToContinueOrNot() {
 		((IChineseScenarioTester) scenarioTester).thePlayerHasBeenAskedToContinueOrNot();
 	}
 
 	public void thePlayerChoosesToP1(String p1) {
 		((IChineseScenarioTester) scenarioTester).thePlayerChoosesToP1(p1);
-	}
-
-	public void thePlayerHasAtLeastOneOfHisPiecesInTheGoalTriangle() {
-		((IChineseScenarioTester) scenarioTester).thePlayerHasAtLeastOneOfHisPiecesInTheGoalTriangle();
-	}
-
-	public void thereIsOnlyOneSquareIsAvailableAtTheGoalTriangle() {
-		((IChineseScenarioTester) scenarioTester).thereIsOnlyOneSquareIsAvailableAtTheGoalTriangle();
 	}
 
 	public void thePlayerJumpsMovesOneOfHisPiecesToTheLastAvailableSquareInGoalTriangle() {
@@ -163,22 +135,14 @@ public class Actionwords {
 	public void thePlayerOffersToEndTheGameInDraw() {
 		this.scenarioTester.thePlayerOffersToEndTheGameInDraw();
 	}
-	
-
-	public void theOpponentPieceIsRemovedFromTheBoard() {
-		((IChessScenarioTester) scenarioTester).theOpponentPieceIsRemovedFromTheBoard();
-	}
-
 
 	public void thePlayerMakesAMoveThatThreatensTheOpponentsKingsCurrentPosition() {
 		((IChessScenarioTester) scenarioTester).thePlayerMakesAMoveThatThreatensTheOpponentsKingsCurrentPosition();
 	}
 
-
 	public void thePlayerMovesANonpawnPieceWithoutCapturingAnOpponentPiece() {
 		((IChessScenarioTester) scenarioTester).thePlayerMovesANonpawnPieceWithoutCapturingAnOpponentPiece();
 	}
-
 
 	public void theRookIsMovedToTheAdjacentCoordinateThatIsTowardsTheCenter() {
 		((IChessScenarioTester) scenarioTester).theRookIsMovedToTheAdjacentCoordinateThatIsTowardsTheCenter();
@@ -200,13 +164,8 @@ public class Actionwords {
 		scenarioTester.thePlayerMakesAMoveToOpponentsCrownheadWithAPawn();
 	}
 
-	public void theEnPassantOpponentPieceIsRemovedFromTheBoard() {
-		((IChessScenarioTester) scenarioTester).theEnPassantOpponentPieceIsRemovedFromTheBoard();
-	}
-
-	
 	public void thePlayerMakesAMoveThatNotChecksTheOpponentKingButLeavesItWithNoValidMoveToMake() {
-		// TODO Auto-generated method stub
+		((IChessScenarioTester) scenarioTester).thePlayerMakesAMoveThatNotChecksTheOpponentKingButLeavesItWithNoValidMoveToMake();
 		
 	}
 	

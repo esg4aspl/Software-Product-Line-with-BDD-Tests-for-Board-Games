@@ -1,6 +1,5 @@
 package testing.scenariotesters.checkerschinese;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -10,12 +9,7 @@ import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import base.Pawn;
-import checkersamerican.King;
-import checkerschinese.ChinesePawn;
 import cucumber.api.PendingException;
-import testing.helpers.DestinationCoordinateValidity;
-import testing.helpers.SourceCoordinateValidity;
 import testing.scenariotesters.checkersamerican.AmericanCheckersScenarioTester;
 
 public class ChineseCheckersScenarioTester extends AmericanCheckersScenarioTester implements IChineseScenarioTester {
@@ -26,7 +20,6 @@ public class ChineseCheckersScenarioTester extends AmericanCheckersScenarioTeste
 			outputter = new PrintWriter(new FileWriter("./src/testing/scenariotesters/checkerschinese/ScenarioTesterOutput.txt", true));
 			outputter.println("\nNew Test Run - " + DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss").format(LocalDateTime.now()));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -36,17 +29,7 @@ public class ChineseCheckersScenarioTester extends AmericanCheckersScenarioTeste
 		int numberOfPlayers = Integer.parseInt(p2);
 		referee = new ChineseTesterReferee(new ChineseTestGameConfiguration(numberOfPlayers));
 	}
-
-	@Override
-	public void thePlayerHasMadeJumpMovesInTheCurrentTurn() {
-		assertTrue(info.getPriorMoveList().size() != 0);
-	}
-
-	@Override
-	public void thePlayerCanContinueDoingJumpMoves() {
-		//TODO How to implement this?
-	}
-
+	
 	@Override
 	public void thePlayerHasBeenAskedToContinueOrNot() {
 		assertTrue(((ChineseCheckersTestInfo) info).playerIsAskedToContinue);
@@ -61,18 +44,6 @@ public class ChineseCheckersScenarioTester extends AmericanCheckersScenarioTeste
 		} else {
 			throw new PendingException();
 		}
-	}
-
-	@Override
-	public void thePlayerHasAtLeastOneOfHisPiecesInTheGoalTriangle() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void thereIsOnlyOneSquareIsAvailableAtTheGoalTriangle() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -101,8 +72,4 @@ public class ChineseCheckersScenarioTester extends AmericanCheckersScenarioTeste
 		return true;
 	}
 	
-	
-	
-	
-
 }

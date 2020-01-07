@@ -1,6 +1,7 @@
 package testing.scenariotesters.chess;
 
 import base.Pawn;
+import chess.LimitedPawn;
 import core.Coordinate;
 import core.ICoordinate;
 import testing.scenariotesters.AbstractTesterReferee;
@@ -10,7 +11,6 @@ public class ChessTestInfo extends AmericanCheckersTestInfo {
 
 	public ChessTestInfo(AbstractTesterReferee referee, String file_path, String file_name) {
 		super(referee, file_path, file_name);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class ChessTestInfo extends AmericanCheckersTestInfo {
 		jumpedCoordinate = dest;
 		jumpedPiece = referee.getCoordinatePieceMap().getPieceAtCoordinate(dest);
 		
-		if (pieceOfPlayerMove instanceof Pawn 
+		if (pieceOfPlayerMove instanceof Pawn || pieceOfPlayerMove instanceof LimitedPawn
 				&& dest.getXCoordinate() - src.getXCoordinate() != 0 
 				&& referee.getCoordinatePieceMap().getPieceAtCoordinate(dest) == null) {
 			jumpedCoordinate = new Coordinate(dest.getXCoordinate(), src.getYCoordinate());

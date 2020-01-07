@@ -11,7 +11,6 @@ import core.AbstractPiece;
 import cucumber.api.PendingException;
 import testing.helpers.DestinationCoordinateValidity;
 import testing.helpers.SourceCoordinateValidity;
-import testing.scenariotesters.IScenarioTester;
 import testing.scenariotesters.checkersamerican.AmericanCheckersScenarioTester;
 
 public class TurkishCheckersScenarioTester extends AmericanCheckersScenarioTester implements ITurkishScenarioTester {
@@ -61,25 +60,13 @@ public class TurkishCheckersScenarioTester extends AmericanCheckersScenarioTeste
 	}
 
 	@Override
-	public void thePlayerHasAP1PieceInOpponentsCrownhead(String p1) {
-		assertTrue(((TurkishTesterReferee) referee).findPlayerPawnsInOpponentCrownhead(this.playerOfPlayerMove).size() > 0);
-	}
-
-	@Override
 	public void thePlayerJumpsOverAllTheVulnerableOpponentKingsInTheCrownhead() {
-		//TODO What other implementation can be here (rather than believing in .ini file)?
 		referee.conductGame();
 		prepareValidities();
 	}
 
 	@Override
-	public void thereAreSomeBoardStatesThatHaveBeenReachedTwoTimes() {
-		assertTrue(((TurkishCheckersTestInfo) info).isResultingBoardStateWillBeReachedForTheThirdTime());
-	}
-
-	@Override
 	public void thePlayerFinishesHisTurnLeavingTheBoardInAPreviouslyReachedState() {
-		//TODO What other implementation can be here (rather than believing in .ini file)?
 		referee.conductGame();
 		prepareValidities();
 	}

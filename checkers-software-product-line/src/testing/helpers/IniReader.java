@@ -47,7 +47,6 @@ public class IniReader implements IniReaderInterface {
 			coordinatePieceDuos = new ArrayList<ICoordinatePieceDuo>();
 			parseCoordinatePieceDuos();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NullPointerException e) {
 			e.printStackTrace();

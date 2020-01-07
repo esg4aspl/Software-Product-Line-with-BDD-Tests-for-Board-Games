@@ -21,7 +21,6 @@ public class ChineseTestGameConfiguration implements IGameConfiguration {
 
 	@Override
 	public boolean getAutomaticGameStatus() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

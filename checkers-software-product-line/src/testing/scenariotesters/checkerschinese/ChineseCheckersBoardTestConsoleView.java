@@ -10,7 +10,6 @@ public class ChineseCheckersBoardTestConsoleView extends ChineseCheckersBoardCon
 
 	public ChineseCheckersBoardTestConsoleView(AbstractReferee referee) {
 		super(referee);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

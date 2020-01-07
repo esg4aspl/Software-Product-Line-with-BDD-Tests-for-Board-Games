@@ -171,36 +171,6 @@ public class ChessTesterReferee extends AbstractTesterReferee {
 		
 		return null;
 	}
-
-	private DestinationCoordinateValidity checkDestinationCoordinateForPawn(IPlayer player, ICoordinate sourceCoordinate, ICoordinate destinationCoordinate) {
-		int srcX = sourceCoordinate.getXCoordinate(); int srcY = sourceCoordinate.getYCoordinate();
-		int destX = destinationCoordinate.getXCoordinate(); int destY = destinationCoordinate.getYCoordinate();
-		AbstractPiece piece = this.coordinatePieceMap.getPieceAtCoordinate(sourceCoordinate);
-		AbstractPiece destPiece = this.coordinatePieceMap.getPieceAtCoordinate(destinationCoordinate);
-		
-		int startingY = piece.getGoalDirection() == Direction.N ? 1 : 6;
-		int acceptedStep = piece.getGoalDirection() == Direction.N ? 1 : -1;
-		int acceptedDoubleStep = piece.getGoalDirection() == Direction.N ? 2 : -2;
-		
-		if (srcX == destX && (destY - destX == acceptedStep || (srcY == startingY && destY - destX == acceptedDoubleStep))) {
-			if (destPiece == null)
-				return DestinationCoordinateValidity.VALID_REGULAR;
-			return DestinationCoordinateValidity.PIECE_AT_DESTINATION_IS_NOT_CAPTURABLE;
-		} else if ( (destX - srcX == 1 || destX - srcX == -1) && destY - destX == acceptedStep) {
-			if (destPiece == null) {
-				if (this.isMoveEnPassantPossible())
-					return DestinationCoordinateValidity.VALID_CAPTURE;
-				return DestinationCoordinateValidity.UNALLOWED_DIRECTION;
-			}
-			return DestinationCoordinateValidity.VALID_CAPTURE;
-		}
-		return null;
-	}
-	
-	private boolean isMoveEnPassantPossible() {
-		//TODO Implement this
-		return false;
-	}
 	
 	//GAMEPLAY METHODS
 	
@@ -243,14 +213,6 @@ public class ChessTesterReferee extends AbstractTesterReferee {
 		view.printMessage("WINNER " + announceWinner());
 		end();
 		return;
-//		try {
-//			Thread.sleep(10000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		consoleView.closeFile();
-//		System.exit(0);
 	}
 
 	protected boolean conductMove() {
@@ -284,7 +246,7 @@ public class ChessTesterReferee extends AbstractTesterReferee {
 	//MAIN METHOD
 	
 	public static void main(String[] args) {
-		String[] iniArr = {"validCaptureMove1"
+		String[] iniArr = {"validLeftCastlingMove1", "validRightCastlingMove1"
 				};
 		for (String ini : iniArr) {
 			IGameConfiguration gameConfiguration = new ChessGameConfiguration();
@@ -306,7 +268,6 @@ public class ChessTesterReferee extends AbstractTesterReferee {
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			currentMove = consoleView.getNextAutomaticMove(step);
@@ -459,7 +420,6 @@ public class ChessTesterReferee extends AbstractTesterReferee {
 				icon = "P1";
 				direction = Direction.S;
 			}
-			//TODO: Change
 			//------ should be changed ------
 			men = new Rook((i*7)+i+2, "R"+i, player, direction, rookMovePossibilities, rookMoveConstraints);
 			player.addPiece(men);

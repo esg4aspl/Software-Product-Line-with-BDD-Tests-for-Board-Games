@@ -113,14 +113,6 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 		}
 		end();
 		return;
-//		try {
-//			Thread.sleep(5000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		consoleView.closeFile();
-//		System.exit(0);
 	}
 
 	protected boolean conductMove() {
@@ -252,7 +244,10 @@ public class TurkishTesterReferee extends AbstractTesterReferee {
 		int p0Counter = 0;
 		int p1Counter = 0;
 		for (ICoordinatePieceDuo coordinatePieceDuo : coordinatePieceDuos) {
-			// TODO: Check if the coordinate is empty
+			if (coordinatePieceMap.getPieceAtCoordinate(coordinatePieceDuo.getCoordinate()) != null) {
+				System.out.println("The coordinate is occupied: " + coordinatePieceDuo.getCoordinate().toString());
+				System.exit(0);
+			}
 			if (!board.isPlayableCoordinate(coordinatePieceDuo.getCoordinate())) {
 				System.out.println("A piece can not stand there: " + coordinatePieceDuo.getCoordinate().toString());
 				System.exit(0);

@@ -44,9 +44,6 @@ public interface IScenarioTester {
 	public void p1Happens(String p1);
 	public void theGameIsEndedAsADraw();
 	
-	//American Checkers Implicit Draw
-	public void thePlayerMakesARegularMoveWithoutPromoting();
-	
 	//American Checkers One Piece Draw
 	public void thePlayerJumpsOverOneOrMultiplePiecesLeavingTheOpponentWithOnlyOnePieceThatIsUnableToPerformAJumpMove();
 	
