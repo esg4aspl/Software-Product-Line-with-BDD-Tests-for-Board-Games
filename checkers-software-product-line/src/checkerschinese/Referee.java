@@ -13,7 +13,6 @@ public class Referee extends AbstractReferee {
 	protected ChineseCheckersBoardConsoleView consoleView;
 	private String[] icons; 
 	private Direction[] directions;
-	IView view;
 
 	public Referee(IGameConfiguration checkersGameConfiguration) {
 		super(checkersGameConfiguration);
@@ -112,7 +111,7 @@ public class Referee extends AbstractReferee {
 			}
 			consoleView.drawBoardView();
 
-			endOfGame = (isSatisfied(endRule, this));
+			endOfGame = (isSatisfied(new RuleEndOfGamePiecesOfPlayerOnFinishCoordinates(), this));
 			
 			view.printMessage("End Of Game? " + endOfGame);
 			if (endOfGame) break;
